@@ -1,5 +1,6 @@
 package com.prosesol.api.rest.controllers;
 
+import java.text.DecimalFormat;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.prosesol.api.rest.controllers.exception.AfiliadoException;
 import com.prosesol.api.rest.models.entity.Afiliado;
 import com.prosesol.api.rest.services.IAfiliadoService;
 
@@ -20,6 +22,8 @@ import com.prosesol.api.rest.services.IAfiliadoService;
 @RequestMapping("/api/pagos")
 public class AfiliadoRestController {
 
+	private static DecimalFormat decimalFormat = new DecimalFormat("#.##");
+	
 	@Autowired
 	private IAfiliadoService afiliadoService;
 
@@ -42,9 +46,9 @@ public class AfiliadoRestController {
 
 		if (afiliados == null) {
 			response.put("estatus", "ERR");
-			response.put("code", HttpStatus.NOT_FOUND.value());
+			response.put("code", HttpStatus.OK.value());
 			response.put("mensaje", "No existen afiliados en la base de datos");
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
+			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.OK);
 		}
 
 		response.put("afiliados", afiliados);
@@ -62,13 +66,8 @@ public class AfiliadoRestController {
 		Afiliado mostrarAfiliado = new Afiliado();
 		LinkedHashMap<String, Object> response = new LinkedHashMap<String, Object>();
 
-		if(rfc.length() < 13) {
-			
-			response.put("estatus", "ERR");
-			response.put("code", HttpStatus.LENGTH_REQUIRED.value());
-			response.put("mensaje", "El rfc no cumple con la longitud correcta");
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
-			
+		if(rfc.length() < 13) {			
+			throw new AfiliadoException("El rfc no cumple con la longitud correcta");			
 		}
 		
 		if (afiliado == null) {
@@ -77,7 +76,7 @@ public class AfiliadoRestController {
 			response.put("mensaje", "El rfc del afiliado no existe en la base de datos");
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
 		} else if (afiliado.isBeneficiario().equals("0")) {
-
+			
 			mostrarAfiliado.setId(afiliado.getId());
 			mostrarAfiliado.setNombre(afiliado.getNombre());
 			mostrarAfiliado.setApellidoPaterno(afiliado.getApellidoPaterno());
@@ -89,9 +88,9 @@ public class AfiliadoRestController {
 
 		} else {
 			response.put("estatus", "ERR");
-			response.put("code", HttpStatus.NOT_FOUND.value());
+			response.put("code", HttpStatus.OK.value());
 			response.put("mensaje", "El afiliado no es titular del servicio");
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
+			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.OK);
 		}
 
 		try {

@@ -5,7 +5,10 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,13 +23,25 @@ import org.springframework.web.bind.annotation.RestController;
 import com.prosesol.api.rest.models.entity.Pago;
 import com.prosesol.api.rest.services.IPagoService;
 
+import mx.openpay.client.exceptions.OpenpayServiceException;
+import mx.openpay.client.exceptions.ServiceUnavailableException;
+
 @RestController
 @RequestMapping("/api/pagos")
 public class PagoRestController {
-
+	
+	@Value("${openpay.id}")
+	private String openpayId;
+	
+	@Value("${openpay.pk}")
+	private String openpayPk;
+	
+	@Value("${openpay.url}")
+	private String openpayURL;
+	
 	@Autowired
 	private IPagoService pagoService;
-
+	
 	@GetMapping("/consultar_pagos_all")
 	public ResponseEntity<?> consultarPagos() {
 		
@@ -44,9 +59,9 @@ public class PagoRestController {
 		
 		if(pagos == null) {
 			response.put("estatus", "ERR");
-			response.put("code", HttpStatus.NOT_FOUND.value());
+			response.put("code", HttpStatus.OK.value());
 			response.put("mensaje", "No existen pagos en la base de datos");
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
+			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.OK);
 		}
 		
 		response.put("pagos", pagos);
@@ -66,9 +81,9 @@ public class PagoRestController {
 		if(rfc.length() < 13) {
 			
 			response.put("estatus", "ERR");
-			response.put("code", HttpStatus.LENGTH_REQUIRED.value());
+			response.put("code", HttpStatus.OK.value());
 			response.put("mensaje", "El rfc no cumple con la longitud correcta");
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
+			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.OK);
 			
 		}
 	
@@ -83,9 +98,9 @@ public class PagoRestController {
 		
 		if(pagos == null) {
 			response.put("estatus", "ERR");
-			response.put("code", HttpStatus.NOT_FOUND.value());
+			response.put("code", HttpStatus.OK.value());
 			response.put("mensaje", "El pago: ".concat(rfc).concat(" no existe en la base de datos"));
-			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
+			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.OK);
 		}
 		
 		response.put("pagos", pagos);
@@ -97,13 +112,21 @@ public class PagoRestController {
 	}
 	
 	@PostMapping("/registrar_pago")
-	public ResponseEntity<?> registrarPago(@RequestBody Pago pago) {
+	public ResponseEntity<?> registrarPago(@Valid @RequestBody Pago pago) throws OpenpayServiceException, ServiceUnavailableException {
 		
 		Pago pagoRegistrado = null;
 		LinkedHashMap<String, Object> response = new LinkedHashMap<String, Object>();
-				
-		try {
-			pago.setFechaPago(new Date());			
+						
+		if(pago.getRfc().length() < 13){
+			
+			response.put("estatus", "ERR");
+			response.put("code", HttpStatus.OK.value());
+			response.put("mensaje", "El rfc no cumple con la longitud correcta");
+			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.OK);
+		}
+		
+		try {			
+			pago.setFechaPago(new Date());		
 			pagoRegistrado = pagoService.save(pago);
 		}catch(DataAccessException dae) {
 			response.put("estatus", "ERR: " + dae.getMessage().concat(": ").concat(dae.getMostSpecificCause().getMessage()));
@@ -142,6 +165,6 @@ public class PagoRestController {
 		response.put("code", HttpStatus.OK.value());
 		response.put("mensaje", "El registro del pago se ha borrado correctamente");
 		
-		return null;
+		return new ResponseEntity<LinkedHashMap<String, Object>>(response, HttpStatus.OK);
 	}
 }

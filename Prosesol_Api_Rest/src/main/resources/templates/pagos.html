@@ -1,0 +1,74 @@
+﻿<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/head :: head"></head>
+<body>
+    <div class="container">
+    	<div class="row justify-content-center">
+    		<div class="col-md-9">
+		        <div class="pymnts">
+		            <form th:action="@{/realizarPago}" method="post" id="payment-form" th:object="${afiliado}">
+		                <input type="hidden" name="token_id" id="token_id">
+		                <div class="pymnt-itm card active">
+		                    <h2>Tarjeta de crédito o débito</h2>
+		                    <div class="pymnt-cntnt">
+		                        <div class="card-expl">
+		                            <div class="credit"><h4>Tarjetas de crédito</h4></div>
+		                            <div class="debit"><h4>Tarjetas de débito</h4></div>
+		                        </div>
+		                        <div class="sctn-row">
+		                        	<div class="sctn-col l">
+		                        		<label>Nombre del titular del servicio</label>
+		                                <label th:text="*{nombre} + ' '  + *{apellidoPaterno} + ' ' + *{apellidoMaterno}"></label>
+		                            </div>
+		                            <div class="sctn-col">
+		                                <label>RFC</label>
+		                                <label th:text="*{rfc}"></label>
+		                            </div>
+		                            <div class="sctn-col l">
+		                        		<label>Monto a pagar</label>
+		                                <label th:text="*{saldoCorte}"></label>
+		                            </div>
+		                            <div class="sctn-col">
+		                                <label>Fecha de corte de servicio</label>
+		                                <label th:text="*{fechaCorte}"></label>
+		                            </div>
+		                            <div class="sctn-col l">
+		                                <label>Nombre del titular</label>
+		                                <input type="text" placeholder="Como aparece en la tarjeta" class="form-control form-control-user" 
+		                                	   autocomplete="off" data-openpay-card="holder_name">
+		                            </div>
+		                            <div class="sctn-col">
+		                                <label>Número de tarjeta</label>
+		                                <input type="text" autocomplete="off" class="form-control form-control-user" data-openpay-card="card_number"></div>
+		                            </div>
+		                            <div class="sctn-row">
+		                                <div class="sctn-col l">
+		                                    <label>Fecha de expiración</label>
+		                                    <div class="sctn-col half l">
+		                                    	<input type="text" placeholder="Mes" class="form-control form-control-user" 
+		                                    	       data-openpay-card="expiration_month">
+		                                    </div>
+		                                    <div class="sctn-col half l">
+		                                    	<input type="text" placeholder="Año" class="form-control form-control-user" 
+		                                    		   data-openpay-card="expiration_year">
+		                                    </div>
+		                                </div>
+		                                <div class="sctn-col cvv"><label>Código de seguridad</label>
+		                                    <div class="sctn-col half l">
+		                                    	<input type="text" placeholder="3 dígitos" class="form-control form-control-user" 
+		                                    	       autocomplete="off" data-openpay-card="cvv2">
+		                                    </div>
+		                                </div>
+		                            </div>
+		                        </div>
+		                        <div class="sctn-row">
+		                                <a class="button rght" id="pay-button">Pagar</a>
+		                        </div>
+		                    </div>		                
+		            </form>
+		        </div>
+		     </div>
+	   </div>
+    </div>
+</body>
+</html>

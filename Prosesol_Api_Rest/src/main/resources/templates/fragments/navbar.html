@@ -1,0 +1,20 @@
+﻿<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+	<meta charset="utf-8" />
+<head>
+</head>
+<body>
+	<div th:fragment="div-messages">		
+		
+		<p class="alert alert-success" th:if="${success != null}"
+			th:text="${success}"></p>
+		<p class="alert alert-danger" th:if="${error != null}"
+			th:text="${error}"></p>
+		<p class="alert alert-warning" th:if="${warning != null}"
+			th:text="${warning}"></p>
+		<p class="alert alert-info" th:if="${info != null}"
+			th:text="${info}"></p>
+	</div>
+	<!-- End of Topbar -->
+</body>
+</html>
