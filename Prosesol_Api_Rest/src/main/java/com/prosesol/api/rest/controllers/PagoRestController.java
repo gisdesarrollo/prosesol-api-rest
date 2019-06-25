@@ -42,7 +42,7 @@ public class PagoRestController {
 	@Autowired
 	private IPagoService pagoService;
 	
-	@GetMapping("/consultar_pagos_all")
+	@GetMapping("/consultar_pagos")
 	public ResponseEntity<?> consultarPagos() {
 		
 		List<Pago> pagos = null;

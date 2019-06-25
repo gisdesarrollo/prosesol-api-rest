@@ -20,10 +20,10 @@ public class CustomizeErrorResponseEntityExceptionHandler extends ResponseEntity
 
 		System.out.println(ex.getMessage());
 		
-		ErrorDetails errorDetails = new ErrorDetails("ERR", HttpStatus.BAD_REQUEST.value(), 
+		ErrorDetails errorDetails = new ErrorDetails("ERR", ex.getCode(), 
 				ex.getMessage());
 		
-		return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
+		return new ResponseEntity<>(errorDetails, HttpStatus.valueOf(ex.getCode()));
 		
 	}
 

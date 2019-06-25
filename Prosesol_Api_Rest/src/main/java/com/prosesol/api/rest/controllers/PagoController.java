@@ -33,9 +33,6 @@ public class PagoController {
 
 	protected final Logger LOG = LoggerFactory.getLogger(PagoController.class);
 	
-	@Value("${api.pagos.url.obtener.afilado}")
-	private String urlAfiliado;
-	
 	@Value("${openpay.id}")
 	private String openpayId;
 	
@@ -64,7 +61,7 @@ public class PagoController {
 	}
 	
 	
-	@GetMapping({"main", "/"})
+	@GetMapping("/main")
 	public String index() {
 		return "main";
 	}
@@ -111,7 +108,7 @@ public class PagoController {
 									   @ModelAttribute("deviceIdHiddenFieldName") String deviceSessionId,
 								       RedirectAttributes redirect, SessionStatus status) throws OpenpayException{
 		
-		apiOpenpay = new OpenpayAPI(openpayURL, openpayId, openpayPk);
+		apiOpenpay = new OpenpayAPI(openpayURL, openpayPk, openpayId);
 		
 		String name = afiliado.getNombre();
 		String lastName = afiliado.getApellidoPaterno() + ' ' + afiliado.getApellidoMaterno();

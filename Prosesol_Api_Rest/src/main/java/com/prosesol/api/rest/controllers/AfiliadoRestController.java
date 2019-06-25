@@ -16,7 +16,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.prosesol.api.rest.controllers.exception.AfiliadoException;
 import com.prosesol.api.rest.models.entity.Afiliado;
+import com.prosesol.api.rest.models.entity.CustomerKey;
 import com.prosesol.api.rest.services.IAfiliadoService;
+import com.prosesol.api.rest.services.ICustomerKeyService;
 
 @RestController
 @RequestMapping("/api/pagos")
@@ -26,12 +28,21 @@ public class AfiliadoRestController {
 	
 	@Autowired
 	private IAfiliadoService afiliadoService;
+	
+	@Autowired
+	private ICustomerKeyService customerService;
 
 	@GetMapping("/afiliado")
 	public ResponseEntity<?> getAllAfiliadoas() {
 
 		List<Afiliado> afiliados = null;
 		LinkedHashMap<String, Object> response = new LinkedHashMap<String, Object>();
+		
+//		CustomerKey customerKey = customerService.findCustomerKeybyCustomerKey(key);
+//		
+//		if(customerKey == null) {
+//			throw new AfiliadoException(HttpStatus.UNAUTHORIZED.value(), "Invalid customer key");
+//		}
 
 		try {
 			afiliados = afiliadoService.findAll();
@@ -65,9 +76,15 @@ public class AfiliadoRestController {
 		Afiliado afiliado = afiliadoService.findByRfc(rfc);
 		Afiliado mostrarAfiliado = new Afiliado();
 		LinkedHashMap<String, Object> response = new LinkedHashMap<String, Object>();
+		
+//		CustomerKey customerKey = customerService.findCustomerKeybyCustomerKey(key);
+//		
+//		if(!customerKey.getEstatus()) {
+//			throw new AfiliadoException(HttpStatus.UNAUTHORIZED.value(), "Invalid customer key");
+//		}
 
 		if(rfc.length() < 13) {			
-			throw new AfiliadoException("El rfc no cumple con la longitud correcta");			
+			throw new AfiliadoException(HttpStatus.BAD_REQUEST.value(), "El RFC no cumple con la longitud correcta");			
 		}
 		
 		if (afiliado == null) {
