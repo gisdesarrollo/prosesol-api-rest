@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<head>
+</head>
+<body>
+	<footer th:fragment="footer">
+	    
+    	<!-- jQuery 2.2.4 -->
+		<script th:src="@{/assets/js/jquery/jquery.2.2.4.min.js}"></script>
+		<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+		<!-- Bootsrap js -->
+		<script th:src="@{/assets/js/bootstrap/popper.min.js}"></script>
+		<script th:src="@{/assets/js/bootstrap/bootstrap.min.js}"></script>
+		<script th:src="@{/js/plugins-js/classy-nav.js}"></script>
+
+		<!-- Plugins -->
+		<script  th:src="@{/custom/bootstrap-datepicker/dist/js/bootstrap-datepicker.js}" type="text/javascript"></script>
+		<script  th:src="@{/custom/bootstrap-datepicker/js/locales/bootstrap-datepicker.es.js}" type="text/javascript"></script>
+		<script th:src="@{/custom/bootstrap-timepicker/js/bootstrap-timepicker.js}" type="text/javascript"></script>
+
+		<!-- Active js -->
+		<script th:src="@{/js/active.js}"></script>
+		
+		<!-- init js -->
+		<script th:src="@{/custom/plugins-init.js}"></script>
+
+		<!-- datatable -->
+		<script th:src="@{/js/datatable.js}"></script>
+		<script th:src="@{/js/jquery.spring-friendly.js}"></script>
+		
+		<!-- <link rel="stylesheet" type="text/css"
+			href="https://cdn.datatables.net/v/bs4/dt-1.10.18/b-1.5.6/b-flash-1.5.6/datatables.min.css" />
+		<script type="text/javascript"
+			src="https://cdn.datatables.net/v/bs4/dt-1.10.18/b-1.5.6/b-flash-1.5.6/datatables.min.js"></script> -->
+
+		<script type="text/javascript"
+			src="https://cdn.datatables.net/v/bs4/dt-1.10.18/b-1.5.6/b-flash-1.5.6/datatables.min.js"></script>
+		
+		<!-- Js Project -->
+		<script th:src="@{/js/custom.js}"></script>
+
+	</footer>
+</body>
+</html>

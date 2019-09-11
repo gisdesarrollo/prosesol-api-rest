@@ -29,7 +29,7 @@ public class APISecurityConfig extends WebSecurityConfigurerAdapter{
 	
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-		http.authorizeRequests().antMatchers("/", "/css/**", "/js/**", "/main")
+		http.authorizeRequests().antMatchers("/", "/css/**", "/js/**", "/main","/afiliados/**/**","/pagos")
 			.permitAll()
 			.anyRequest()
 			.authenticated()

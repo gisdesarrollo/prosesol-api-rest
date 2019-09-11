@@ -1,0 +1,184 @@
+package com.prosesol.api.rest.controllers;
+
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
+import javax.validation.Valid;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.support.SessionStatus;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import com.josketres.rfcfacil.Rfc;
+import com.prosesol.api.rest.models.entity.Afiliado;
+import com.prosesol.api.rest.models.entity.Servicio;
+import com.prosesol.api.rest.services.IAfiliadoService;
+import com.prosesol.api.rest.services.IServicioService;
+import com.prosesol.api.rest.utils.Paises;
+
+@Controller
+@RequestMapping("/afiliados")
+public class AfiliadoController {
+
+	protected static final Log logger = LogFactory.getLog(AfiliadoController.class);
+
+	@Value("${app.clave}")
+	private String clave;
+
+	@Autowired
+	private IAfiliadoService afiliadoService;
+
+	@Autowired
+	private IServicioService servicioService;
+
+	@RequestMapping(value = "/crear")
+	public String crear(Map<String, Object> model) {
+
+		Afiliado afiliado = new Afiliado();
+		model.put("afiliado", afiliado);
+		return "afiliado/crear";
+	}
+
+	@RequestMapping(value = "/guardar", method = RequestMethod.POST)
+	public String guardar(@ModelAttribute(name = "clave") String clave, @Valid Afiliado afiliado, BindingResult result,
+			Model model, RedirectAttributes redirect, SessionStatus status) {
+
+		System.out.println(clave);
+		String mensajeFlash = null;
+		String mensajeFlash2 = null;
+		Date date = new Date();
+		Rfc rfc = null;
+		try {
+			if (result.hasErrors()) {
+				return "afiliado/crear";
+			}
+			if (afiliado.getId() != null) {
+				/*
+				 * if (afiliado.getIsBeneficiario().equals(true)) {
+				 * afiliado.setIsBeneficiario(true); } else { afiliado.setIsBeneficiario(false);
+				 * }
+				 */
+				mensajeFlash = "Registro editado con éxito";
+
+			} else {
+				if (afiliado.getRfc() == null || afiliado.getRfc().equals("")) {
+					LocalDate fechaNacimiento = afiliado.getFechaNacimiento().toInstant().atZone(ZoneId.systemDefault())
+							.toLocalDate();
+
+					rfc = new Rfc.Builder().name(afiliado.getNombre()).firstLastName(afiliado.getApellidoPaterno())
+							.secondLastName(afiliado.getApellidoMaterno()).birthday(fechaNacimiento.getDayOfMonth(),
+									fechaNacimiento.getMonthValue(), fechaNacimiento.getYear())
+							.build();
+
+					afiliado.setRfc(rfc.toString());
+
+					System.out.println(rfc.toString());
+				}
+				afiliado.setFechaAlta(date);
+				afiliado.setClave(clave);
+				mensajeFlash = "Registro creado con éxito";
+			}
+			afiliado.setEstatus(1);
+			logger.info(mensajeFlash);
+			afiliadoService.save(afiliado);
+			status.setComplete();
+
+		} catch (DataIntegrityViolationException e) {
+			e.printStackTrace();
+			logger.error("Error al momento de ejecutar el proceso: " + e);
+			redirect.addFlashAttribute("error", "El RFC ya existe en la base de datos: " + rfc);
+
+			return "redirect:/afiliados/crear";
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error("Error al momento de ejecutar el proceso: " + e);
+
+			redirect.addFlashAttribute("error", "Ocurrió un error al momento de insertar el Afiliado");
+
+			return "redirect:/afiliados/crear";
+		}
+
+		mensajeFlash2 = "id del afiliado creado es: " + afiliado.getId();
+		logger.info(mensajeFlash2);
+		// redirect.addFlashAttribute("success", "afiliado creado con exito");
+		return "redirect:/afiliados/bienvenido/" + afiliado.getId();
+	}
+
+	@RequestMapping(value = "/bienvenido/{id}")
+	public String mostrar(@PathVariable("id") Long id, Model model) {
+		try {
+			Afiliado afiliado = afiliadoService.findById(id);
+
+			model.addAttribute("afiliado", afiliado);
+		} catch (Exception e) {
+			System.out.println("error al momento de buscar en afiliado" + e);
+		}
+		return "afiliado/bienvenido";
+	}
+
+	/**
+	 * Método para mostrar los estados Dentro del list box de crear afiliados
+	 * 
+	 * @param(name = "estados")
+	 */
+
+	@ModelAttribute("estados")
+	public List<String> getAllEstados() {
+		return afiliadoService.getAllEstados();
+	}
+
+	/**
+	 * Método para mostrar los países Dentro del list box de crear afiliados
+	 * 
+	 * @param(name = "paises")
+	 */
+
+	@ModelAttribute("paises")
+	public List<Paises> getAllPaises() {
+		return afiliadoService.getAllPaises();
+	}
+
+	/**
+	 * Método para mostrar los servicios Dentro del list box de crear afiliados
+	 * 
+	 * @param(name = "servicios")
+	 */
+
+	@ModelAttribute("servicios")
+	public List<Servicio> getAllServicios() {
+		return servicioService.findAll();
+	}
+
+	/**
+	 * Método para asignar una clave para el Afiliado
+	 * 
+	 * @param(name = "clave")
+	 */
+
+	@ModelAttribute("clave")
+	public String getClaveAfiliado() {
+
+		String claveAfiliado = "PR-";
+
+		for (int i = 0; i < 10; i++) {
+			claveAfiliado += (clave.charAt((int) (Math.random() * clave.length())));
+		}
+
+		return claveAfiliado;
+	}
+
+}
