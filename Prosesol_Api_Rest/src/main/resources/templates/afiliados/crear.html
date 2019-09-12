@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/head :: head"></head>
+<meta charset="utf-8" />
+<body>
+	<div class="page-wrapper">
+		<!-- Page Top Bar Area -->
+	<!--  	<div th:replace="fragments/header :: header"></div>-->
+		<div class="layout-container-area mt-70">
+			<!-- Side Menu Area -->
+		<!--  	<div th:replace="fragments/sidebar :: sidebar"></div> -->
+
+			<!-- Layout Container -->
+			<div class="layout-container sidemenu-container">
+				<div class="container-fluid">
+					<div class="alert alert-danger" th:if="${error!= null}" th:text="${error}"></div>
+					<div class="row ">
+						<div class="col-md mb-4">
+							<!-- Card Body -->
+							<div class="card-body bg-white appwork bg-boxshadow-2">
+								<h5 class="card-title">Crear Afiliado</h5>
+
+								<div class="clearfix"></div>
+								<hr>
+
+								<form class="formInput" th:action="@{/afiliados/guardar}"
+									th:object="${afiliado}" method="post" action="datosAfiliado">
+									<div class="row">
+										<div class="form-group col-md-3">
+											<label>Nombre</label> <input type="text"
+												th:field="*{nombre}" name="nombre" class="form-control form-control-user">
+											<small class="form-text text-danger"
+												th:if="${#fields.hasErrors('nombre')}" th:errors="*{nombre}"></small>
+										</div>
+
+										<div class="form-group col-md-3">
+											<label>Apellido Paterno</label> <input
+												type="text" th:field="*{apellidoPaterno}" name="apellidoPaterno"
+												class="form-control form-control-user"> <small
+												class="form-text text-danger"
+												th:if="${#fields.hasErrors('apellidoPaterno')}" th:errors="*{apellidoPaterno}"></small>
+										</div>
+
+										<div class="form-group col-md-3">
+											<label>Apelido Materno</label> <input
+												type="text" th:field="*{apellidoMaterno}" name="apellidoMaterno"
+												class="form-control form-control-user"> <small
+												class="form-text text-danger"
+												th:if="${#fields.hasErrors('apellidoMaterno')}"
+												th:errors="*{apellidoMaterno}"></small>
+										</div>
+
+										<div class="form-group col-md-3">
+											<label>Fecha de Nacimiento</label> <input
+												type="text" th:field="*{fechaNacimiento}" name="fechaNacimientos"
+												class="form-control form-control-user" id="fechaNacimiento"
+												placeholder=""> <small class="form-text text-danger"
+												th:if="${#fields.hasErrors('fechaNacimiento')}"
+												th:errors="*{fechaNacimiento}"></small>
+										</div>
+
+										<div class="form-group col-md-3">
+											<label>Lugar de Nacimiento</label> <input
+												type="text" th:field="*{lugarNacimiento}"
+												class="form-control form-control-user" placeholder="">
+											<small class="form-text text-danger"
+												th:if="${#fields.hasErrors('lugarNacimiento')}"
+												th:errors="*{lugarNacimiento}"></small>
+										</div>
+
+
+										<div class="form-group col-md-3">
+											<label>Estado Civil</label> <select
+												th:field="*{estadoCivil}" class="custom-select"
+												id="inputGroupSelect01">
+												<option th:value="'Soltero'" th:selected>Soltero(a)</option>
+												<option th:value="'Casado'">Casado(a)</option>
+												<option th:value="'Viudo'">Viudo(a)</option>
+												<option th:value="'Divorciado'">Divorciado(a)</option>
+												<option th:value="'Desconocido'">Desconocido</option>
+											</select><small class="form-text text-danger"
+												th:if="${#fields.hasErrors('estadoCivil')}"
+												th:errors="*{estadoCivil}"></small>
+										</div>
+
+										<div class="form-group col-md-3">
+											<label>Ocupación</label><input type="text"
+												th:field="*{ocupacion}"
+												class="form-control form-control-user" placeholder="">
+											<small class="form-text text-danger"
+												th:if="${#fields.hasErrors('ocupacion')}"
+												th:errors="*{ocupacion}"></small>
+										</div>
+
+										<div class="form-group col-md-3">
+											<label>Sexo</label> <select th:field="*{sexo}"
+												class="custom-select" id="inputGroupSelect01">
+												<option th:value="'Masculino'" th:selected>Masculino</option>
+												<option th:value="'Femenino'">Femenino</option>
+											</select><small class="form-text text-danger"
+												th:if="${#fields.hasErrors('sexo')}" th:errors="*{sexo}"></small>
+										</div>
+
+										<div class="form-group col-md-3">
+											<label>País</label> <select name="pais"
+												th:field="*{pais}" class="custom-select"
+												id="inputGroupSelect01">
+												<option th:each="pais : ${paises}" th:value="${pais}"
+													th:text="${pais}" th:selected="${pais.MEX}" />
+											</select> <small class="form-text text-danger"
+												th:if="${#fields.hasErrors('pais')}" th:errors="*{pais}"></small>
+										</div>
+
+										<div class="form-group col-md-3">
+											<label>Curp</label><input type="text"
+												th:field="*{curp}"
+												class="form-control form-control-user curpText"
+												name="curpText"><small class="form-text text-danger"
+												th:if="${#fields.hasErrors('curp')}" th:errors="*{curp}"
+												id="smallCurp"></small>
+										</div>
+
+										<div class="form-group col-md-3">
+											<label>Número de seguridad social</label><input
+												type="text" th:field="*{nss}"
+												class="form-control form-control-user nssText"> <small
+												class="form-text text-danger"
+												th:if="${#fields.hasErrors('nss')}" th:errors="*{nss}"></small>
+										</div>
+
+										<div class="form-group col-md-3">
+											<label>RFC</label><input type="text"
+												th:field="*{rfc}"
+												class="form-control form-control-user rfcText"> <small
+												class="form-text text-danger"
+												th:if="${#fields.hasErrors('rfc')}" th:errors="*{rfc}"></small>
+										</div>
+
+										<div class="form-group col-md-3">
+											<label>Teléfono Fijo</label><input type="text"
+												th:field="*{telefonoFijo}"
+												class="form-control form-control-user" placeholder="">
+											<small class="form-text text-danger"
+												th:if="${#fields.hasErrors('telefonoFijo')}"
+												th:errors="*{telefonoFijo}"></small>
+										</div>
+
+										<div class="form-group col-md-3">
+											<label>Teléfono móvil</label><input type="text"
+												th:field="*{telefonoMovil}"
+												class="form-control form-control-user" placeholder="">
+											<small class="form-text text-danger"
+												th:if="${#fields.hasErrors('telefonoMovil')}"
+												th:errors="*{telefonoMovil}"></small>
+										</div>
+
+										<div class="form-group col-md-3">
+											<label>Correo electrónico</label><input
+												type="email" th:field="*{email}"
+												class="form-control form-control-user" placeholder="">
+											<small class="form-text text-danger"
+												th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></small>
+										</div>
+
+										<div class="form-group col-md-3">
+											<label>Dirección</label><input type="text"
+												th:field="*{direccion}"
+												class="form-control form-control-user" placeholder="">
+											<small class="form-text text-danger"
+												th:if="${#fields.hasErrors('direccion')}"
+												th:errors="*{direccion}"></small>
+										</div>
+
+										<div class="form-group col-md-3">
+											<label>Municipio</label><input type="text"
+												th:field="*{municipio}"
+												class="form-control form-control-user" placeholder="">
+											<small class="form-text text-danger"
+												th:if="${#fields.hasErrors('municipio')}"
+												th:errors="*{municipio}"></small>
+										</div>
+
+									  	<div class="form-group col-md-3">
+											<label>Entidad Federativa</label> <select
+												name="entidadFederativa" th:field="*{entidadFederativa}"
+												class="custom-select" id="inputGroupSelect01">
+												<option th:each="estado : ${estados}" th:value="${estado}"
+													th:text="${estado}" th:selected="false" />
+											</select><small class="form-text text-danger"
+												th:if="${#fields.hasErrors('entidadFederativa')}"
+												th:errors="*{entidadFederativa}"></small>
+										</div> 
+
+										<div class="form-group col-md-3">
+											<label>Código Postal</label><input type="text"
+												th:field="*{codigoPostal}"
+												class="form-control form-control-user" placeholder="">
+											<small class="form-text text-danger"
+												th:if="${#fields.hasErrors('codigoPostal')}"
+												th:errors="*{codigoPostal}"></small>
+										</div>
+
+										<div class="form-group col-md-3">
+											<label>¿Cuénta con crédito Infonavit?</label> <input
+												type="checkbox" id="infonavitCB" /> <span class="cr"><i
+												class="cr-icon glyphicon glyphicon-ok"></i></span>
+										</div>
+
+										<div class="form-group col-md-3">
+											<label>Número de Infonavit</label><input
+												type="text" th:field="*{numeroInfonavit}"
+												class="form-control form-control-user"
+												id="inputNumeroInfonavit"> <small
+												class="form-text text-danger"
+												th:if="${#fields.hasErrors('numeroInfonavit')}"
+												th:errors="*{numeroInfonavit}"></small>
+										</div>
+
+										  <div class="form-group col-md-3">
+											<label>Servicio</label> <select name="servicio"
+												th:field="*{servicio}" class="custom-select"
+												id="inputGroupSelect01">
+												<option value="">Ninguno</option>
+												<option th:each="servicio : ${servicios}"
+													th:value="${servicio.id}" th:text="${servicio.nombre}"
+													th:selected="false" />
+											</select> <small class="form-text text-danger"
+												th:if="${#fields.hasErrors('servicio')}"
+												th:errors="*{servicio}"></small>
+										</div> 
+
+										<div class="form-group col-md-3">
+											<label>Fecha de Afiliacion</label> <input
+												type="text" th:field="*{fechaAfiliacion}"
+												class="form-control form-control-user" id="fechaAfiliacion"
+												placeholder=""> <small class="form-text text-danger"
+												th:if="${#fields.hasErrors('fechaAfiliacion')}"
+												th:errors="*{fechaAfiliacion}"></small>
+										</div>
+
+										<div class="form-group col-md-3">
+											<label>Fecha de Corte</label> <select
+												name="corte" th:field="*{corte}" class="custom-select"
+												id="inputGroupSelect01">
+												<option th:each="corte : ${#numbers.sequence(1, 31)}"
+													th:value="${corte}" th:text="${corte}"
+													th:selected="${corte}" />
+											</select> <small class="form-text text-danger"
+												th:if="${#fields.hasErrors('corte')}" th:errors="*{corte}"></small>
+										</div>
+
+								<!--  		<div class="form-group col-md-3">
+											<label>Periodos</label> <select name="periodo"
+												th:field="*{periodicidad}" class="custom-select"
+												id="inputGroupSelect01">
+												<option value="">Ninguno</option>
+												<option th:each="periodo : ${periodos}"
+													th:value="${periodo.id}" th:text="${periodo.nombre}"
+													th:selected="false" />
+											</select> <small class="form-text text-danger"
+												th:if="${#fields.hasErrors('periodicidad')}"
+												th:errors="*{periodicidad}"></small>
+										</div> -->
+
+										<div class="form-group col-md-3">
+											<label>Comentarios</label><input type="text"
+												th:field="*{comentarios}"
+												class="form-control form-control-user" placeholder="">
+											<small class="form-text text-danger"
+												th:if="${#fields.hasErrors('comentarios')}"
+												th:errors="*{comentarios}"></small>
+										</div>
+
+								<!--  		<div class="form-group col-md-3">
+											<label>Promotor</label> <select name="promotor"
+												th:field="*{promotor}" class="custom-select" id="promotores">
+												<option th:value="0" selected>Ninguno</option>
+												<option th:each="promotor : ${promotores}"
+													th:value="${promotor.id}" th:text="${promotor.nombre}"
+													th:selected="false" />
+											</select> <small class="form-text text-danger"
+												th:if="${#fields.hasErrors('promotor')}"
+												th:errors="*{promotor}"></small>
+										</div> -->
+
+									<!--  	<div class="form-group col-md-3">
+											<label>Cuenta</label> <select name="cuenta"
+												th:field="*{cuenta}" class="custom-select" id="cuentas">
+												<option value="">Ninguno</option>
+												<option th:each="cuenta : ${cuentas}"
+													th:value="${cuenta.id}" th:text="${cuenta.razonSocial}"
+													th:selected="false"></option>
+											</select> <small class="form-text text-danger"
+												th:if="${#fields.hasErrors('cuenta')}" th:errors="*{cuenta}"></small>
+										</div> -->
+									</div>
+
+									<hr>
+									<div class="clearfix"></div>
+									<div class="row">
+										<div class="col-sm-12">
+											<button type="submit"
+												class="btn btn-primary btn-square float-right">Crear
+												Afiliado</button>
+										</div>
+									</div>
+								</form>
+							</div>
+						</div>
+
+					</div>
+
+				</div>
+
+
+			</div>
+
+		</div>
+	</div>
+	<!--  <footer th:replace="fragments/footer :: footer"></footer> --> 
+</body>
+
+</html>

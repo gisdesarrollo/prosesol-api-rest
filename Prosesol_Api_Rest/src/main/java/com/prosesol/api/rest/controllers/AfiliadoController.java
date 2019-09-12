@@ -50,7 +50,7 @@ public class AfiliadoController {
 
 		Afiliado afiliado = new Afiliado();
 		model.put("afiliado", afiliado);
-		return "afiliado/crear";
+		return "afiliados/crear";
 	}
 
 	@RequestMapping(value = "/guardar", method = RequestMethod.POST)
@@ -64,7 +64,7 @@ public class AfiliadoController {
 		Rfc rfc = null;
 		try {
 			if (result.hasErrors()) {
-				return "afiliado/crear";
+				return "afiliados/crear";
 			}
 			if (afiliado.getId() != null) {
 				/*
@@ -127,7 +127,7 @@ public class AfiliadoController {
 		} catch (Exception e) {
 			System.out.println("error al momento de buscar en afiliado" + e);
 		}
-		return "afiliado/bienvenido";
+		return "afiliados/bienvenido";
 	}
 
 	/**

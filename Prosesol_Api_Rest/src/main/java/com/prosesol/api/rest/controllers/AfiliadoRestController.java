@@ -92,7 +92,7 @@ public class AfiliadoRestController {
 			response.put("code", HttpStatus.NOT_FOUND.value());
 			response.put("mensaje", "El rfc del afiliado no existe en la base de datos");
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
-		} else if (afiliado.isBeneficiario().equals("0")) {
+		} else if (afiliado.getIsBeneficiario() == false) {
 			
 			mostrarAfiliado.setId(afiliado.getId());
 			mostrarAfiliado.setNombre(afiliado.getNombre());

@@ -6,7 +6,7 @@
     	<div class="row justify-content-center">
     		<div class="col-md-9">
 		        <div class="pymnts">
-		            <form th:action="@{/realizarPago}" method="post" id="payment-form" th:object="${afiliado}">
+		            <form th:action="@{/prosesol/realizarPago/} + ${afiliado.id}" method="post" id="payment-form" th:object="${afiliado}">
 		                <input type="hidden" name="token_id" id="token_id">
 		                <div class="pymnt-itm card active">
 		                    <h2>Tarjeta de crédito o débito</h2>

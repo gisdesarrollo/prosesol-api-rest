@@ -26,6 +26,7 @@ public class AfiliadoServiceImpl implements IAfiliadoService {
 	}
 
 	@Override
+	@Transactional(readOnly = true)
 	public List<Afiliado> findAll() {
 		return (List<Afiliado>) afiliadoDao.findAll();
 	}

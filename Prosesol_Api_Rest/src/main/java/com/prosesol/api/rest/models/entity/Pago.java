@@ -41,7 +41,7 @@ public class Pago implements Serializable{
 	private Date fechaPago;
 	
 	@Column(name = "estatus")
-	private Boolean estatus;
+	private String estatus;
 	
 	@Column(name = "ciudad")
 	private String ciudad;
@@ -113,11 +113,11 @@ public class Pago implements Serializable{
 		this.fechaPago = fechaPago;
 	}
 
-	public Boolean getEstatus() {
+	public String getEstatus() {
 		return estatus;
 	}
 
-	public void setEstatus(Boolean estatus) {
+	public void setEstatus(String estatus) {
 		this.estatus = estatus;
 	}
 
