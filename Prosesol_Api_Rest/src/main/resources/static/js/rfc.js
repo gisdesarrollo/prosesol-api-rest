@@ -1,41 +1,65 @@
 function generar() {
-	var frm = document.formu;
-	var nombre = document.formu.nombre.value;
-	var apellidoPaterno = document.formu.apellidoPaterno.value;
-	var apellidoMaterno = document.formu.apellidoMaterno.value;
-	var fechaNacimiento = document.formu.fechaNacimiento.value;
 
-	if (nombre == "" && apellidoPaterno == "" && apellidoMaterno == ""
-			&& fechaNacimiento == "") {
-		alert('Debes Escribir Contenido En Los Campos: \n 1.Nombre\n 2.Apellidos \n 3 Fecha Nacimiento');
-		frm.nombre.focus()
+    var focusSet = false;
+    var validation = true;
 
-	} else if (nombre == "") {
-		alert('El campo nombre no debe ir vacío');
-		frm.nombre.focus()
+    var nombre = $("#nombre").val();
+    var apellidoPaterno = $("#apellidoPaterno").val();
+    var apellidoMaterno = $("#apellidoMaterno").val();
+    var fechaNacimiento = $("#fechaNacimiento").val();
 
-	} else if (apellidoPaterno == "") {
-		alert('El campo apellido paterno no debe ir vacío');
-		frm.apellidoPaterno.focus()
+    if(!$("#nombre").val()){
+        if($("#nombre").parent().next(".validation").length == 0){
+            $("#nombre").parent().after("<div class='validation' style='color:red;margin-bottom: 20px;'>Campo obligatorio</div>")
+        }
+        $("#nombre").focus();
+        focusSet = true;
+        validation = false;
+    }else{
+        $("#nombre").parent().next(".validation").remove();
+    }
+    if(!$("#apellidoPaterno").val()){
+        if($("#apellidoPaterno").parent().next(".validation").length == 0){
+            $("#apellidoPaterno").parent().after("<div class='validation' style='color:red;margin-bottom: 20px;'>Campo obligatorio</div>")
+        }
+        $("#apellidoPaterno").focus();
+        focusSet = true;
+        validation = false;
+    }else{
+        $("#apellidoPaterno").parent().next(".validation").remove();
+    }
+    if(!$("#apellidoMaterno").val()){
+        if($("#apellidoMaterno").parent().next(".validation").length == 0){
+            $("#apellidoMaterno").parent().after("<div class='validation' style='color:red;margin-bottom: 20px;'>Campo obligatorio</div>")
+        }
+        $("#apellidoMaterno").focus();
+        focusSet = true;
+        validation = false;
+    }else{
+        $("#apellidoMaterno").parent().next(".validation").remove();
+    }
+     if(!$("#fechaNacimiento").val()){
+         if($("#fechaNacimiento").parent().next(".validation").length == 0){
+             $("#fechaNacimiento").parent().after("<div class='validation' style='color:red;margin-bottom: 20px;'>Campo obligatorio</div>")
+         }
+         $("#fechaNacimiento").focus();
+         focusSet = true;
+         validation = false;
+     }else{
+        $("#fechaNacimiento").parent().next(".validation").remove();
+     }
 
-	} else if (apellidoMaterno == "") {
-		alert('El campo apellido Materno no debe ir vacío');
-		frm.apellidoMaterno.focus()
-
-	} else if (fechaNacimiento == "") {
-		alert('La fecha de nacimiento no debe ir vacío');
-		frm.fechaNacimiento.focus()
-
-	} else {
-		frm.action = "/afiliados/generarRfc";
-		frm.submit();
-
-		
-	}
-
-}
-
-function guardar() {
-	document.forms.formu.action = '/afiliados/guardar';
-	document.forms.formu.submit();
+     if(validation == true){
+        $.ajax({
+                type : "GET",
+                url : "/afiliados/generarRfc",
+                data : {nombre : nombre,
+                        apellidoPaterno : apellidoPaterno,
+                        apellidoMaterno : apellidoMaterno,
+                        fechaNacimiento : fechaNacimiento},
+                success : function(data){
+                    $("#rfc").val(data);
+                }
+            });
+     }
 }

@@ -1,17 +1,10 @@
 package com.prosesol.api.rest.controllers;
 
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-
-import javax.validation.Valid;
-
+import com.prosesol.api.rest.models.entity.Afiliado;
+import com.prosesol.api.rest.models.entity.Servicio;
+import com.prosesol.api.rest.services.IAfiliadoService;
+import com.prosesol.api.rest.services.IServicioService;
+import com.prosesol.api.rest.utils.Paises;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,16 +17,13 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.josketres.rfcfacil.Rfc;
-import com.prosesol.api.rest.models.entity.Afiliado;
-import com.prosesol.api.rest.models.entity.Servicio;
-import com.prosesol.api.rest.services.IAfiliadoService;
-import com.prosesol.api.rest.services.IServicioService;
-import com.prosesol.api.rest.utils.Paises;
+import javax.validation.Valid;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/afiliados")
@@ -49,60 +39,6 @@ public class AfiliadoController {
 
 	@Autowired
 	private IServicioService servicioService;
-
-	@RequestMapping(value = "/generarRfc", method = RequestMethod.POST)
-	public String generarRfc(Afiliado afiliado, BindingResult result, RedirectAttributes redirect) {
-
-		Rfc rfc = null;
-		String mensajeFlash = null;
-		System.out.println(afiliado.getFechaNacimiento());
-
-		try {
-			if (afiliado.getFechaNacimiento() == null) {
-
-				mensajeFlash = "Error al generar fecha debe ser dd/mm/yyyy";
-				logger.info(mensajeFlash);
-				redirect.addFlashAttribute("error", mensajeFlash);
-				return "redirect:/afiliados/crear";
-			} else {
-
-				// LocalDate fecha = LocalDate.parse(afiliado.getFechaNacimiento());
-
-				LocalDate fecha = afiliado.getFechaNacimiento().toInstant().atZone(ZoneId.systemDefault())
-						.toLocalDate();
-
-				rfc = new Rfc.Builder().name(afiliado.getNombre()).firstLastName(afiliado.getApellidoPaterno())
-						.secondLastName(afiliado.getApellidoMaterno())
-						.birthday(fecha.getDayOfMonth(), fecha.getMonthValue(), fecha.getYear()).build();
-
-				System.out.println("rfc creado:" + rfc.toString());
-				redirect.addFlashAttribute("rfc", rfc);
-
-				// afiliado.setNombre(datos[0]);
-				System.out.println(afiliado.getNombre());
-				// System.out.println(date1);
-				redirect.addFlashAttribute("nombre", afiliado.getNombre());
-				redirect.addFlashAttribute("apellidoPaterno", afiliado.getApellidoPaterno());
-				redirect.addFlashAttribute("apellidoMaterno", afiliado.getApellidoMaterno());
-				redirect.addFlashAttribute("fechaNacimiento", fecha);
-				redirect.addFlashAttribute("lugarNacimiento", afiliado.getLugarNacimiento());
-				redirect.addFlashAttribute("estadoCivil", afiliado.getEstadoCivil());
-				redirect.addFlashAttribute("ocupacion", afiliado.getOcupacion());
-				redirect.addFlashAttribute("sexo", afiliado.getSexo());
-				redirect.addFlashAttribute("pais", afiliado.getPais());
-				redirect.addFlashAttribute("curp", afiliado.getCurp());
-				redirect.addFlashAttribute("nss", afiliado.getNss());
-
-			}
-
-		} catch (Exception e) {
-			e.printStackTrace();
-			logger.error("Error al momento de ejecutar el proceso: " + e);
-
-		}
-
-		return "redirect:/afiliados/crear";
-	}
 
 	@RequestMapping(value = "/crear")
 	public String crear(Map<String, Object> model) {

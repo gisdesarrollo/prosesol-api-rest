@@ -107,7 +107,7 @@
 											<label>País</label> <select th:value="${pais}" id="pais" name="pais"
 												class="custom-select" >
 												<option th:each="pais : ${paises}" th:value="${pais}"
-													th:text="${pais}" th:selected="${pais.MEX}" />
+													th:text="${pais}"/>
 											</select> <small class="form-text text-danger"
 												th:if="${#fields.hasErrors('pais')}" th:errors="*{pais}"></small>
 										</div>
@@ -133,9 +133,8 @@
 												class="form-control form-control-user rfcText"> <small
 												class="form-text text-danger"
 												th:if="${#fields.hasErrors('rfc')}" th:errors="*{rfc}"></small>
-										 	<p>¿no cuentas con RFC?</p>
-											<!-- <a th:href="@{/afiliados/rfc}" onclick="document.forms.formu.submit()">Generalo aqui!</a>-->
-										  	<input type="button" id="bot" name="bot" value="Generalo aqui!!"
+										 	<p>¿No cuentas con tu RFC?</p>
+										  	<input type="button" id="bot" name="bot" value="Genéralo aquí"
 												onclick="generar()">
 												<div id="respon"></div>
 														
