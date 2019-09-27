@@ -3,104 +3,157 @@
 <head th:replace="fragments/head :: head"></head>
 <meta charset="utf-8" />
 <body>
-	<div class="container">
+
+	<div class="container" style="background-color:white">
+		<div class="jumbotron text-center" style="background-color:#87ACBC">
+			<h1>Bienvenido Afiliado</h1>
+			<h3 th:each="afiliados : ${afiliado}" th:text=" ${afiliados.nombre}"></h3>
+		</div>
 		<!-- <div class="alert alert-success" th:if="${success != null}" th:text="${success}"></div> -->
 		<br>
-		<h1>Bienvenido Afiliado</h1>
-		<h3 th:each="afiliados : ${afiliado}" th:text=" ${afiliados.nombre}"></h3>
-		<br>
 
-		<table class="table table-striped" th:each="afiliados : ${afiliado}">
-			<!--  <tr>
-			 <th><h3>Nombre:</h3></th><td> <h2 th:text="${afiliados.nombre}"></h2></td>  
-		</tr> -->
-			<tr>
-				<th><h3>Apellidos:</h3></th>
-				<td>
-					<h2
-						th:text="${afiliados.apellidoPaterno}+' '+ ${afiliados.apellidoMaterno}"></h2>
-				</td>
-			</tr>
-			<tr>
-				<th><h3>Fecha De Nacimiento:</h3></th>
-				<td><h2 th:text="${afiliados.fechaNacimiento}"></h2></td>
-			</tr>
-			<tr>
-				<th><h3>Lugar De Nacimiento:</h3></th>
-				<td><h2 th:text="${afiliados.lugarNacimiento}"></h2></td>
-			</tr>
-			<tr>
-				<th><h3>Estado Civil:</h3></th>
-				<td><h2 th:text="${afiliados.estadoCivil}"></h2></td>
-			</tr>
-			<tr>
-				<th><h3>Ocupación:</h3></th>
-				<td><h2 th:text="${afiliados.ocupacion}"></h2></td>
-			</tr>
-			<tr>
-				<th><h3>Sexo:</h3></th>
-				<td><h2 th:text="${afiliados.sexo}"></h2></td>
-			</tr>
-			<tr>
-				<th><h3>Pais:</h3></th>
-				<td><h2 th:text="${afiliados.pais}"></h2></td>
-			</tr>
-			<tr>
-				<th><h3>Curp:</h3></th>
-				<td><h2 th:text="${afiliados.curp}"></h2></td>
-			</tr>
-			<tr>
-				<th><h3>NSS:</h3></th>
-				<td><h2 th:text="${afiliados.nss}"></h2></td>
-			</tr>
-			<tr>
-				<th><h3>RFC:</h3></th>
-				<td><h2 th:text="${afiliados.rfc}"></h2></td>
-			</tr>
-			<tr>
-				<th><h3>Tel.Fijo:</h3></th>
-				<td><h2 th:text="${afiliados.telefonoFijo}"></h2></td>
-			</tr>
-			<tr>
-				<th><h3>Tel.Movil:</h3></th>
-				<td><h2 th:text="${afiliados.telefonoMovil}"></h2></td>
-			</tr>
-			<tr>
-				<th><h3>Email:</h3></th>
-				<td><h2 th:text="${afiliados.email}"></h2></td>
-			</tr>
-			<tr>
-				<th><h3>Direccion:</h3></th>
-				<td><h2 th:text="${afiliados.direccion}"></h2></td>
-			</tr>
-			<tr>
-				<th><h3>Municipio:</h3></th>
-				<td><h2 th:text="${afiliados.municipio}"></h2></td>
-			</tr>
-			<tr>
-				<th><h3>Entidad Federativa:</h3></th>
-				<td><h2 th:text="${afiliados.entidadFederativa}"></h2></td>
-			</tr>
-			<tr>
-				<th><h3>Codigo postal:</h3></th>
-				<td><h2 th:text="${afiliados.codigoPostal}"></h2></td>
-			</tr>
-			<tr>
-				<th><h3>Numero Infonavit:</h3></th>
-				<td><h2 th:text="${afiliados.numeroInfonavit}"></h2></td>
-			</tr>
-			<tr th:switch="${afiliados.servicio.id}">
-				<th><h3>Servicio:</h3></th>
-				<td th:case="4"><h2>Servicio De Prueba</h2></td>
-				<td th:case="6"><h2>Nuevo Servicio De Prueba</h2></td>
-				<td th:case="7"><h2>Servicio De Prueba Sin Beneficios</h2></td>
-				<td th:case="8"><h2>Servicios Nuevo</h2></td>
-				<td th:case="9"><h2>Servicio Sin Beneficios</h2></td>
-				<td th:case="10"><h2>Nuevo Servicio De Prueba Con
-						Modificaciones</h2></td>
-				<td th:case="11"><h2>servicio Sin Beneficios</h2></td>
-			</tr>
-		</table>
+		<div class="row" th:each="afiliados : ${afiliado}">
+			<div class="col-sm-4" >
+				<h3>Apellidos</h3>
+				<h5
+					th:text="${afiliados.apellidoPaterno}+' '+ ${afiliados.apellidoMaterno}"></h5>
+
+			</div>
+			<div class="col-sm-4">
+				<h3>Fecha De Nacimiento</h3>
+				<h5 th:text="${afiliados.fechaNacimiento}"></h5>
+				<br />
+				<br />
+			</div>
+			<div class="col-sm-4">
+				<h3>Lugar De Nacimiento</h3>
+				<h5 th:text="${afiliados.lugarNacimiento}"></h5>
+
+			</div>
+
+			<div class="col-sm-4">
+				<h3>Estado Civil</h3>
+				<h5 th:text="${afiliados.estadoCivil}"></h5>
+				<br />
+				<br />
+			</div>
+			<div class="col-sm-4">
+				<h3>Ocupación</h3>
+				<h5 th:text="${afiliados.ocupacion}"></h5>
+
+			</div>
+			<div class="col-sm-4">
+				<h3>Sexo</h3>
+				<h5 th:text="${afiliados.sexo}"></h5>
+			</div>
+
+			<div class="col-sm-4">
+				<h3>País</h3>
+				<h5 th:text="${afiliados.pais}"></h5>
+				<br />
+				<br />
+			</div>
+			<div class="col-sm-4">
+				<h3>Curp</h3>
+				<h5 th:text="${afiliados.curp}"></h5>
+			</div>
+			<br />
+			<br />
+			<div class="col-sm-4">
+				<h3>NSS</h3>
+				<h5 th:text="${afiliados.nss}"></h5>
+			</div>
+			<div class="col-sm-4">
+				<h3>RFC</h3>
+				<h5 th:text="${afiliados.rfc}"></h5>
+				<br />
+				<br />
+			</div>
+
+			<div class="col-sm-4">
+				<h3>Tel.Fijo</h3>
+				<h5 th:text="${afiliados.telefonoFijo}"></h5>
+			</div>
+			<div class="col-sm-4">
+				<h3>Tel.Movil</h3>
+				<h5 th:text="${afiliados.telefonoMovil}"></h5>
+			</div>
+			<div class="col-sm-4">
+				<h3>Email</h3>
+				<h5 th:text="${afiliados.email}"></h5>
+				<br />
+				<br />
+			</div>
+			<div class="col-sm-4">
+				<h3>Direccion</h3>
+				<h5 th:text="${afiliados.direccion}"></h5>
+			</div>
+			<div class="col-sm-4">
+				<h3>Municipio</h3>
+				<h5 th:text="${afiliados.municipio}"></h5>
+			</div>
+			<div class="col-sm-4">
+				<h3>Entidad Federativa</h3>
+				<h5 th:text="${afiliados.entidadFederativa}"></h5>
+				<br />
+				<br />
+			</div>
+			<div class="col-sm-4">
+				<h3>Codigo postal</h3>
+				<h5 th:text="${afiliados.codigoPostal}"></h5>
+			</div>
+			<div class="col-sm-4">
+				<h3>Numero Infonavit</h3>
+				<h5 th:text="${afiliados.numeroInfonavit}"></h5>
+			</div>
+			<div class="col-sm-4" th:switch="${afiliados.servicio.id}">
+				<h3>Servicio</h3>
+				<h5 th:case="4">Servicio De Prueba</h5>
+				<h5 th:case="6">Nuevo Servicio De Prueba</h5>
+				<h5 th:case="7">Servicio De Prueba Sin Beneficios</h5>
+				<h5 th:case="8">Servicios Nuevo</h5>
+				<h5 th:case="9">Servicio Sin Beneficios</h5>
+				<h5 th:case="10">Nuevo Servicio De Prueba Con Modificaciones</h5>
+				<h5 th:case="11">servicio Sin Beneficios</h5>
+
+
+			</div>
+			</div>
+		<hr>
+		<div th:if="${beneficiarios!=null}">
+			<div class="jumbotron text-center" style="background-color:#87ACBC">
+				<h1>Beneficiarios</h1>
+				
+			</div>
+			<table class="table  text-center">
+
+				<thead style="background-color:#C6E0C6">
+					<tr>
+
+						<th><h3>Nombre</h3></th>
+						<th><h3>Apellidos</h3></th>
+						<th><h3>Fecha De Nacimiento</h3></th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr th:each="afiliado : ${beneficiarios}">
+
+						<td>
+							<h5 th:text="${afiliado.nombre}"></h5>
+						</td>
+						<td>
+							<h5 th:text="${afiliado.apellidoPaterno}+' '+${afiliado.apellidoMaterno}"></h5>
+						</td>
+						<td>
+							<h5 th:text="${afiliado.fechaNacimiento}"></h5>
+						</td>
+					</tr>
+				</tbody>
+
+			</table>
+
+		</div>
+	
 	</div>
 </body>
 </html>

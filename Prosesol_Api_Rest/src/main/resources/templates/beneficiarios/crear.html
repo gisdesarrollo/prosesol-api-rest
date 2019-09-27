@@ -13,6 +13,8 @@
 			<!-- Layout Container -->
 			<div class="layout-container sidemenu-container">
 				<div class="container-fluid">
+					<div class="alert alert-danger" th:if="${error != null}"
+						th:text="${error}"></div>
 					<div class="alert alert-success" th:if="${success != null}"
 						th:text="${success}"></div>
 					<div class="row ">
@@ -24,106 +26,78 @@
 								<div class="clearfix"></div>
 								<hr>
 
-								<form class="formInput" th:action="@{/beneficiarios/guardar}"
-									th:object="${afiliado}" method="post" action="datosAfiliado">
+								<form class="formInput" name="form" id="form" 
+									th:action="@{/beneficiarios/guardar}" th:object="${afiliado}"
+									method="post" action="datosAfiliado">
 									<div class="row">
 										<div class="form-group col-md-3">
 											<label>Nombre</label> <input type="text" th:field="*{nombre}"
-												name="nombre" class="form-control form-control-user">
-											<small class="form-text text-danger"
-												th:if="${#fields.hasErrors('nombre')}" th:errors="*{nombre}"></small>
+												name="nombre" required
+												class="form-control form-control-user">
+
 										</div>
 
 										<div class="form-group col-md-3">
 											<label>Apellido Paterno</label> <input type="text"
 												th:field="*{apellidoPaterno}" name="apellidoPaterno"
-												class="form-control form-control-user"> <small
-												class="form-text text-danger"
-												th:if="${#fields.hasErrors('nombre')}" th:errors="*{nombre}"></small>
+												required class="form-control form-control-user">
 										</div>
 
 										<div class="form-group col-md-3">
 											<label>Apelido Materno</label> <input type="text"
 												th:field="*{apellidoMaterno}" name="apellidoMaterno"
-												class="form-control form-control-user"> <small
-												class="form-text text-danger"
-												th:if="${#fields.hasErrors('apellidoMaterno')}"
-												th:errors="*{apellidoMaterno}"></small>
+												required class="form-control form-control-user">
 										</div>
 
 										<div class="form-group col-md-3">
 											<label>Fecha de Nacimiento</label> <input type="text"
 												th:field="*{fechaNacimiento}" name="fechaNacimientos"
-												class="form-control form-control-user" id="fechaNacimiento"
-												placeholder=""> <small class="form-text text-danger"
-												th:if="${#fields.hasErrors('fechaNacimiento')}"
-												th:errors="*{fechaNacimiento}"></small>
+												required class="form-control form-control-user"
+												id="fechaNacimiento" placeholder="">
 										</div>
 										<div class="form-group col-md-3">
-											<label>Sexo</label> <select th:field="*{sexo}"
+											<label>Sexo</label> <select th:field="*{sexo}" required
 												class="custom-select" id="inputGroupSelect01">
 												<option th:value="'Masculino'" th:selected>Masculino</option>
 												<option th:value="'Femenino'">Femenino</option>
-											</select><small class="form-text text-danger"
-												th:if="${#fields.hasErrors('sexo')}" th:errors="*{sexo}"></small>
+											</select>
 										</div>
 										<div class="form-group col-md-3">
 											<label>Curp</label><input type="text" th:field="*{curp}"
 												class="form-control form-control-user curpText"
-												name="curpText"><small class="form-text text-danger"
-												th:if="${#fields.hasErrors('curp')}" th:errors="*{curp}"
-												id="smallCurp"></small>
+												name="curpText">
 										</div>
 
 										<div class="form-group col-md-3">
 											<label>Número de seguridad social</label><input type="text"
 												th:field="*{nss}"
-												class="form-control form-control-user nssText"> <small
-												class="form-text text-danger"
-												th:if="${#fields.hasErrors('nss')}" th:errors="*{nss}"></small>
+												class="form-control form-control-user nssText"> 
 										</div>
 
 										<div class="form-group col-md-3">
 											<label>RFC</label><input type="text" th:field="*{rfc}"
-												class="form-control form-control-user rfcText"> <small
-												class="form-text text-danger"
-												th:if="${#fields.hasErrors('rfc')}" th:errors="*{rfc}"></small>
+												required maxlength="13"  class="form-control form-control-user rfcText">
+											
 										</div>
-										<!-- 	<div class="form-group col-md-3">
-											<label>Servicio</label> <select name="servicio"
-												th:field="*{servicio}" class="custom-select"
-												id="inputGroupSelect01">
-												<option value="">Ninguno</option>
-												<option th:each="servicio : ${servicios}"
-													th:value="${servicio.id}" th:text="${servicio.nombre}"
-													th:selected="false" />
-											</select> <small class="form-text text-danger"
-												th:if="${#fields.hasErrors('servicio')}"
-												th:errors="*{servicio}"></small>
-										</div> -->
+										
 									</div>
 
 									<hr>
-									<div class="clearfix"></div>
-									<div class="row">
-										<div class="col-sm-12">
-											<button type="submit"
-												class="btn btn-primary btn-square float-right">Agregar
-												Beneficiario</button>
-										</div>
+									<div Style="margin-left: 1100px">
+									<div class="clearfix">
+										
+										<button type="submit"
+												class="btn btn-primary"
+												name="action" value="save">Guardar</button>
+
+										<a class="btn btn-danger"
+											th:href="@{/afiliados/bienvenido/}+${id}">Cancelar</a>
 									</div>
-									<div class="dropdown">
-										<button class="btn btn-primary dropdown-toggle" type="button"
-											data-toggle="dropdown">
-											Crea Nuevo Beneficiario <span class="caret"></span>
-										</button>
-										<ul class="dropdown-menu">
-											<li><a href="#">crear Nuevo</a></li>
-											<li><a href="#">Agregar</a></li>
-											<li><a href="#">Cancelar</a></li>
-										</ul>
+				
 									</div>
+
 								</form>
+								
 							</div>
 						</div>
 
@@ -136,7 +110,8 @@
 
 		</div>
 	</div>
-	<!--  <footer th:replace="fragments/footer :: footer"></footer> -->
+
 </body>
+
 
 </html>

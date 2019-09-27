@@ -10,12 +10,16 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.prosesol.api.rest.models.dao.IAfiliadoDao;
 import com.prosesol.api.rest.models.entity.Afiliado;
+import com.prosesol.api.rest.repository.BeneficiarioRepository;
 import com.prosesol.api.rest.utils.Estados;
 import com.prosesol.api.rest.utils.Paises;
 
 @Service
 public class AfiliadoServiceImpl implements IAfiliadoService {
 
+	@Autowired
+	private BeneficiarioRepository beneficiarioRepository;
+	
 	@Autowired
 	private IAfiliadoDao afiliadoDao;
 
@@ -58,5 +62,15 @@ public class AfiliadoServiceImpl implements IAfiliadoService {
 	public Afiliado findById(Long id) {
 		return afiliadoDao.findById(id).orElse(null);
 	}
+	
+	@Override
+	public void insertBeneficiarioUsingJpa(Afiliado beneficiario, Long id) {
+		beneficiarioRepository.insertBeneficiario(beneficiario, id);
+		
+	}
 
+	@Override
+	public List<Afiliado> getBeneficiarioByIdByIsBeneficiario(Long idAfiliado) {
+		return afiliadoDao.getBeneficiarioByIdByIsBeneficiario(idAfiliado);
+	}
 }

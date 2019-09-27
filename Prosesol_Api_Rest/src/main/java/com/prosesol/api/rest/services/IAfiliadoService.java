@@ -19,4 +19,7 @@ public interface IAfiliadoService {
 
 	public List<Paises> getAllPaises();
 	
+	public void insertBeneficiarioUsingJpa(Afiliado beneficiario, Long id);
+	
+	public List<Afiliado> getBeneficiarioByIdByIsBeneficiario(Long idAfiliado);
 }

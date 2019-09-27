@@ -136,8 +136,10 @@ public class AfiliadoController {
 	public String mostrar(@PathVariable("id") Long id, Model model) {
 		try {
 			Afiliado afiliado = afiliadoService.findById(id);
-
+			List<Afiliado> beneficiarios = afiliadoService.getBeneficiarioByIdByIsBeneficiario(id);
+			
 			model.addAttribute("afiliado", afiliado);
+			model.addAttribute("beneficiarios", beneficiarios);
 		} catch (Exception e) {
 			System.out.println("error al momento de buscar en afiliado" + e);
 		}

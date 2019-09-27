@@ -1,5 +1,6 @@
 package com.prosesol.api.rest.controllers;
 
+import java.util.Date;
 import java.util.Map;
 
 import javax.validation.Valid;
@@ -27,62 +28,88 @@ import com.prosesol.api.rest.services.IServicioService;
 //@SessionAttributes("afiliado")
 @RequestMapping("/beneficiarios")
 public class BeneficiarioController {
-	
+
 	protected static final Log logger = LogFactory.getLog(BeneficiarioController.class);
 
 	@Value("${app.clave}")
 	private String clave;
-	
+
 	@Autowired
 	private IAfiliadoService afiliadoService;
 
 	@Autowired
 	private IServicioService servicioService;
-	
+
 	private static Long idAfiliado;
-	
-	@RequestMapping(value="/crear/{id}")
-	public String crear(@PathVariable("id") Long id,Map<String, Object> model) {
-		
-		idAfiliado=id;
-		System.out.println("la id afiliado es: "+idAfiliado);
-		
-		Afiliado afiliado=new Afiliado();
+
+	@RequestMapping(value = "/crear/{id}")
+	public String crear(@PathVariable("id") Long id, Map<String, Object> model) {
+
+		idAfiliado = id;
+		System.out.println("la id afiliado es: " + idAfiliado);
+
+		Afiliado afiliado = new Afiliado();
+		// System.out.println(afiliado.getServicio());
 		model.put("afiliado", afiliado);
-			
+		model.put("id", idAfiliado);
+
 		return "beneficiarios/crear";
 	}
-	
-	@RequestMapping(value="/guardar",method = RequestMethod.POST)
-	public String guardar(@ModelAttribute("clave") String clave,@Valid Afiliado afiliado, BindingResult result, Model model, 
-			  RedirectAttributes redirect, SessionStatus status) {
-		
-		System.out.println("id: "+idAfiliado);
-		System.out.println("clave: "+clave);
+
+	@RequestMapping(value = "/guardar", method = RequestMethod.POST, params = "action=save")
+	public String guardar(@ModelAttribute("clave") String clave, Afiliado afiliado, BindingResult result, Model model,
+			RedirectAttributes redirect, SessionStatus status) {
+
+		System.out.println("id: " + idAfiliado);
+
+		Date fechaAlta = new Date();
+		Afiliado resul = afiliadoService.findById(idAfiliado);
+
 		try {
-		if(result.hasErrors()) {
-			System.out.println("Error en el proceso");
-			
-			return "redirect:/afiliados/bienvenido/"+idAfiliado;
-			//return "beneficiario/crear";
+			if (afiliado.getFechaNacimiento() == null) {
+				redirect.addFlashAttribute("error", "Fecha Nacimiento Invalido Debe Ser dd/mm/yyyy");
+
+				return "redirect:/beneficiarios/crear/" + idAfiliado;
+
 			}
-		}catch (Exception e) {
+
+			resul.getServicio();
+			afiliado.setEstatus(3);
+			afiliado.setServicio(resul.getServicio());
+			afiliado.setIsBeneficiario(true);
+			afiliado.setClave(clave);
+			afiliado.setFechaAlta(fechaAlta);
+
+			afiliadoService.save(afiliado);
+			guardarRelAfiliadoBeneficiario(afiliado, idAfiliado);
+			status.setComplete();
+
+		} catch (Exception e) {
 			e.printStackTrace();
 			logger.error("Error al momento de ejecutar el proceso: " + e);
+			redirect.addFlashAttribute("error", "Rfc Invalido");
+			return "redirect:/beneficiarios/crear/" + idAfiliado;
 		}
-		return "redirect:/afiliados/bienvenido/"+idAfiliado;
+
+		redirect.addFlashAttribute("success", "Beneficiario Creado con Exito");
+		return "redirect:/beneficiarios/crear/" + idAfiliado;
+		// return "redirect:/afiliados/bienvenido/"+idAfiliado;
 	}
-	
+
+	public void guardarRelAfiliadoBeneficiario(Afiliado beneficiario, Long id) {
+		afiliadoService.insertBeneficiarioUsingJpa(beneficiario, id);
+	}
+
 	@ModelAttribute("clave")
 	public String getClaveAfiliado() {
-		
+
 		String clave = "0123456789";
 		String claveAfiliado = "";
-		
-		for(int i = 0; i < 10; i++) {
-			claveAfiliado += (clave.charAt((int)(Math.random() * clave.length())));
+
+		for (int i = 0; i < 10; i++) {
+			claveAfiliado += (clave.charAt((int) (Math.random() * clave.length())));
 		}
-		
+
 		return claveAfiliado;
 	}
 }
