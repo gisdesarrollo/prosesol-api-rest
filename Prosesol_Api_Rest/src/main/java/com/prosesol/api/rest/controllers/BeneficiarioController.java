@@ -1,5 +1,7 @@
 package com.prosesol.api.rest.controllers;
 
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.Date;
 import java.util.Map;
 
@@ -20,6 +22,7 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.josketres.rfcfacil.Rfc;
 import com.prosesol.api.rest.models.entity.Afiliado;
 import com.prosesol.api.rest.services.IAfiliadoService;
 import com.prosesol.api.rest.services.IServicioService;
@@ -64,12 +67,26 @@ public class BeneficiarioController {
 
 		Date fechaAlta = new Date();
 		Afiliado resul = afiliadoService.findById(idAfiliado);
-
+		Rfc rfc = null;
 		try {
 			if (afiliado.getFechaNacimiento() == null) {
 				redirect.addFlashAttribute("error", "Fecha Nacimiento Invalido Debe Ser dd/mm/yyyy");
 
 				return "redirect:/beneficiarios/crear/" + idAfiliado;
+
+			}
+			if (afiliado.getRfc() == null || afiliado.getRfc().equals("")) {
+				LocalDate fechaNacimiento = afiliado.getFechaNacimiento().toInstant().atZone(ZoneId.systemDefault())
+						.toLocalDate();
+
+				rfc = new Rfc.Builder().name(afiliado.getNombre()).firstLastName(afiliado.getApellidoPaterno())
+						.secondLastName(afiliado.getApellidoMaterno()).birthday(fechaNacimiento.getDayOfMonth(),
+								fechaNacimiento.getMonthValue(), fechaNacimiento.getYear())
+						.build();
+
+				afiliado.setRfc(rfc.toString());
+
+				System.out.println(rfc.toString());
 
 			}
 
