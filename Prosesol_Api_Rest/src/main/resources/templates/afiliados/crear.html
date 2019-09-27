@@ -36,7 +36,9 @@
 												class="form-control form-control-user"> <small
 												class="form-text text-danger"
 												th:if="${#fields.hasErrors('nombre')}" th:errors="*{nombre}"></small>
+												<div id="validaNombre" style="display:none;color:red;">Campo obligatorio</div>
 										</div>
+										
 
 										<div class="form-group col-md-3">
 											<label>Apellido Paterno</label> <input  type="text" th:value="${apellidoPaterno}"  id="apellidoPaterno" name="apellidoPaterno"
@@ -44,6 +46,7 @@
 											<small class="form-text text-danger"
 												th:if="${#fields.hasErrors('apellidoPaterno')}"
 												th:errors="*{apellidoPaterno}"></small>
+												<div id="validaApellidoPaterno" style="display:none;color:red;">Campo obligatorio</div>	
 										</div>
 
 										<div class="form-group col-md-3">
@@ -52,6 +55,7 @@
 											<small class="form-text text-danger"
 												th:if="${#fields.hasErrors('apellidoMaterno')}"
 												th:errors="*{apellidoMaterno}"></small>
+												<div id="validaApellidoMaterno" style="display:none;color:red;">Campo obligatorio</div>
 										</div>
 
 										<div class="form-group col-md-3">
@@ -60,6 +64,7 @@
 												placeholder=""> <small class="form-text text-danger"
 												th:if="${#fields.hasErrors('fechaNacimiento')}"
 												th:errors="*{fechaNacimiento}"></small>
+												<div id="validaFechaNacimiento" style="display:none;color:red;">Campo obligatorio</div>
 										</div>
 
 										<div class="form-group col-md-3">
