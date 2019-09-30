@@ -49,7 +49,7 @@ public class AfiliadoController {
 		return "afiliados/crear";
 	}
 
-	@RequestMapping(value = "/guardar", method = RequestMethod.POST)
+	@RequestMapping(value = "/crear", method = RequestMethod.POST, params = "action=save")
 	public String guardar(@ModelAttribute(name = "clave") String clave, @Valid Afiliado afiliado, BindingResult result,
 			Model model, RedirectAttributes redirect, SessionStatus status) {
 
@@ -59,19 +59,9 @@ public class AfiliadoController {
 
 		try {
 			if (result.hasErrors()) {
-				model.addAttribute("rfc", afiliado.getRfc());
-				model.addAttribute("nombre", afiliado.getNombre());
-				model.addAttribute("apellidoPaterno", afiliado.getApellidoPaterno());
-				model.addAttribute("apellidoMaterno", afiliado.getApellidoMaterno());
-				redirect.addFlashAttribute("fechaNacimiento", afiliado.getFechaNacimiento());
-				redirect.addFlashAttribute("lugarNacimiento", afiliado.getLugarNacimiento());
-				redirect.addFlashAttribute("estadoCivil", afiliado.getEstadoCivil());
-				redirect.addFlashAttribute("ocupacion", afiliado.getOcupacion());
-				redirect.addFlashAttribute("sexo", afiliado.getSexo());
-				redirect.addFlashAttribute("pais", afiliado.getPais());
-				redirect.addFlashAttribute("curp", afiliado.getCurp());
-				redirect.addFlashAttribute("nss", afiliado.getNss());
-				return "/afiliados/crear";
+			
+				
+				return "afiliados/crear";
 
 			}
 			if (afiliado.getId() != null) {

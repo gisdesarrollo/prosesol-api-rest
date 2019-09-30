@@ -28,7 +28,7 @@
 								<hr>
 								
 					
-								<form  class="formInput" name="formu" id="formu" 
+								<form  class="formInput" name="formu" id="formu" th:action="@{/afiliados/crear}"
 									th:object="${afiliado}" method="post" >
 									<div class="row" >
 										<div class="form-group col-md-3">
@@ -271,8 +271,9 @@
 									<div class="clearfix"></div>
 									<div class="row">
 										<div class="col-sm-12">
-										  	<button onclick="guardar()"
-												class="btn btn-primary btn-square float-right">Crear
+										  	<button type="submit"
+												class="btn btn-primary btn-square float-right"
+												name="action" value="save">Crear
 												Afiliado</button>
 										</div>
 									</div>
