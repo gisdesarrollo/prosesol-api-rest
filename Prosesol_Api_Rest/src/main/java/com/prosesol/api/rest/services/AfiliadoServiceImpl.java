@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.prosesol.api.rest.models.dao.IAfiliadoDao;
 import com.prosesol.api.rest.models.entity.Afiliado;
 import com.prosesol.api.rest.repository.BeneficiarioRepository;
+import com.prosesol.api.rest.utils.Clave;
 import com.prosesol.api.rest.utils.Estados;
 import com.prosesol.api.rest.utils.Paises;
 
@@ -72,5 +73,11 @@ public class AfiliadoServiceImpl implements IAfiliadoService {
 	@Override
 	public List<Afiliado> getBeneficiarioByIdByIsBeneficiario(Long idAfiliado) {
 		return afiliadoDao.getBeneficiarioByIdByIsBeneficiario(idAfiliado);
+	}
+
+	@Override
+	public String getClave() {
+		Clave clave=new Clave();
+		return clave.getClaveAfiliado();
 	}
 }

@@ -109,10 +109,62 @@ public class BeneficiarioController {
 		}
 
 		redirect.addFlashAttribute("success", "Beneficiario Creado con Exito");
+		//return "redirect:/beneficiarios/crear/" + idAfiliado;
+		 return "redirect:/afiliados/bienvenido/"+idAfiliado;
+	}
+	@RequestMapping(value = "/guardar", method = RequestMethod.POST, params = "action=saveCrear")
+	public String guardarCrear(@ModelAttribute("clave") String clave, Afiliado afiliado, BindingResult result, Model model,
+			RedirectAttributes redirect, SessionStatus status) {
+
+		System.out.println("id: " + idAfiliado);
+
+		Date fechaAlta = new Date();
+		Afiliado resul = afiliadoService.findById(idAfiliado);
+		Rfc rfc = null;
+		try {
+			if (afiliado.getFechaNacimiento() == null) {
+				redirect.addFlashAttribute("error", "Fecha Nacimiento Invalido Debe Ser dd/mm/yyyy");
+
+				return "redirect:/beneficiarios/crear/" + idAfiliado;
+
+			}
+			if (afiliado.getRfc() == null || afiliado.getRfc().equals("")) {
+				LocalDate fechaNacimiento = afiliado.getFechaNacimiento().toInstant().atZone(ZoneId.systemDefault())
+						.toLocalDate();
+
+				rfc = new Rfc.Builder().name(afiliado.getNombre()).firstLastName(afiliado.getApellidoPaterno())
+						.secondLastName(afiliado.getApellidoMaterno()).birthday(fechaNacimiento.getDayOfMonth(),
+								fechaNacimiento.getMonthValue(), fechaNacimiento.getYear())
+						.build();
+
+				afiliado.setRfc(rfc.toString());
+
+				System.out.println(rfc.toString());
+
+			}
+
+			resul.getServicio();
+			afiliado.setEstatus(3);
+			afiliado.setServicio(resul.getServicio());
+			afiliado.setIsBeneficiario(true);
+			afiliado.setClave(clave);
+			afiliado.setFechaAlta(fechaAlta);
+
+			afiliadoService.save(afiliado);
+			guardarRelAfiliadoBeneficiario(afiliado, idAfiliado);
+			status.setComplete();
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error("Error al momento de ejecutar el proceso: " + e);
+			redirect.addFlashAttribute("error", "Rfc Invalido");
+			return "redirect:/beneficiarios/crear/" + idAfiliado;
+		}
+
+		redirect.addFlashAttribute("success", "Beneficiario Creado con Exito");
 		return "redirect:/beneficiarios/crear/" + idAfiliado;
 		// return "redirect:/afiliados/bienvenido/"+idAfiliado;
 	}
-
 	public void guardarRelAfiliadoBeneficiario(Afiliado beneficiario, Long id) {
 		afiliadoService.insertBeneficiarioUsingJpa(beneficiario, id);
 	}

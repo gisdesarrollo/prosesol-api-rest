@@ -7,16 +7,19 @@ import com.prosesol.api.rest.services.IServicioService;
 import com.prosesol.api.rest.utils.Paises;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.hibernate.validator.constraints.Length;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Controller;
+
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -40,10 +43,26 @@ public class AfiliadoController {
 	@Autowired
 	private IServicioService servicioService;
 
-	@RequestMapping(value = "/crear")
-	public String crear(Map<String, Object> model) {
+	@RequestMapping(value = "/servicio")
+	public String seleccionarServicio(Map<String, Object> model) {
 		Afiliado afiliado = new Afiliado();
 
+		model.put("afiliado", afiliado);
+
+		return "afiliados/servicio";
+	}
+
+	@RequestMapping(value = "/crear")
+	public String crear(@RequestParam(value = "servicio") Integer servicio, Map<String, Object> model,
+			RedirectAttributes redirect) {
+
+		Afiliado afiliado = new Afiliado();
+
+		if (servicio == null) {
+			redirect.addFlashAttribute("error", "debes seleccionar un servicio");
+			return "redirect:/afiliados/servicio";
+		}
+		model.put("servicios", servicio);
 		model.put("afiliado", afiliado);
 
 		return "afiliados/crear";
@@ -59,9 +78,13 @@ public class AfiliadoController {
 
 		try {
 			if (result.hasErrors()) {
-			
-				
-				return "afiliados/crear";
+
+				Long serv = afiliado.getServicio().getId();
+				if (serv != null) {
+					System.out.println(serv);
+					model.addAttribute("servicios", serv);
+				}
+				return "/afiliados/crear";
 
 			}
 			if (afiliado.getId() != null) {
@@ -124,16 +147,83 @@ public class AfiliadoController {
 
 	@RequestMapping(value = "/bienvenido/{id}")
 	public String mostrar(@PathVariable("id") Long id, Model model) {
+
+		Double d1, d2, d3, d4, costoAfiliado, costoBeneficiario, mensualidad;
 		try {
 			Afiliado afiliado = afiliadoService.findById(id);
+			Long idServicio = afiliado.getServicio().getId();
+			Servicio serv = servicioService.findById(idServicio);
+
+			d1 = serv.getCostoTitular();
+			d2 = serv.getInscripcionTitular();
+			mensualidad = d1;
+			costoAfiliado = d1 + d2;
+
 			List<Afiliado> beneficiarios = afiliadoService.getBeneficiarioByIdByIsBeneficiario(id);
-			
+			if (beneficiarios != null) {
+				d1 = serv.getCostoBeneficiario();
+				d2 = serv.getInscripcionBeneficiario();
+				costoBeneficiario = d1 + d2;
+
+				model.addAttribute("costoBeneficiario", costoBeneficiario);
+				model.addAttribute("beneficiarios", beneficiarios);
+				for (Integer x = 0; x < beneficiarios.size(); x++) {
+					d3 = serv.getCostoBeneficiario();
+					// d4=serv.getInscripcionBeneficiario();
+					mensualidad += d3;
+				}
+
+			}
+
+			model.addAttribute("costoAfiliado", costoAfiliado);
+			model.addAttribute("mensualidad", mensualidad);
+			model.addAttribute("id", id);
 			model.addAttribute("afiliado", afiliado);
-			model.addAttribute("beneficiarios", beneficiarios);
+
 		} catch (Exception e) {
 			System.out.println("error al momento de buscar en afiliado" + e);
 		}
 		return "afiliados/bienvenido";
+	}
+
+	@RequestMapping(value = "/guardar/{id}")
+	public String guardaSaldoAfiliado(@PathVariable("id") Long id, Model model, SessionStatus status) {
+
+		Afiliado afiliado = new Afiliado();
+
+		Double d1, d2, d3, d4, costoAfiliado;
+		try {
+			afiliado = afiliadoService.findById(id);
+			Long idServicio = afiliado.getServicio().getId();
+			Servicio serv = servicioService.findById(idServicio);
+
+			d1 = serv.getCostoTitular();
+			d2 = serv.getInscripcionTitular();
+		
+			costoAfiliado = d1 + d2;
+
+			List<Afiliado> beneficiarios = afiliadoService.getBeneficiarioByIdByIsBeneficiario(id);
+			if (beneficiarios != null) {
+				
+
+				for (Integer x = 0; x < beneficiarios.size(); x++) {
+					d3= serv.getCostoBeneficiario();
+				    d4=serv.getInscripcionBeneficiario();
+					costoAfiliado += d3;
+				}
+
+			}
+			
+			afiliado.setSaldoAcumulado(costoAfiliado);
+			afiliado.setSaldoCorte(costoAfiliado);
+			afiliadoService.save(afiliado);
+			status.setComplete();
+
+		} catch (Exception e) {
+			System.out.println("error al momento de insertar Saldo acumulado" + e);
+		}
+
+		return "redirect:/prosesol/buscar";
 	}
 
 	/**
@@ -175,16 +265,25 @@ public class AfiliadoController {
 	 * @param(name = "clave")
 	 */
 
+	/*
+	 * metodo para clave*
+	 * 
+	 * 
+	 */
+
 	@ModelAttribute("clave")
-	public String getClaveAfiliado() {
-
-		String claveAfiliado = "PR-";
-
-		for (int i = 0; i < 10; i++) {
-			claveAfiliado += (clave.charAt((int) (Math.random() * clave.length())));
-		}
-
-		return claveAfiliado;
+	public String getClave() {
+		return afiliadoService.getClave();
 	}
+	/*
+	 * @ModelAttribute("clave") public String getClaveAfiliado() {
+	 * 
+	 * String claveAfiliado = "PR-";
+	 * 
+	 * for (int i = 0; i < 10; i++) { claveAfiliado += (clave.charAt((int)
+	 * (Math.random() * clave.length()))); }
+	 * 
+	 * return claveAfiliado; }
+	 */
 
 }

@@ -34,6 +34,8 @@
 											<label>Nombre</label> <input type="text" th:field="*{nombre}"
 												name="nombre" required
 												class="form-control form-control-user">
+												<div id="validaNombre" style="display: none; color: red;">Campo
+												obligatorio</div>
 
 										</div>
 
@@ -41,12 +43,16 @@
 											<label>Apellido Paterno</label> <input type="text"
 												th:field="*{apellidoPaterno}" name="apellidoPaterno"
 												required class="form-control form-control-user">
+												<div id="validaApellidoPaterno"
+												style="display: none; color: red;">Campo obligatorio</div>
 										</div>
 
 										<div class="form-group col-md-3">
 											<label>Apelido Materno</label> <input type="text"
 												th:field="*{apellidoMaterno}" name="apellidoMaterno"
 												required class="form-control form-control-user">
+												<div id="validaApellidoMaterno"
+												style="display: none; color: red;">Campo obligatorio</div>
 										</div>
 
 										<div class="form-group col-md-3">
@@ -54,42 +60,29 @@
 												th:field="*{fechaNacimiento}" name="fechaNacimientos"
 												required class="form-control form-control-user"
 												id="fechaNacimiento" placeholder="">
+												<div id="validaFechaNacimiento"
+												style="display: none; color: red;">Campo obligatorio</div>
 										</div>
 										<div class="form-group col-md-3">
-											<label>Sexo</label> <select th:field="*{sexo}" required
-												class="custom-select" id="inputGroupSelect01">
-												<option th:value="'Masculino'" th:selected>Masculino</option>
-												<option th:value="'Femenino'">Femenino</option>
-											</select>
-										</div>
-										<div class="form-group col-md-3">
-											<label>Curp</label><input type="text" th:field="*{curp}"
-												class="form-control form-control-user curpText"
-												name="curpText">
-										</div>
-
-										<div class="form-group col-md-3">
-											<label>Número de seguridad social</label><input type="text"
-												th:field="*{nss}"
-												class="form-control form-control-user nssText"> 
-										</div>
-
-										<div class="form-group col-md-3">
-											<label>RFC</label><input type="text" th:field="*{rfc}"
+											<label>RFC</label><input type="text" th:field="*{rfc}" name="rfc" id="rfc"
 											 maxlength="13"  class="form-control form-control-user rfcText">
-											
+											<p>¿No cuentas con tu RFC?</p>
+											<input type="button" id="bot" name="bot"
+												value="Genéralo aquí" onclick="generar()">
 										</div>
 										
 									</div>
 
 									<hr>
-									<div Style="margin-left: 1100px">
+									<div Style="margin-left: 900px">
 									<div class="clearfix">
 										
 										<button type="submit"
 												class="btn btn-primary"
 												name="action" value="save">Guardar</button>
-
+										<button type="submit"
+												class="btn btn-primary"
+												name="action" value="saveCrear">Crear nuevo beneficiario</button>
 										<a class="btn btn-danger"
 											th:href="@{/afiliados/bienvenido/}+${id}">Cancelar</a>
 									</div>

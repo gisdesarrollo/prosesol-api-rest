@@ -6,8 +6,8 @@
 
 	<div class="container" style="background-color:white">
 		<div class="jumbotron text-center" style="background-color:#87ACBC">
-			<h1>Bienvenido Afiliado</h1>
-			<h3 th:each="afiliados : ${afiliado}" th:text=" ${afiliados.nombre}"></h3>
+			<h1 style="color:white;font-family:IMPACT;">Bienvenido Afiliado</h1>
+			<h3   style="color:white;font-family:IMPACT;" th:each="afiliados : ${afiliado}" th:text=" ${afiliados.nombre}"></h3>
 		</div>
 		<!-- <div class="alert alert-success" th:if="${success != null}" th:text="${success}"></div> -->
 		<br>
@@ -118,11 +118,19 @@
 
 
 			</div>
+			<div class="col-sm-4">
+				<h3>Costo De Inscripcion</h3>
+				<h5 th:text="${costoAfiliado}"></h5>
+			</div>
+			<div class="col-sm-4">
+				<h3>Mensualidad</h3>
+				<h5 th:text="${mensualidad}"></h5>
+			</div>
 			</div>
 		<hr>
 		<div th:if="${beneficiarios!=null}">
 			<div class="jumbotron text-center" style="background-color:#87ACBC">
-				<h1>Beneficiarios</h1>
+				<h1  style="color:white;font-family:IMPACT;">Beneficiarios</h1>
 				
 			</div>
 			<table class="table  text-center">
@@ -132,7 +140,7 @@
 
 						<th><h3>Nombre</h3></th>
 						<th><h3>Apellidos</h3></th>
-						<th><h3>Fecha De Nacimiento</h3></th>
+						<th><h3>Costo de Incripcion</h3></th>
 					</tr>
 				</thead>
 				<tbody>
@@ -145,15 +153,16 @@
 							<h5 th:text="${afiliado.apellidoPaterno}+' '+${afiliado.apellidoMaterno}"></h5>
 						</td>
 						<td>
-							<h5 th:text="${afiliado.fechaNacimiento}"></h5>
+							<h5 th:text="${costoBeneficiario}"></h5>
 						</td>
 					</tr>
 				</tbody>
 
 			</table>
-
+		
 		</div>
-	
+		<a th:href="@{/afiliados/guardar/}+${id}" onclick="return confirm('estas seguro de guardar los datos?');" class="btn btn-primary btn-square float-right">guardar</a>
+	<br><br>
 	</div>
 </body>
 </html>
