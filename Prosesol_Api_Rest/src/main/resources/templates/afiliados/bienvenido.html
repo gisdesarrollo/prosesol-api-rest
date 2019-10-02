@@ -3,7 +3,6 @@
 <head th:replace="fragments/head :: head"></head>
 <meta charset="utf-8" />
 <body>
-
 	<div class="container" style="background-color:white">
 		<div class="jumbotron text-center" style="background-color:#87ACBC">
 			<h1 style="color:white;font-family:IMPACT;">Bienvenido Afiliado</h1>
@@ -20,19 +19,19 @@
 
 			</div>
 			<div class="col-sm-4">
-				<h3>Fecha De Nacimiento</h3>
+				<h3>Fecha de nacimiento</h3>
 				<h5 th:text="${afiliados.fechaNacimiento}"></h5>
 				<br />
 				<br />
 			</div>
 			<div class="col-sm-4">
-				<h3>Lugar De Nacimiento</h3>
+				<h3>Lugar de nacimiento</h3>
 				<h5 th:text="${afiliados.lugarNacimiento}"></h5>
 
 			</div>
 
 			<div class="col-sm-4">
-				<h3>Estado Civil</h3>
+				<h3>Estado civil</h3>
 				<h5 th:text="${afiliados.estadoCivil}"></h5>
 				<br />
 				<br />
@@ -60,22 +59,22 @@
 			<br />
 			<br />
 			<div class="col-sm-4">
-				<h3>NSS</h3>
+				<h3>Nss</h3>
 				<h5 th:text="${afiliados.nss}"></h5>
 			</div>
 			<div class="col-sm-4">
-				<h3>RFC</h3>
+				<h3>Rfc</h3>
 				<h5 th:text="${afiliados.rfc}"></h5>
 				<br />
 				<br />
 			</div>
 
 			<div class="col-sm-4">
-				<h3>Tel.Fijo</h3>
+				<h3>Tel.fijo</h3>
 				<h5 th:text="${afiliados.telefonoFijo}"></h5>
 			</div>
 			<div class="col-sm-4">
-				<h3>Tel.Movil</h3>
+				<h3>Tel.movil</h3>
 				<h5 th:text="${afiliados.telefonoMovil}"></h5>
 			</div>
 			<div class="col-sm-4">
@@ -85,7 +84,7 @@
 				<br />
 			</div>
 			<div class="col-sm-4">
-				<h3>Direccion</h3>
+				<h3>Dirección</h3>
 				<h5 th:text="${afiliados.direccion}"></h5>
 			</div>
 			<div class="col-sm-4">
@@ -93,42 +92,38 @@
 				<h5 th:text="${afiliados.municipio}"></h5>
 			</div>
 			<div class="col-sm-4">
-				<h3>Entidad Federativa</h3>
+				<h3>Entidad federativa</h3>
 				<h5 th:text="${afiliados.entidadFederativa}"></h5>
 				<br />
 				<br />
 			</div>
 			<div class="col-sm-4">
-				<h3>Codigo postal</h3>
+				<h3>Código postal</h3>
 				<h5 th:text="${afiliados.codigoPostal}"></h5>
 			</div>
 			<div class="col-sm-4">
-				<h3>Numero Infonavit</h3>
+				<h3>Numero infonavit</h3>
 				<h5 th:text="${afiliados.numeroInfonavit}"></h5>
 			</div>
 			<div class="col-sm-4" th:switch="${afiliados.servicio.id}">
 				<h3>Servicio</h3>
-				<h5 th:case="4">Servicio De Prueba</h5>
-				<h5 th:case="6">Nuevo Servicio De Prueba</h5>
-				<h5 th:case="7">Servicio De Prueba Sin Beneficios</h5>
-				<h5 th:case="8">Servicios Nuevo</h5>
-				<h5 th:case="9">Servicio Sin Beneficios</h5>
-				<h5 th:case="10">Nuevo Servicio De Prueba Con Modificaciones</h5>
-				<h5 th:case="11">servicio Sin Beneficios</h5>
+				<h5 th:case="4">Servicio de prueba</h5>
+				<h5 th:case="6">Nuevo servicio de prueba</h5>
+				<h5 th:case="7">Servicio de prueba sin beneficios</h5>
+				<h5 th:case="8">Servicios nuevo</h5>
+				<h5 th:case="9">Servicio sin beneficios</h5>
+				<h5 th:case="10">Nuevo servicio de prueba con modificaciones</h5>
+				<h5 th:case="11">Servicio sin beneficios</h5>
 
 
 			</div>
 			<div class="col-sm-4">
-				<h3>Costo De Inscripcion</h3>
+				<h3>Costo de inscripción</h3>
 				<h5 th:text="${costoAfiliado}"></h5>
-			</div>
-			<div class="col-sm-4">
-				<h3>Mensualidad</h3>
-				<h5 th:text="${mensualidad}"></h5>
 			</div>
 			</div>
 		<hr>
-		<div th:if="${beneficiarios!=null}">
+		<div th:if="${!beneficiarios.isEmpty()}">
 			<div class="jumbotron text-center" style="background-color:#87ACBC">
 				<h1  style="color:white;font-family:IMPACT;">Beneficiarios</h1>
 				
@@ -140,7 +135,7 @@
 
 						<th><h3>Nombre</h3></th>
 						<th><h3>Apellidos</h3></th>
-						<th><h3>Costo de Incripcion</h3></th>
+						<th><h3>Costo de incripción</h3></th>
 					</tr>
 				</thead>
 				<tbody>
@@ -161,7 +156,7 @@
 			</table>
 		
 		</div>
-		<a th:href="@{/afiliados/guardar/}+${id}" onclick="return confirm('estas seguro de guardar los datos?');" class="btn btn-primary btn-square float-right">guardar</a>
+		<a th:href="@{/afiliados/guardar/}+${id}" class="btn btn-primary btn-square float-right">guardar</a>
 	<br><br>
 	</div>
 </body>

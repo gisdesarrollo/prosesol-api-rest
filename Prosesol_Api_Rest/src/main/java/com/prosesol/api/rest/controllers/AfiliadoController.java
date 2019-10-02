@@ -59,7 +59,7 @@ public class AfiliadoController {
 		Afiliado afiliado = new Afiliado();
 
 		if (servicio == null) {
-			redirect.addFlashAttribute("error", "debes seleccionar un servicio");
+			redirect.addFlashAttribute("error", "Debes seleccionar un servicio");
 			return "redirect:/afiliados/servicio";
 		}
 		model.put("servicios", servicio);
@@ -141,7 +141,7 @@ public class AfiliadoController {
 
 		mensajeFlash = "id del afiliado creado es: " + afiliado.getId();
 		logger.info(mensajeFlash);
-		redirect.addFlashAttribute("success", "afiliado creado con exito");
+		redirect.addFlashAttribute("success", "Afiliado creado con éxito");
 		return "redirect:/beneficiarios/crear/" + afiliado.getId();
 	}
 
@@ -209,7 +209,7 @@ public class AfiliadoController {
 				for (Integer x = 0; x < beneficiarios.size(); x++) {
 					d3= serv.getCostoBeneficiario();
 				    d4=serv.getInscripcionBeneficiario();
-					costoAfiliado += d3;
+					costoAfiliado += d3+d4;
 				}
 
 			}

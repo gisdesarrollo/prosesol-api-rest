@@ -17,7 +17,7 @@
 					th:action="@{/afiliados/crear}" th:object="${afiliado}"
 					method="post">
 					
-						<div class="form-group col-md-3">
+						<div class="form-group col-md-3" style="position:relative;left: 400px;">
 							<label>Servicio</label> <select name="servicio"
 								th:field="*{servicio}" class="custom-select"
 								id="inputGroupSelect01">
@@ -29,6 +29,7 @@
 								th:if="${#fields.hasErrors('servicio')}" th:errors="*{servicio}"></small>
 						</div>
 							<input type="submit" class="btn btn-primary btn-square float-right" value="Continuar">
+							<br>
 						</form>
 					
 			</div>
