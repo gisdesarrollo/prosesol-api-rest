@@ -88,7 +88,7 @@ public class BeneficiarioController {
 			}
 
 			resul.getServicio();
-			afiliado.setEstatus(3);
+			afiliado.setEstatus(2);
 			afiliado.setServicio(resul.getServicio());
 			afiliado.setIsBeneficiario(true);
 			afiliado.setClave(clave);
