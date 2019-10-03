@@ -34,9 +34,6 @@ public class BeneficiarioController {
 
 	protected static final Log logger = LogFactory.getLog(BeneficiarioController.class);
 
-	@Value("${app.clave}")
-	private String clave;
-
 	@Autowired
 	private IAfiliadoService afiliadoService;
 
@@ -91,7 +88,7 @@ public class BeneficiarioController {
 			}
 
 			resul.getServicio();
-			afiliado.setEstatus(3);
+			afiliado.setEstatus(2);
 			afiliado.setServicio(resul.getServicio());
 			afiliado.setIsBeneficiario(true);
 			afiliado.setClave(clave);
@@ -109,12 +106,13 @@ public class BeneficiarioController {
 		}
 
 		redirect.addFlashAttribute("success", "Beneficiario Creado con Exito");
-		//return "redirect:/beneficiarios/crear/" + idAfiliado;
-		 return "redirect:/afiliados/bienvenido/"+idAfiliado;
+		// return "redirect:/beneficiarios/crear/" + idAfiliado;
+		return "redirect:/afiliados/bienvenido/" + idAfiliado;
 	}
+
 	@RequestMapping(value = "/guardar", method = RequestMethod.POST, params = "action=saveCrear")
-	public String guardarCrear(@ModelAttribute("clave") String clave, Afiliado afiliado, BindingResult result, Model model,
-			RedirectAttributes redirect, SessionStatus status) {
+	public String guardarCrear(@ModelAttribute("clave") String clave, Afiliado afiliado, BindingResult result,
+			Model model, RedirectAttributes redirect, SessionStatus status) {
 
 		System.out.println("id: " + idAfiliado);
 
@@ -165,6 +163,7 @@ public class BeneficiarioController {
 		return "redirect:/beneficiarios/crear/" + idAfiliado;
 		// return "redirect:/afiliados/bienvenido/"+idAfiliado;
 	}
+
 	public void guardarRelAfiliadoBeneficiario(Afiliado beneficiario, Long id) {
 		afiliadoService.insertBeneficiarioUsingJpa(beneficiario, id);
 	}
@@ -173,7 +172,7 @@ public class BeneficiarioController {
 	public String getClaveAfiliado() {
 
 		String clave = "0123456789";
-		String claveAfiliado = "";
+		String claveAfiliado = "PR-";
 
 		for (int i = 0; i < 10; i++) {
 			claveAfiliado += (clave.charAt((int) (Math.random() * clave.length())));

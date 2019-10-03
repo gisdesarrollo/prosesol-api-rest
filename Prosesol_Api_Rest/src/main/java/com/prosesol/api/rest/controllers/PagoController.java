@@ -5,6 +5,8 @@ import com.prosesol.api.rest.models.entity.Afiliado;
 import com.prosesol.api.rest.models.entity.Pago;
 import com.prosesol.api.rest.services.IAfiliadoService;
 import com.prosesol.api.rest.services.IPagoService;
+import com.prosesol.api.rest.utils.CalcularFecha;
+
 import mx.openpay.client.Charge;
 import mx.openpay.client.Customer;
 import mx.openpay.client.core.OpenpayAPI;
@@ -22,6 +24,8 @@ import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.math.BigDecimal;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -40,7 +44,10 @@ public class PagoController {
 
     @Value("${openpay.url}")
     private String openpayURL;
-
+    
+    @Autowired
+	private CalcularFecha calcularFechas;
+    
     @Autowired
     private IAfiliadoService afiliadoService;
 
@@ -116,6 +123,8 @@ public class PagoController {
                                        RedirectAttributes redirect, SessionStatus status) {
 
         Afiliado afiliado = afiliadoService.findById(id);
+        String periodo = "MENSUAL";
+		Integer corte=0;
 
         apiOpenpay = new OpenpayAPI(openpayURL, openpayPk, openpayId);
         BigDecimal amount = BigDecimal.valueOf(afiliado.getSaldoCorte());
@@ -151,8 +160,17 @@ public class PagoController {
                 pago.setRfc(afiliado.getRfc());
                 pago.setReferencia(charge.getAuthorization());
                 pago.setEstatus(charge.getStatus());
-
+                
+                DateFormat formatoFecha = new SimpleDateFormat("dd");
+                String dia=formatoFecha.format(afiliado.getFechaAlta());
+                corte = Integer.parseInt(dia);
+                Date fechaCorte = calcularFechas.calcularFechas(periodo,corte);
+                
+                afiliado.setEstatus(1);
+    			afiliado.setFechaCorte(fechaCorte);
                 afiliado.setSaldoCorte(0.00);
+              
+                
 
                 pagoService.save(pago);
                 afiliadoService.save(afiliado);

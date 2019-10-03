@@ -63,7 +63,7 @@ public class AfiliadoController {
 		Afiliado afiliado = new Afiliado();
 
 		if (servicio == null) {
-			redirect.addFlashAttribute("error", "debes seleccionar un servicio");
+			redirect.addFlashAttribute("error", "Debes seleccionar un servicio");
 			return "redirect:/afiliados/servicio";
 		}
 		model.put("servicios", servicio);
@@ -122,7 +122,7 @@ public class AfiliadoController {
 				afiliado.setClave(generarClave.getClaveAfiliado(clave));
 				mensajeFlash = "Registro creado con éxito";
 			}
-			afiliado.setEstatus(1);
+			afiliado.setEstatus(2);
 			logger.info(mensajeFlash);
 			afiliadoService.save(afiliado);
 			status.setComplete();
@@ -144,7 +144,7 @@ public class AfiliadoController {
 
 		mensajeFlash = "id del afiliado creado es: " + afiliado.getId();
 		logger.info(mensajeFlash);
-		redirect.addFlashAttribute("success", "afiliado creado con exito");
+		redirect.addFlashAttribute("success", "Afiliado creado con éxito");
 		return "redirect:/beneficiarios/crear/" + afiliado.getId();
 	}
 
@@ -194,7 +194,7 @@ public class AfiliadoController {
 
 		Afiliado afiliado = new Afiliado();
 
-		Double d1, d2, d3, d4, costoAfiliado;
+		Double d1, d2, d3, d4, saldoAcumulado;
 		try {
 			afiliado = afiliadoService.findById(id);
 			Long idServicio = afiliado.getServicio().getId();
@@ -203,7 +203,7 @@ public class AfiliadoController {
 			d1 = serv.getCostoTitular();
 			d2 = serv.getInscripcionTitular();
 		
-			costoAfiliado = d1 + d2;
+			saldoAcumulado = d1 + d2;
 
 			List<Afiliado> beneficiarios = afiliadoService.getBeneficiarioByIdByIsBeneficiario(id);
 			if (beneficiarios != null) {
@@ -212,13 +212,13 @@ public class AfiliadoController {
 				for (Integer x = 0; x < beneficiarios.size(); x++) {
 					d3= serv.getCostoBeneficiario();
 				    d4=serv.getInscripcionBeneficiario();
-					costoAfiliado += d3;
+					saldoAcumulado += d3+d4;
 				}
 
 			}
 			
-			afiliado.setSaldoAcumulado(costoAfiliado);
-			afiliado.setSaldoCorte(costoAfiliado);
+			afiliado.setSaldoAcumulado(saldoAcumulado);
+			afiliado.setSaldoCorte(saldoAcumulado);
 			afiliadoService.save(afiliado);
 			status.setComplete();
 
