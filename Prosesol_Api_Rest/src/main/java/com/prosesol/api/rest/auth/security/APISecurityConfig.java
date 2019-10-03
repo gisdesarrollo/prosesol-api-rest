@@ -17,16 +17,16 @@ import com.prosesol.api.rest.services.JpaUserDetailsService;
 @EnableGlobalMethodSecurity(securedEnabled = true, prePostEnabled = true)
 @Configuration
 public class APISecurityConfig extends WebSecurityConfigurerAdapter{
-	
+
 	@Autowired
 	private JpaUserDetailsService userDetailsService;
-	
+
 	@Autowired
 	private BCryptPasswordEncoder passwordEncoder;
-	
+
 	@Autowired
 	private JWTService jwtService;
-	
+
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http.authorizeRequests().antMatchers("/", "/css/**", "/js/**", "/prosesol/**", "/afiliados/**"
@@ -47,5 +47,5 @@ public class APISecurityConfig extends WebSecurityConfigurerAdapter{
 		build.userDetailsService(userDetailsService)
 		.passwordEncoder(passwordEncoder);
 	}
-	
+
 }

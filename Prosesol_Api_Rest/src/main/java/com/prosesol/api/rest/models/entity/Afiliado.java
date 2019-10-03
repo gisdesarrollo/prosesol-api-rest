@@ -411,15 +411,40 @@ public class Afiliado implements Serializable {
 
 	@Override
 	public String toString() {
-
-		final StringBuilder builder = new StringBuilder();
-
-		builder.append("Id: [").append(id).append("]").append("Nombre Completo: [")
-				.append(nombre + " " + apellidoPaterno + " " + apellidoMaterno).append("]").append("RFC: [").append(rfc)
-				.append("]").append("Fecha de Corte: [").append(fechaCorte).append("]").append("Saldo Acumulado: [")
-				.append(saldoAcumulado).append("]").append("Saldo al Corte: [").append(saldoCorte).append("]");
-
-		return builder.toString();
+		return "Afiliado{" +
+				"id=" + id +
+				", clave='" + clave + '\'' +
+				", nombre='" + nombre + '\'' +
+				", apellidoPaterno='" + apellidoPaterno + '\'' +
+				", apellidoMaterno='" + apellidoMaterno + '\'' +
+				", fechaNacimiento=" + fechaNacimiento +
+				", lugarNacimiento='" + lugarNacimiento + '\'' +
+				", estadoCivil='" + estadoCivil + '\'' +
+				", ocupacion='" + ocupacion + '\'' +
+				", sexo='" + sexo + '\'' +
+				", pais='" + pais + '\'' +
+				", curp='" + curp + '\'' +
+				", nss=" + nss +
+				", rfc='" + rfc + '\'' +
+				", telefonoFijo=" + telefonoFijo +
+				", telefonoMovil=" + telefonoMovil +
+				", email='" + email + '\'' +
+				", direccion='" + direccion + '\'' +
+				", municipio='" + municipio + '\'' +
+				", codigoPostal=" + codigoPostal +
+				", entidadFederativa='" + entidadFederativa + '\'' +
+				", infonavit='" + infonavit + '\'' +
+				", numeroInfonavit=" + numeroInfonavit +
+				", fechaAlta=" + fechaAlta +
+				", fechaAfiliacion=" + fechaAfiliacion +
+				", fechaCorte=" + fechaCorte +
+				", saldoAcumulado=" + saldoAcumulado +
+				", saldoCorte=" + saldoCorte +
+				", estatus=" + estatus +
+				", inscripcion=" + inscripcion +
+				", comentarios='" + comentarios + '\'' +
+				", isBeneficiario=" + isBeneficiario +
+				", corte=" + corte +
+				'}';
 	}
-
 }

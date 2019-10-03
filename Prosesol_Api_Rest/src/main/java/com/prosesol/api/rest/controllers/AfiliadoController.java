@@ -4,6 +4,7 @@ import com.prosesol.api.rest.models.entity.Afiliado;
 import com.prosesol.api.rest.models.entity.Servicio;
 import com.prosesol.api.rest.services.IAfiliadoService;
 import com.prosesol.api.rest.services.IServicioService;
+import com.prosesol.api.rest.utils.GenerarClave;
 import com.prosesol.api.rest.utils.Paises;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -43,6 +44,9 @@ public class AfiliadoController {
 	@Autowired
 	private IServicioService servicioService;
 
+	@Autowired
+	private GenerarClave generarClave;
+
 	@RequestMapping(value = "/servicio")
 	public String seleccionarServicio(Map<String, Object> model) {
 		Afiliado afiliado = new Afiliado();
@@ -69,10 +73,9 @@ public class AfiliadoController {
 	}
 
 	@RequestMapping(value = "/crear", method = RequestMethod.POST, params = "action=save")
-	public String guardar(@ModelAttribute(name = "clave") String clave, @Valid Afiliado afiliado, BindingResult result,
+	public String guardar(@Valid Afiliado afiliado, BindingResult result,
 			Model model, RedirectAttributes redirect, SessionStatus status) {
 
-		System.out.println(clave);
 		String mensajeFlash = null;
 		Date date = new Date();
 
@@ -116,7 +119,7 @@ public class AfiliadoController {
 				 */
 				afiliado.setIsBeneficiario(false);
 				afiliado.setFechaAlta(date);
-				afiliado.setClave(clave);
+				afiliado.setClave(generarClave.getClaveAfiliado(clave));
 				mensajeFlash = "Registro creado con éxito";
 			}
 			afiliado.setEstatus(1);
@@ -264,26 +267,4 @@ public class AfiliadoController {
 	 * 
 	 * @param(name = "clave")
 	 */
-
-	/*
-	 * metodo para clave*
-	 * 
-	 * 
-	 */
-
-	@ModelAttribute("clave")
-	public String getClave() {
-		return afiliadoService.getClave();
-	}
-	/*
-	 * @ModelAttribute("clave") public String getClaveAfiliado() {
-	 * 
-	 * String claveAfiliado = "PR-";
-	 * 
-	 * for (int i = 0; i < 10; i++) { claveAfiliado += (clave.charAt((int)
-	 * (Math.random() * clave.length()))); }
-	 * 
-	 * return claveAfiliado; }
-	 */
-
 }

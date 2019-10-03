@@ -1,19 +1,17 @@
 package com.prosesol.api.rest.services;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
+import com.prosesol.api.rest.models.dao.IAfiliadoDao;
+import com.prosesol.api.rest.models.entity.Afiliado;
+import com.prosesol.api.rest.repository.BeneficiarioRepository;
+import com.prosesol.api.rest.utils.Estados;
+import com.prosesol.api.rest.utils.Paises;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.prosesol.api.rest.models.dao.IAfiliadoDao;
-import com.prosesol.api.rest.models.entity.Afiliado;
-import com.prosesol.api.rest.repository.BeneficiarioRepository;
-import com.prosesol.api.rest.utils.Clave;
-import com.prosesol.api.rest.utils.Estados;
-import com.prosesol.api.rest.utils.Paises;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 @Service
 public class AfiliadoServiceImpl implements IAfiliadoService {
@@ -73,11 +71,5 @@ public class AfiliadoServiceImpl implements IAfiliadoService {
 	@Override
 	public List<Afiliado> getBeneficiarioByIdByIsBeneficiario(Long idAfiliado) {
 		return afiliadoDao.getBeneficiarioByIdByIsBeneficiario(idAfiliado);
-	}
-
-	@Override
-	public String getClave() {
-		Clave clave=new Clave();
-		return clave.getClaveAfiliado();
 	}
 }
