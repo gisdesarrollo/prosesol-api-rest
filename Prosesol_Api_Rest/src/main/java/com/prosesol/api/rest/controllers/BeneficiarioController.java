@@ -7,6 +7,7 @@ import java.util.Map;
 
 import javax.validation.Valid;
 
+import com.prosesol.api.rest.utils.GenerarClave;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,11 +35,17 @@ public class BeneficiarioController {
 
 	protected static final Log logger = LogFactory.getLog(BeneficiarioController.class);
 
+	@Value("${app.clave}")
+	private String clave;
+
 	@Autowired
 	private IAfiliadoService afiliadoService;
 
 	@Autowired
 	private IServicioService servicioService;
+
+	@Autowired
+	private GenerarClave generarClave;
 
 	private static Long idAfiliado;
 
@@ -98,7 +105,7 @@ public class BeneficiarioController {
 			afiliado.setEstatus(2);
 			afiliado.setServicio(buscoAfiliadoServicio.getServicio());
 			afiliado.setIsBeneficiario(true);
-			afiliado.setClave(clave);
+			afiliado.setClave(generarClave.getClaveAfiliado(clave));
 			afiliado.setFechaAlta(fechaAlta);
 
 			afiliadoService.save(afiliado);
@@ -118,7 +125,7 @@ public class BeneficiarioController {
 	}
 
 	@RequestMapping(value = "/guardar", method = RequestMethod.POST, params = "action=saveCrear")
-	public String guardarCrear(@ModelAttribute("clave") String clave, Afiliado afiliado, BindingResult result,
+	public String guardarCrear(Afiliado afiliado, BindingResult result,
 			Model model, RedirectAttributes redirect, SessionStatus status) {
 
 		System.out.println("id: " + idAfiliado);
@@ -174,19 +181,4 @@ public class BeneficiarioController {
 	public void guardarRelAfiliadoBeneficiario(Afiliado beneficiario, Long id) {
 		afiliadoService.insertBeneficiarioUsingJpa(beneficiario, id);
 	}
-
-	@ModelAttribute("clave")
-	public String getClave() {
-		return afiliadoService.getAllClave();
-	}
-	/*
-	 * @ModelAttribute("clave") public String getClaveAfiliado() {
-	 * 
-	 * String clave = "0123456789"; String claveAfiliado = "PR-";
-	 * 
-	 * for (int i = 0; i < 10; i++) { claveAfiliado += (clave.charAt((int)
-	 * (Math.random() * clave.length()))); }
-	 * 
-	 * return claveAfiliado; }
-	 */
 }

@@ -79,10 +79,4 @@ public class AfiliadoServiceImpl implements IAfiliadoService {
 	public List<Afiliado> getBeneficiarioByIdByIsBeneficiario(Long idAfiliado) {
 		return afiliadoDao.getBeneficiarioByIdByIsBeneficiario(idAfiliado);
 	}
-	
-	@Override
-	public String getAllClave() {
-		GenerarClave clave=new GenerarClave();
-		return clave.getClave();
-	}
 }

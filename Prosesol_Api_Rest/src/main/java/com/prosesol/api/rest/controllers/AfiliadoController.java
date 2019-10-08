@@ -5,6 +5,7 @@ import com.prosesol.api.rest.models.entity.Servicio;
 import com.prosesol.api.rest.services.IAfiliadoService;
 import com.prosesol.api.rest.services.IServicioService;
 import com.prosesol.api.rest.utils.CalcularFecha;
+import com.prosesol.api.rest.utils.GenerarClave;
 import com.prosesol.api.rest.utils.Paises;
 
 
@@ -44,7 +45,7 @@ public class AfiliadoController {
 	protected static final Log logger = LogFactory.getLog(AfiliadoController.class);
 
 	@Value("${app.clave}")
-	private String clave2;
+	private String clave;
 	
 	@Autowired
 	private CalcularFecha calcularFechas;
@@ -54,6 +55,9 @@ public class AfiliadoController {
 
 	@Autowired
 	private IServicioService servicioService;
+
+	@Autowired
+	private GenerarClave generarClave;
 
 	@RequestMapping(value = "/servicio")
 	public String seleccionarServicio(Map<String, Object> model) {
@@ -85,10 +89,9 @@ public class AfiliadoController {
 	}
 
 	@RequestMapping(value = "/crear", method = RequestMethod.POST, params = "action=save")
-	public String guardar(@ModelAttribute(name = "clave") String clave, @Valid Afiliado afiliado, BindingResult result,
+	public String guardar(@Valid Afiliado afiliado, BindingResult result,
 			Model model, RedirectAttributes redirect, SessionStatus status) {
 
-		System.out.println(clave);
 		String mensajeFlash = null;
 		Date date = new Date();
 
@@ -117,25 +120,9 @@ public class AfiliadoController {
 				mensajeFlash = "Registro editado con éxito";
 
 			} else {
-				/*
-				 * if (afiliado.getRfc() == null || afiliado.getRfc().equals("")) { LocalDate
-				 * fechaNacimiento =
-				 * afiliado.getFechaNacimiento().toInstant().atZone(ZoneId.systemDefault())
-				 * .toLocalDate();
-				 * 
-				 * rfc = new Rfc.Builder().name(afiliado.getNombre()).firstLastName(afiliado.
-				 * getApellidoPaterno())
-				 * .secondLastName(afiliado.getApellidoMaterno()).birthday(fechaNacimiento.
-				 * getDayOfMonth(), fechaNacimiento.getMonthValue(), fechaNacimiento.getYear())
-				 * .build();
-				 * 
-				 * afiliado.setRfc(rfc.toString());
-				 * 
-				 * System.out.println(rfc.toString()); }
-				 */
 				afiliado.setIsBeneficiario(false);
 				afiliado.setFechaAlta(date);
-				afiliado.setClave(clave);
+				afiliado.setClave(generarClave.getClaveAfiliado(clave));
 				mensajeFlash = "Registro creado con éxito";
 			}
 			afiliado.setEstatus(2);
@@ -184,7 +171,7 @@ public class AfiliadoController {
 				inscripcionBeneficiario = servicio.getInscripcionBeneficiario();
 				costoTotalBeneficiario = costoBeneficiario + inscripcionBeneficiario;
 
-				model.addAttribute("costoBeneficiario", costoBeneficiario);
+				model.addAttribute("costoBeneficiario", costoTotalBeneficiario);
 				model.addAttribute("beneficiarios", beneficiarios);
 				for (Integer x = 0; x < beneficiarios.size(); x++) {
 					//d3 = servicio.getCostoBeneficiario();
@@ -286,32 +273,5 @@ public class AfiliadoController {
 	public List<Servicio> getAllServicios() {
 		return servicioService.findAll();
 	}
-
-	/**
-	 * Método para asignar una clave para el Afiliado
-	 * 
-	 * @param(name = "clave")
-	 */
-
-	/*
-	 * metodo para clave*
-	 * 
-	 * 
-	 */
-
-	@ModelAttribute("clave")
-	public String getClave() {
-		return afiliadoService.getAllClave();
-	}
-	/*
-	 * @ModelAttribute("clave") public String getClaveAfiliado() {
-	 * 
-	 * String claveAfiliado = "PR-";
-	 * 
-	 * for (int i = 0; i < 10; i++) { claveAfiliado += (clave.charAt((int)
-	 * (Math.random() * clave.length()))); }
-	 * 
-	 * return claveAfiliado; }
-	 */
 
 }
