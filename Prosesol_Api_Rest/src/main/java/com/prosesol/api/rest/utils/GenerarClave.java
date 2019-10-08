@@ -7,12 +7,12 @@ public class GenerarClave {
 
 	private String clave;
 
-	public String getClave() {
+	public String getClaveAfiliado(String clave) {
 
 		this.clave = "PR-";
-		String num="0123456789";
+
 		for (int i = 0; i < 10; i++) {
-			this.clave += (num.charAt((int) (Math.random() * num.length())));
+			this.clave += (clave.charAt((int) (Math.random() * clave.length())));
 		}
 
 		return this.clave;

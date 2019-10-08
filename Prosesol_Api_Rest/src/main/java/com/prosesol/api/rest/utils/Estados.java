@@ -17,7 +17,7 @@ public class Estados {
 		ESTADOS.add("CHP");
 		ESTADOS.add("COA");
 		ESTADOS.add("COL");
-		ESTADOS.add("CDMX");
+		ESTADOS.add("CMX");
 		ESTADOS.add("DUR");
 		ESTADOS.add("GRO");
 		ESTADOS.add("GUA");

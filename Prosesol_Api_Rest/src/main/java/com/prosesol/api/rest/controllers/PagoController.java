@@ -158,7 +158,7 @@ public class PagoController {
                 pago.setFechaPago(new Date());
                 pago.setMonto(charge.getAmount().doubleValue());
                 pago.setRfc(afiliado.getRfc());
-                pago.setReferencia(charge.getAuthorization());
+                pago.setReferenciaBancaria(charge.getAuthorization());
                 pago.setEstatus(charge.getStatus());
                 
                 DateFormat formatoFecha = new SimpleDateFormat("dd");

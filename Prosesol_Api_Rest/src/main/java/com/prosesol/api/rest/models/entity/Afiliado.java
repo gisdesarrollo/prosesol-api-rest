@@ -86,7 +86,7 @@ public class Afiliado implements Serializable {
 	@Column(name = "codigo_postal")
 	private Long codigoPostal;
 
-	@Column(name = "entidad_federativa", length = 3)
+	@Column(name = "entidad_federativa", length = 4)
 	private String entidadFederativa;
 
 	@Column(name = "infonavit")

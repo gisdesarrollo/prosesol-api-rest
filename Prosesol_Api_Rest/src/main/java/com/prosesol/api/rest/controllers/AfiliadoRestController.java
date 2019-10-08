@@ -1,29 +1,30 @@
 package com.prosesol.api.rest.controllers;
 
-import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-
+import com.prosesol.api.rest.controllers.exception.AfiliadoException;
+import com.prosesol.api.rest.models.entity.Afiliado;
+import com.prosesol.api.rest.models.entity.Servicio;
 import com.prosesol.api.rest.models.entity.custom.AfiliadoJsonRequest;
 import com.prosesol.api.rest.models.entity.custom.AfiliadoRequest;
+import com.prosesol.api.rest.repository.BeneficiarioRepository;
+import com.prosesol.api.rest.services.IAfiliadoService;
+import com.prosesol.api.rest.services.ICustomerKeyService;
+import com.prosesol.api.rest.utils.CalcularFecha;
+import com.prosesol.api.rest.utils.GenerarClave;
+import com.prosesol.api.rest.utils.ValidateAfiliadoRequest;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataAccessException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import com.prosesol.api.rest.controllers.exception.AfiliadoException;
-import com.prosesol.api.rest.models.entity.Afiliado;
-import com.prosesol.api.rest.models.entity.CustomerKey;
-import com.prosesol.api.rest.services.IAfiliadoService;
-import com.prosesol.api.rest.services.ICustomerKeyService;
-
-import javax.validation.Valid;
+import java.text.DecimalFormat;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.*;
 
 @RestController
 @RequestMapping("/api")
@@ -42,34 +43,49 @@ public class AfiliadoRestController {
 	@Autowired
 	private ICustomerKeyService customerService;
 
+	@Autowired
+	private ValidateAfiliadoRequest validateAfiliadoRequest;
+
+	@Autowired
+	private BeneficiarioRepository beneficiarioRepository;
+
+	@Autowired
+	private GenerarClave generarClave;
+
+	@Autowired
+	private CalcularFecha calcularFecha;
+
 	@GetMapping("/afiliados")
-	public ResponseEntity<?> getAllAfiliadoas() {
+	public ResponseEntity<?> getAllAfiliados() {
 
 		List<Afiliado> afiliados = null;
 		LinkedHashMap<String, Object> response = new LinkedHashMap<String, Object>();
 
 		try {
 			afiliados = afiliadoService.findAll();
+
+			if (afiliados == null) {
+				throw new AfiliadoException(4000, "No hay afiliados en la base de datos");
+			}else{
+				response.put("afiliados", afiliados);
+				response.put("estatus", "OK");
+				response.put("code", HttpStatus.OK.value());
+				response.put("mensaje", "Consulta realizada correctamente");
+			}
+
 		} catch (DataAccessException dae) {
 			response.put("estatus",
-					"ERR: " + dae.getMessage().concat(": ").concat(dae.getMostSpecificCause().getMessage()));
+					"ERR");
 			response.put("code", HttpStatus.INTERNAL_SERVER_ERROR.value());
 			response.put("mensaje",
 					"Error al realizar la consulta en la base de datos " + HttpStatus.INTERNAL_SERVER_ERROR);
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-
-		if (afiliados == null) {
+		}catch (AfiliadoException ae){
 			response.put("estatus", "ERR");
-			response.put("code", HttpStatus.OK.value());
-			response.put("mensaje", "No existen afiliados en la base de datos");
+			response.put("code", HttpStatus.INTERNAL_SERVER_ERROR.value());
+			response.put("mensaje", ae.getMessage());
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.OK);
 		}
-
-		response.put("afiliados", afiliados);
-		response.put("estatus", "OK");
-		response.put("code", HttpStatus.OK.value());
-		response.put("mensaje", "Consulta realizada correctamente");
 
 		return new ResponseEntity<LinkedHashMap<String, Object>>(response, HttpStatus.OK);
 	}
@@ -111,10 +127,10 @@ public class AfiliadoRestController {
 			}
 		}catch (DataAccessException dae) {
 			response.put("estatus",
-					"ERR: " + dae.getMessage().concat(": ").concat(dae.getMostSpecificCause().getMessage()));
+					"ERR");
 			response.put("code", HttpStatus.INTERNAL_SERVER_ERROR.value());
 			response.put("mensaje",
-					"Error al realizar la consulta en la base de datos " + HttpStatus.INTERNAL_SERVER_ERROR);
+					"Error al realizar la consulta en la base de datos" );
 			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 		
@@ -127,24 +143,107 @@ public class AfiliadoRestController {
 	}
 
 	@PostMapping("/afiliados/crear")
-	public ResponseEntity<?> createAfiliado(@RequestBody List<AfiliadoJsonRequest> afiliadoJsonRequestList){
+	public ResponseEntity<?> createAfiliado(@RequestBody AfiliadoJsonRequest afiliadoJsonRequestList){
 
 		Afiliado afiliado = new Afiliado();
-		List<Afiliado> beneficiario = new ArrayList<Afiliado>();
+		List<AfiliadoRequest> afiliadoJsonResponse = new ArrayList<AfiliadoRequest>();
 		LinkedHashMap<String, Object> response = new LinkedHashMap<String, Object>();
 
 		try{
 
-			for(AfiliadoJsonRequest afiliadoJsonRequest : afiliadoJsonRequestList){
-				System.out.println(afiliadoJsonRequest.toString());
+			int afiliadoCounter = 0;
+			int beneficiarioCounter = 0;
+
+			AfiliadoRequest afiliadoResponse = new AfiliadoRequest();
+			Afiliado beneficiario = new Afiliado();
+			List<Afiliado> beneficiariosResponse = new ArrayList<Afiliado>();
+			for(AfiliadoRequest afiliadoRequest : afiliadoJsonRequestList.getAfiliado()){
+
+				LocalDate fechaNacimiento = afiliadoRequest.getFechaNacimiento().toInstant()
+						.atZone(ZoneId.of("America/Mexico_City"))
+						.toLocalDate();
+
+				Date fechaCorte = calcularFecha.calcularFechas("MENSUAL", fechaNacimiento.getDayOfMonth());
+
+				afiliado = validateAfiliadoRequest.validateAfiliadoFromJson(afiliadoRequest);
+				afiliado.setClave(generarClave.getClaveAfiliado(clave));
+				afiliado.setFechaCorte(fechaCorte);
+				afiliadoService.save(afiliado);
+
+				if(afiliadoRequest.getBeneficiario() != null){
+
+					Afiliado titular = afiliadoService.findById(afiliado.getId());
+					Servicio servicio = afiliado.getServicio();
+					for(Afiliado beneficiarios : afiliadoRequest.getBeneficiario()){
+
+						validateAfiliadoRequest.validateBeneficiarioFromJson(beneficiarios);
+
+						beneficiarios.setClave(generarClave.getClaveAfiliado(clave));
+						beneficiarios.setFechaAlta(new Date());
+						beneficiarios.setEstatus(1);
+						beneficiarios.setServicio(servicio);
+
+						afiliadoService.save(beneficiarios);
+
+						beneficiarioRepository.insertBeneficiario(beneficiarios, afiliado.getId());
+
+						beneficiario.setClave(beneficiarios.getClave());
+						beneficiario.setNombre(beneficiarios.getNombre());
+						beneficiario.setApellidoPaterno(beneficiarios.getApellidoPaterno());
+						beneficiario.setApellidoMaterno(beneficiarios.getApellidoMaterno());
+
+						beneficiariosResponse.add(beneficiario);
+
+						beneficiarioCounter++;
+					}
+				}
+
+				afiliadoResponse.setClave(afiliado.getClave());
+				afiliadoResponse.setNombre(afiliado.getNombre());
+				afiliadoResponse.setApellidoPaterno(afiliado.getApellidoPaterno());
+				afiliadoResponse.setApellidoMaterno(afiliado.getApellidoMaterno());
+				afiliadoResponse.setBeneficiario(beneficiariosResponse);
+
+				afiliadoJsonResponse.add(afiliadoResponse);
+
 			}
 
-		}catch (Exception e){
+			System.out.println("Total de Afiliados: " + afiliadoCounter);
+			System.out.println("Total de Beneficiarios: " + beneficiarioCounter);
 
+		}catch (AfiliadoException e){
+			LOG.error("Error en el proceso de creación", e);
+			response.put("estatus", "ERR");
+			response.put("code", e.getCode());
+			response.put("message", e.getMessage());
+
+			if(afiliado.getId() != null && afiliado.getId() > 0){
+				afiliadoService.deleteById(afiliado.getId());
+			}
+
+			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+		}catch(NullPointerException npe){
+			LOG.error("Error en el proceso de creación", npe);
+			response.put("estatus", "ERR");
+			response.put("code", HttpStatus.INTERNAL_SERVER_ERROR);
+			response.put("message", "Hubo un error inseperado en el servicio");
+
+			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+		}catch(DataIntegrityViolationException dae){
+			response.put("estatus",
+					"ERR");
+			response.put("code", HttpStatus.INTERNAL_SERVER_ERROR.value());
+			response.put("mensaje",
+					"El afiliado ya se encuentra registrado en la base de datos");
+			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 
+		response.put("afiliado", afiliadoJsonResponse);
+		response.put("estatus", "OK");
+		response.put("code", HttpStatus.OK.value());
+		response.put("mensaje", "Se han insertado correctamente los registros");
 
-		return null;
+		return new ResponseEntity<LinkedHashMap<String, Object>>(response, HttpStatus.OK);
 	}
 
 }

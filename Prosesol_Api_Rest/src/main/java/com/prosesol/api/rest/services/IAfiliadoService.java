@@ -11,6 +11,8 @@ public interface IAfiliadoService {
 	
 	public List<Afiliado> findAll();
 
+	public void deleteById(Long id);
+
 	public void save(Afiliado afiliado);
 
 	public Afiliado findById(Long id);

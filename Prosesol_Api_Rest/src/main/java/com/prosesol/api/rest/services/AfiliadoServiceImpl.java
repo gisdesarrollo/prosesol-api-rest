@@ -37,6 +37,12 @@ public class AfiliadoServiceImpl implements IAfiliadoService {
 
 	@Override
 	@Transactional
+	public void deleteById(Long id) {
+		afiliadoDao.deleteById(id);
+	}
+
+	@Override
+	@Transactional
 	public void save(Afiliado afiliado) {
 		afiliadoDao.save(afiliado);
 	}
