@@ -43,14 +43,21 @@ public class BeneficiarioController {
 	private static Long idAfiliado;
 
 	@RequestMapping(value = "/crear/{id}")
-	public String crear(@PathVariable("id") Long id, Map<String, Object> model) {
+	public String crear(@PathVariable("id") Long id, Map<String, Object> model, RedirectAttributes redirect) {
 
 		idAfiliado = id;
 		System.out.println("la id afiliado es: " + idAfiliado);
 
 		Afiliado afiliado = new Afiliado();
-		// System.out.println(afiliado.getServicio());
 		model.put("afiliado", afiliado);
+		
+		afiliado = afiliadoService.findById(id);
+		if (afiliado == null) {
+			redirect.addFlashAttribute("error", "Afiliado no registrado");
+			return "redirect:/afiliados/servicio";
+		}
+		// System.out.println(afiliado.getServicio());
+		
 		model.put("id", idAfiliado);
 
 		return "beneficiarios/crear";
@@ -63,7 +70,7 @@ public class BeneficiarioController {
 		System.out.println("id: " + idAfiliado);
 
 		Date fechaAlta = new Date();
-		Afiliado resul = afiliadoService.findById(idAfiliado);
+		Afiliado buscoAfiliadoServicio = afiliadoService.findById(idAfiliado);
 		Rfc rfc = null;
 		try {
 			if (afiliado.getFechaNacimiento() == null) {
@@ -87,9 +94,9 @@ public class BeneficiarioController {
 
 			}
 
-			resul.getServicio();
+			buscoAfiliadoServicio.getServicio();
 			afiliado.setEstatus(2);
-			afiliado.setServicio(resul.getServicio());
+			afiliado.setServicio(buscoAfiliadoServicio.getServicio());
 			afiliado.setIsBeneficiario(true);
 			afiliado.setClave(clave);
 			afiliado.setFechaAlta(fechaAlta);
@@ -169,15 +176,17 @@ public class BeneficiarioController {
 	}
 
 	@ModelAttribute("clave")
-	public String getClaveAfiliado() {
-
-		String clave = "0123456789";
-		String claveAfiliado = "PR-";
-
-		for (int i = 0; i < 10; i++) {
-			claveAfiliado += (clave.charAt((int) (Math.random() * clave.length())));
-		}
-
-		return claveAfiliado;
+	public String getClave() {
+		return afiliadoService.getAllClave();
 	}
+	/*
+	 * @ModelAttribute("clave") public String getClaveAfiliado() {
+	 * 
+	 * String clave = "0123456789"; String claveAfiliado = "PR-";
+	 * 
+	 * for (int i = 0; i < 10; i++) { claveAfiliado += (clave.charAt((int)
+	 * (Math.random() * clave.length()))); }
+	 * 
+	 * return claveAfiliado; }
+	 */
 }

@@ -22,4 +22,6 @@ public interface IAfiliadoService {
 	public void insertBeneficiarioUsingJpa(Afiliado beneficiario, Long id);
 	
 	public List<Afiliado> getBeneficiarioByIdByIsBeneficiario(Long idAfiliado);
+	
+	public String getAllClave();
 }

@@ -1,0 +1,146 @@
+
+.tituloAfiliado{
+	
+	text-align:center;
+	background-color: C1D6F0;
+    border-radius: 10px 10px 10px 10px;
+	-moz-border-radius: 10px 10px 10px 10px;
+	-webkit-border-radius: 10px 10px 10px 10px;
+	border: 0px solid #000000;
+}
+.tituloAfiliado h1{
+	text-shadow:#4ECC29 0 0 10px;
+	font-family: Arial;
+	color: white;
+ font-style:italic;
+  font-weight:bold;
+  font-size:2em;
+  font-color:#ffffff;
+}
+.tituloAfiliado h3{
+	text-shadow:black 0 0 10px;
+	font-family: Arial;
+	color: white;
+ font-style:italic;
+  font-weight:bold;
+  font-size:2em;
+  font-color:#ffffff;
+}
+.tituloBeneficiario{
+	text-align:center;
+	background-color: C1D6F0;
+    
+    border-radius: 10px 10px 10px 10px;
+	-moz-border-radius: 10px 10px 10px 10px;
+	-webkit-border-radius: 10px 10px 10px 10px;
+	border: 0px solid #000000;
+ 
+   
+
+}
+.tituloBeneficiario h1{
+	text-shadow:#4ECC29 0 0 10px;
+	font-family: Arial;
+	color: white;
+ font-style:italic;
+  font-weight:bold;
+  font-size:2em;
+  font-color:#ffffff;
+}
+.subtituloAfiliado span{
+	font-family: Arial;
+	font-weight:900;
+	font-size:25px;
+}
+.subtituloAfiliado h5{
+	color: blue;
+	font-weight:500;
+	font-size:20px;
+}
+
+.tituloAfiliado h1,h3{
+	
+	
+	text-shadow: 0 2px 0 #f2e331,
+               0 2px 0 #c9c9c9,
+               0 3px 0 #bbb,
+               0 4px 0 #b9b9b9,
+               0 5px 0 #aaa,
+               0 6px 1px rgba(0,0,0,.1),
+               0 0 5px rgba(0,0,0,.1),
+               0 1px 3px rgba(0,0,0,.3),
+               0 3px 5px rgba(0,0,0,.2),
+               0 5px 10px rgba(0,0,0,.25),
+               0 10px 10px rgba(0,0,0,.2),
+               0 20px 20px rgba(0,0,0,.15);
+}
+
+.tituloBeneficiario h1{
+	text-shadow: 0 2px 0 #f2e331,
+               0 2px 0 #c9c9c9,
+               0 3px 0 #bbb,
+               0 4px 0 #b9b9b9,
+               0 5px 0 #aaa,
+               0 6px 1px rgba(0,0,0,.1),
+               0 0 5px rgba(0,0,0,.1),
+               0 1px 3px rgba(0,0,0,.3),
+               0 3px 5px rgba(0,0,0,.2),
+               0 5px 10px rgba(0,0,0,.25),
+               0 10px 10px rgba(0,0,0,.2),
+               0 20px 20px rgba(0,0,0,.15);
+}
+
+.resultados{
+	text-shadow: 0 2px 0 #00ff00,
+               0 2px 0 #c9c9c9,
+               0 3px 0 #bbb,
+               0 4px 0 #b9b9b9,
+               0 5px 0 #aaa,
+               0 6px 1px rgba(0,0,0,.1),
+               0 0 5px rgba(0,0,0,.1),
+               0 1px 3px rgba(0,0,0,.3),
+               0 3px 5px rgba(0,0,0,.2),
+               0 5px 10px rgba(0,0,0,.25),
+               0 10px 10px rgba(0,0,0,.2),
+               0 20px 20px rgba(0,0,0,.15);
+}
+
+.subtituloBeneficiario{
+	font-weight:900;
+	font-size:25px;
+}
+
+.col-sm-4{
+/* text-align: center;*/	
+display: grid;
+grid-auto-rows: 40px;
+grid-gap: 1rem;
+font-family:verdana;
+position:relative;
+  left:60px;
+  
+}
+.col-sm-4:hover {
+  animation: shake 0.82s cubic-bezier(.36,.07,.19,.97) both;
+  transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
+  perspective: 1000px;
+}
+
+@keyframes shake {
+  10%, 90% {
+    transform: translate3d(-1px, 0, 0);
+  }
+  
+  20%, 80% {
+    transform: translate3d(2px, 0, 0);
+  }
+
+  30%, 50%, 70% {
+    transform: translate3d(-4px, 0, 0);
+  }
+
+  40%, 60% {
+    transform: translate3d(4px, 0, 0);
+  }
+}

@@ -4,10 +4,13 @@ import com.prosesol.api.rest.models.entity.Afiliado;
 import com.prosesol.api.rest.models.entity.Servicio;
 import com.prosesol.api.rest.services.IAfiliadoService;
 import com.prosesol.api.rest.services.IServicioService;
-import com.prosesol.api.rest.utils.GenerarClave;
+import com.prosesol.api.rest.utils.CalcularFecha;
 import com.prosesol.api.rest.utils.Paises;
+
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.http.HttpException;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -16,6 +19,7 @@ import org.springframework.stereotype.Controller;
 
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,6 +29,10 @@ import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -36,7 +44,10 @@ public class AfiliadoController {
 	protected static final Log logger = LogFactory.getLog(AfiliadoController.class);
 
 	@Value("${app.clave}")
-	private String clave;
+	private String clave2;
+	
+	@Autowired
+	private CalcularFecha calcularFechas;
 
 	@Autowired
 	private IAfiliadoService afiliadoService;
@@ -44,52 +55,57 @@ public class AfiliadoController {
 	@Autowired
 	private IServicioService servicioService;
 
-	@Autowired
-	private GenerarClave generarClave;
-
 	@RequestMapping(value = "/servicio")
 	public String seleccionarServicio(Map<String, Object> model) {
 		Afiliado afiliado = new Afiliado();
-
+		
+		
 		model.put("afiliado", afiliado);
 
 		return "afiliados/servicio";
 	}
-
+	//@RequestParam
 	@RequestMapping(value = "/crear")
-	public String crear(@RequestParam(value = "servicio") Integer servicio, Map<String, Object> model,
-			RedirectAttributes redirect) {
-
+	public String crear(@ModelAttribute(value = "servicio") String servicio, Map<String, Object> model,
+			RedirectAttributes redirect){
+		
 		Afiliado afiliado = new Afiliado();
-
-		if (servicio == null) {
+			
+		if(servicio.length()<1) {
+			 
 			redirect.addFlashAttribute("error", "Debes seleccionar un servicio");
 			return "redirect:/afiliados/servicio";
 		}
+		
+
 		model.put("servicios", servicio);
 		model.put("afiliado", afiliado);
-
+		
 		return "afiliados/crear";
 	}
 
 	@RequestMapping(value = "/crear", method = RequestMethod.POST, params = "action=save")
-	public String guardar(@Valid Afiliado afiliado, BindingResult result,
+	public String guardar(@ModelAttribute(name = "clave") String clave, @Valid Afiliado afiliado, BindingResult result,
 			Model model, RedirectAttributes redirect, SessionStatus status) {
 
+		System.out.println(clave);
 		String mensajeFlash = null;
 		Date date = new Date();
 
 		try {
 			if (result.hasErrors()) {
 
-				Long serv = afiliado.getServicio().getId();
-				if (serv != null) {
-					System.out.println(serv);
-					model.addAttribute("servicios", serv);
+				Long servicio = afiliado.getServicio().getId();
+				if (servicio != null) {
+					System.out.println(servicio);
+					model.addAttribute("servicios", servicio);
 				}
 				return "/afiliados/crear";
 
 			}
+		
+			
+		
 			if (afiliado.getId() != null) {
 
 				if (afiliado.getIsBeneficiario().equals(true)) {
@@ -119,14 +135,14 @@ public class AfiliadoController {
 				 */
 				afiliado.setIsBeneficiario(false);
 				afiliado.setFechaAlta(date);
-				afiliado.setClave(generarClave.getClaveAfiliado(clave));
+				afiliado.setClave(clave);
 				mensajeFlash = "Registro creado con éxito";
 			}
 			afiliado.setEstatus(2);
 			logger.info(mensajeFlash);
 			afiliadoService.save(afiliado);
 			status.setComplete();
-
+		
 		} catch (DataIntegrityViolationException e) {
 			e.printStackTrace();
 			logger.error("Error al momento de ejecutar el proceso: " + e);
@@ -151,35 +167,35 @@ public class AfiliadoController {
 	@RequestMapping(value = "/bienvenido/{id}")
 	public String mostrar(@PathVariable("id") Long id, Model model) {
 
-		Double d1, d2, d3, d4, costoAfiliado, costoBeneficiario, mensualidad;
+		Double costoTitular,inscripcionTitular, costoBeneficiario, inscripcionBeneficiario, costoTotalAfiliado, costoTotalBeneficiario, mensualidad;
 		try {
 			Afiliado afiliado = afiliadoService.findById(id);
 			Long idServicio = afiliado.getServicio().getId();
-			Servicio serv = servicioService.findById(idServicio);
+			Servicio servicio = servicioService.findById(idServicio);
 
-			d1 = serv.getCostoTitular();
-			d2 = serv.getInscripcionTitular();
-			mensualidad = d1;
-			costoAfiliado = d1 + d2;
+			costoTitular = servicio.getCostoTitular();
+			inscripcionTitular = servicio.getInscripcionTitular();
+			//mensualidad = d1;
+			costoTotalAfiliado = costoTitular + inscripcionTitular;
 
 			List<Afiliado> beneficiarios = afiliadoService.getBeneficiarioByIdByIsBeneficiario(id);
 			if (beneficiarios != null) {
-				d1 = serv.getCostoBeneficiario();
-				d2 = serv.getInscripcionBeneficiario();
-				costoBeneficiario = d1 + d2;
+				costoBeneficiario = servicio.getCostoBeneficiario();
+				inscripcionBeneficiario = servicio.getInscripcionBeneficiario();
+				costoTotalBeneficiario = costoBeneficiario + inscripcionBeneficiario;
 
 				model.addAttribute("costoBeneficiario", costoBeneficiario);
 				model.addAttribute("beneficiarios", beneficiarios);
 				for (Integer x = 0; x < beneficiarios.size(); x++) {
-					d3 = serv.getCostoBeneficiario();
-					// d4=serv.getInscripcionBeneficiario();
-					mensualidad += d3;
+					//d3 = servicio.getCostoBeneficiario();
+					// d4=servicio.getInscripcionBeneficiario();
+					//mensualidad += d3;
 				}
 
 			}
 
-			model.addAttribute("costoAfiliado", costoAfiliado);
-			model.addAttribute("mensualidad", mensualidad);
+			model.addAttribute("costoAfiliado", costoTotalAfiliado);
+		//	model.addAttribute("mensualidad", mensualidad);
 			model.addAttribute("id", id);
 			model.addAttribute("afiliado", afiliado);
 
@@ -194,29 +210,38 @@ public class AfiliadoController {
 
 		Afiliado afiliado = new Afiliado();
 
-		Double d1, d2, d3, d4, saldoAcumulado;
+		Double costoTitular, inscripcionTitular, costoBeneficiario, inscripcionBeneficiario, saldoAcumulado;
+	//	String periodo = "MENSUAL";
+	//	Integer corte=0;
 		try {
 			afiliado = afiliadoService.findById(id);
 			Long idServicio = afiliado.getServicio().getId();
 			Servicio serv = servicioService.findById(idServicio);
 
-			d1 = serv.getCostoTitular();
-			d2 = serv.getInscripcionTitular();
+			costoTitular = serv.getCostoTitular();
+			inscripcionTitular = serv.getInscripcionTitular();
 		
-			saldoAcumulado = d1 + d2;
+			saldoAcumulado = costoTitular + inscripcionTitular;
 
 			List<Afiliado> beneficiarios = afiliadoService.getBeneficiarioByIdByIsBeneficiario(id);
 			if (beneficiarios != null) {
 				
 
 				for (Integer x = 0; x < beneficiarios.size(); x++) {
-					d3= serv.getCostoBeneficiario();
-				    d4=serv.getInscripcionBeneficiario();
-					saldoAcumulado += d3+d4;
+					costoBeneficiario= serv.getCostoBeneficiario();
+				    inscripcionBeneficiario=serv.getInscripcionBeneficiario();
+					saldoAcumulado += costoBeneficiario+inscripcionBeneficiario;
 				}
 
 			}
 			
+		/*	 DateFormat formatoFecha = new SimpleDateFormat("dd");
+			 String dia=formatoFecha.format(afiliado.getFechaAlta());
+			 corte = Integer.parseInt(dia);
+			System.out.println(afiliado.getFechaAlta());
+			Date fechaCorte = calcularFechas.calcularFechas(periodo,corte);
+			
+			afiliado.setFechaCorte(fechaCorte);*/
 			afiliado.setSaldoAcumulado(saldoAcumulado);
 			afiliado.setSaldoCorte(saldoAcumulado);
 			afiliadoService.save(afiliado);
@@ -267,4 +292,26 @@ public class AfiliadoController {
 	 * 
 	 * @param(name = "clave")
 	 */
+
+	/*
+	 * metodo para clave*
+	 * 
+	 * 
+	 */
+
+	@ModelAttribute("clave")
+	public String getClave() {
+		return afiliadoService.getAllClave();
+	}
+	/*
+	 * @ModelAttribute("clave") public String getClaveAfiliado() {
+	 * 
+	 * String claveAfiliado = "PR-";
+	 * 
+	 * for (int i = 0; i < 10; i++) { claveAfiliado += (clave.charAt((int)
+	 * (Math.random() * clave.length()))); }
+	 * 
+	 * return claveAfiliado; }
+	 */
+
 }
