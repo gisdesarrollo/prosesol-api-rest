@@ -4,7 +4,7 @@ import com.josketres.rfcfacil.Rfc;
 import com.prosesol.api.rest.controllers.exception.AfiliadoException;
 import com.prosesol.api.rest.models.entity.Afiliado;
 import com.prosesol.api.rest.models.entity.Servicio;
-import com.prosesol.api.rest.models.entity.custom.AfiliadoRequest;
+import com.prosesol.api.rest.models.entity.schemas.AfiliadoRequest;
 import com.prosesol.api.rest.services.IServicioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,7 +25,10 @@ public class ValidateAfiliadoRequest {
         Rfc rfc;
 
         if(afiliadoRequest.getId() != null){
-            throw new AfiliadoException(4000, "El Afiliado no debe de contar con un id");
+            throw new AfiliadoException(4000, "El Afiliado no debe de contener un id");
+        }
+        if(!afiliadoRequest.getClave().equals("")){
+            throw new AfiliadoException(4000, "El Afiliado no debe de contener una clave");
         }
         if(afiliadoRequest.getNombre().equals(null) || afiliadoRequest.getNombre().equals("")){
             throw new AfiliadoException(4000, "El Afiliado o Beneficiario no cuenta con nombre");
@@ -108,7 +111,10 @@ public class ValidateAfiliadoRequest {
         Rfc rfc;
 
         if(afiliado.getId() != null){
-            throw new AfiliadoException(4000, "El Beneficiario no debe de contar con un id");
+            throw new AfiliadoException(4000, "El Beneficiario no debe de contener un id");
+        }
+        if(!afiliado.getClave().equals("")){
+            throw new AfiliadoException(4000, "El Beneficiario no debe de contener una clave");
         }
         if(afiliado.getNombre().equals(null) || afiliado.getNombre().equals("")){
             throw new AfiliadoException(4000, "El Beneficiario no cuenta con nombre");
