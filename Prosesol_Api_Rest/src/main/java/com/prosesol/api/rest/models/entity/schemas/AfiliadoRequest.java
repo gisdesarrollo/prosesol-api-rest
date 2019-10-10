@@ -1,4 +1,4 @@
-package com.prosesol.api.rest.models.entity.custom;
+package com.prosesol.api.rest.models.entity.schemas;
 
 import com.prosesol.api.rest.models.entity.Afiliado;
 import com.prosesol.api.rest.models.entity.Servicio;
