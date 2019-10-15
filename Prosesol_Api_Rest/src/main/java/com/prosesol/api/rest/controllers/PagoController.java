@@ -200,9 +200,6 @@ public class PagoController {
             }
 
             String descripcionError = evaluarCodigoError(errorCode);
-
-            LOG.error(descripcionError, new OpenpayException(code, descripcionError));
-
             redirect.addFlashAttribute("error", descripcionError);
             return "redirect:/prosesol/buscar";
 
