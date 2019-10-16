@@ -129,14 +129,14 @@
 	<div class="form-container">
 		<div class="field-container">
 			<label for="name">Nombre del Titular</label>
-			<input id="name" placeholder="Como aparece en la tarjeta" type="text"
-				   autocomplete="off" data-openpay-card="holder_name">
+			<input id="name" name="name" placeholder="Como aparece en la tarjeta" type="text"
+				   autocomplete="off" data-openpay-card="holder_name" required>
 		</div>
 		<div class="field-container">
 			<input type="hidden" id="generatecard">
 			<label for="cardnumber">Número de Tarjeta</label>
 			<input id="cardnumber" type="text" pattern="[0-9]*" inputmode="numeric"
-				   autocomplete="off">
+				   autocomplete="off" required>
 			<svg id="ccicon" class="ccicon" width="750" height="471" viewBox="0 0 750 471" version="1.1" xmlns="http://www.w3.org/2000/svg"
 				 xmlns:xlink="http://www.w3.org/1999/xlink">
 
@@ -144,12 +144,15 @@
 		</div>
 		<div class="field-container">
 			<label for="expirationdate">Fecha de Vencimiento (mm/yy)</label>
-			<input id="expirationdate" type="text" pattern="[0-9]*" inputmode="numeric">
+			<input id="expirationdate" type="text" pattern="[0-9/]*" inputmode="numeric" required>
 		</div>
 		<div class="field-container">
 			<label for="securitycode">Código de Seguridad</label>
-			<input id="securitycode" type="text" pattern="[0-9]*" autocomplete="off" inputmode="numeric"
-				   data-openpay-card="cvv2">
+			<div  id='all_card' style="display:none;"><input id="securitycode" type="text" pattern="[0-9]*" maxlength="3" autocomplete="off" inputmode="numeric"  data-openpay-card="cvv2"></div>
+			<div  id='one_card' style="display:none;"><input id="securitycode" type="text" pattern="[0-9]*" maxlength="4" autocomplete="off" inputmode="numeric"   data-openpay-card="cvv2"></div>			
+            <div  id='input_entrada' style="display:auto;"><input id="securitycode" type="text" pattern="[0-9]*" maxlength="3" autocomplete="off" inputmode="numeric" data-openpay-card="cvv2"></div>
+			<!--  <input id="securitycode" type="text" pattern="[0-9]*" autocomplete="off" inputmode="numeric"
+				   data-openpay-card="cvv2">-->
 		</div>
 		<div class="field-container">
 			<button class="btn btn-dark">Pagar</button>
