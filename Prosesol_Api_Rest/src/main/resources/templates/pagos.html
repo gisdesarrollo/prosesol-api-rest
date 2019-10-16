@@ -27,7 +27,6 @@
 			src="https://openpay.s3.amazonaws.com/openpay.v1.min.js"></script>
 	<script type='text/javascript'
 			src="https://openpay.s3.amazonaws.com/openpay-data.v1.min.js"></script>
-
 </head>
 <body>
 <!-- partial:index.partial.html -->
@@ -155,12 +154,16 @@
 			<label for="name">Nombre del Titular</label>
 			<input id="name" placeholder="Como aparece en la tarjeta" type="text"
 				   autocomplete="off" data-openpay-card="holder_name">
+			<div id="validaNombreTarjeta" style="display: none; color: red;">Campo
+				obligatorio</div>
 		</div>
 		<div class="field-container">
 			<input type="hidden" id="generatecard">
 			<label for="cardnumber">Número de Tarjeta</label>
 			<input id="cardnumber" type="text" pattern="[0-9]*" inputmode="numeric"
 				   autocomplete="off" data-openpay-card="card_number">
+			<div id="validaNumeroTarjeta" style="display: none; color: red;">Campo
+				obligatorio</div>
 			<svg id="ccicon" class="ccicon" width="750" height="471" viewBox="0 0 750 471" version="1.1" xmlns="http://www.w3.org/2000/svg"
 				 xmlns:xlink="http://www.w3.org/1999/xlink">
 
@@ -170,16 +173,22 @@
 			<label for="expirationmonth">Mes de Vencimiento</label>
 			<input id="expirationmonth" type="text" pattern="[0-9]*" inputmode="numeric"
 				   data-openpay-card="expiration_month">
+			<div id="validaMesTarjeta" style="display: none; color: red;">Campo
+				obligatorio</div>
 		</div>
 		<div class="field-container">
 			<label for="expirationyear">Año de Vencimiento</label>
 			<input id="expirationyear" type="text" pattern="[0-9]*" inputmode="numeric"
 				   data-openpay-card="expiration_year">
+			<div id="validaAnioTarjeta" style="display: none; color: red;">Campo
+				obligatorio</div>
 		</div>
 		<div class="field-container">
 			<label for="securitycode">Código de Seguridad</label>
 			<input id="securitycode" type="text" pattern="[0-9]*" inputmode="numeric"
 				   data-openpay-card="cvv2">
+			<div id="validaCodigo" style="display: none; color: red;">Campo
+				obligatorio</div>
 		</div>
 		<div class="field-container">
 			<button class="btn btn-dark" id="pay-button">Pagar</button>
