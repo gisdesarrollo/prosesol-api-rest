@@ -122,20 +122,23 @@ var securitycode_mask = new IMask(securitycode, {
     mask: '0000',
 });
 
-//valida longitud card
+//boton valida
 $('#pay-button').on('click', function(event) {
     event.preventDefault();
+    //valida longitud codigo seguridad
     if(cardnumber_mask.masked.currentMask.cardtype =='american express'){
 		if(securitycode_mask.value.length == 4){
 			document.getElementById('valida_longitud').innerHTML = '';
+			
 		}else if(securitycode_mask.value.length == 0){
 			document.getElementById('valida_longitud').innerHTML = '';
-		
-		}else if(securitycode_mask.value.length < 4){
-			 document.getElementById('valida_longitud').innerHTML = 'Codigo de seguridad invalido';
-		}
 			
+		}else if(securitycode_mask.value.length < 4){
+			 document.getElementById('valida_longitud').innerHTML = 'Código de seguridad invalido';
+			 
+			} 
 	}
+    
 	
 	else{
 		if(securitycode_mask.value.length == 3){
@@ -144,9 +147,47 @@ $('#pay-button').on('click', function(event) {
 			document.getElementById('valida_longitud').innerHTML = '';
 		
 		}else if(securitycode_mask.value.length > 3 || securitycode_mask.value.length < 3  ){
-			 document.getElementById('valida_longitud').innerHTML = 'Codigo de seguridad invalido';
+			 document.getElementById('valida_longitud').innerHTML = 'Código de seguridad invalido';
 		}
 	}
+    //valida longitud de num_card
+    if(cardnumber_mask.value.length == 0 && cardnumber_mask.masked.currentMask.cardtype =='american express'){
+			document.getElementById('valida_longitud_card').innerHTML = '';
+	}else if(cardnumber_mask.value.length <15 && cardnumber_mask.masked.currentMask.cardtype =='american express'){
+		 document.getElementById('valida_longitud_card').innerHTML = 'Numero de tarjeta invalido';
+	}else if(cardnumber_mask.value.length == 15 && cardnumber_mask.masked.currentMask.cardtype =='american express'){
+		document.getElementById('valida_longitud_card').innerHTML = '';
+	}
+	else{
+		if(cardnumber_mask.value.length == 0){
+			document.getElementById('valida_longitud_card').innerHTML = '';
+		}else if(cardnumber_mask.value.length <16){
+			document.getElementById('valida_longitud_card').innerHTML = 'Numero de tarjeta invalido';
+		}else if(cardnumber_mask.value.length == 16 ){
+			document.getElementById('valida_longitud_card').innerHTML = '';
+		}
+			
+	}
+    
+    //valida longitud mes
+    	if(expirationmonth_mask.value.length == 0){
+    		document.getElementById('valida_longitud_month').innerHTML = '';
+    	}else if(expirationmonth_mask.value.length <2){
+    		document.getElementById('valida_longitud_month').innerHTML = 'Mes invalido';
+    	}else if(expirationmonth_mask.value.length == 2){
+    		document.getElementById('valida_longitud_month').innerHTML = '';
+    	}
+    
+    //valida longitud de year
+    	if(expirationyear_mask.value.length == 0){
+    		document.getElementById('valida_longitud_year').innerHTML = '';
+    	}else if(expirationyear_mask.value.length < 2){
+    		document.getElementById('valida_longitud_year').innerHTML = 'Año invalido';
+    	}else if(expirationyear_mask.value.length == 2){
+    		document.getElementById('valida_longitud_year').innerHTML = '';
+    	}
+    
+   
     $("#pay-button").prop( "disabled", true);
     
 });
