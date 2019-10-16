@@ -1,17 +1,16 @@
 package com.prosesol.api.rest.controllers;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.ResourceUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.servlet.http.HttpServletResponse;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 
 @Controller
 @RequestMapping("/obtener")
@@ -30,8 +29,50 @@ public class ObtenerAvisoTermino {
 
             if(file.exists()){
                 response.setContentType("application/pdf");
-                response.setHeader("Content-disposition", "attachment;filename" + file.getName());
-                response.flushBuffer();
+                response.setHeader("Content-disposition", "attachment;filename=" + file.getName());
+                BufferedInputStream bufferedInputStream =
+                        new BufferedInputStream(new FileInputStream(file));
+                BufferedOutputStream bufferedOutputStream =
+                        new BufferedOutputStream(response.getOutputStream());
+
+                byte[] buffer = new byte[1024];
+                int bytesRead = 0;
+                while((bytesRead = bufferedInputStream.read(buffer))!= -1){
+                    bufferedOutputStream.write(buffer, 0, bytesRead);
+                }
+
+                bufferedOutputStream.flush();
+                bufferedInputStream.close();
+            }else{
+                System.out.println("Archivo no encontrado");
+            }
+
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    @GetMapping(value = "/termino")
+    public void getTerminosCondiciones(HttpServletResponse response){
+        try{
+            File file = ResourceUtils.getFile(terminosCondiciones);
+
+            if(file.exists()){
+                response.setContentType("application/pdf");
+                response.setHeader("Content-disposition", "attachment;filename=" + file.getName());
+                BufferedInputStream bufferedInputStream =
+                        new BufferedInputStream(new FileInputStream(file));
+                BufferedOutputStream bufferedOutputStream =
+                        new BufferedOutputStream(response.getOutputStream());
+
+                byte[] buffer = new byte[1024];
+                int bytesRead = 0;
+                while((bytesRead = bufferedInputStream.read(buffer))!= -1){
+                    bufferedOutputStream.write(buffer, 0, bytesRead);
+                }
+
+                bufferedOutputStream.flush();
+                bufferedInputStream.close();
             }else{
                 System.out.println("Archivo no encontrado");
             }

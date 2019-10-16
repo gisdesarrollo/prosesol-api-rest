@@ -2,7 +2,9 @@ window.onload = function () {
 
 const name = document.getElementById('name');
 const cardnumber = document.getElementById('cardnumber');
-const expirationdate = document.getElementById('expirationdate');
+//const expirationdate = document.getElementById('expirationdate');
+const expirationmonth = document.getElementById('expirationmonth');
+const expirationyear = document.getElementById('expirationyear');
 const securitycode = document.getElementById('securitycode');
 const output = document.getElementById('output');
 const ccicon = document.getElementById('ccicon');
@@ -93,11 +95,25 @@ var cardnumber_mask = new IMask(cardnumber, {
 });
 
 //Mask the Expiration Date
-var expirationdate_mask = new IMask(expirationdate, {
-    mask: 'MM{/}YY',
+//var expirationdate_mask = new IMask(expirationdate, {
+//    mask: 'MM{/}YY',
+//    groups: {
+//        YY: new IMask.MaskedPattern.Group.Range([0, 99]),
+//        MM: new IMask.MaskedPattern.Group.Range([1, 12]),
+//    }
+//});
+
+var expirationmonth_mask = new IMask(expirationmonth, {
+    mask: 'MM',
     groups: {
-        YY: new IMask.MaskedPattern.Group.Range([0, 99]),
-        MM: new IMask.MaskedPattern.Group.Range([1, 12]),
+        MM: new IMask.MaskedPattern.Group.Range([1, 12])
+    }
+});
+
+var expirationyear_mask = new IMask(expirationyear, {
+    mask: 'YY',
+    groups: {
+        YY: new IMask.MaskedPattern.Group.Range([0, 99])
     }
 });
 
@@ -245,11 +261,27 @@ cardnumber_mask.on('accept', function () {
     }
 });
 
-expirationdate_mask.on('accept', function () {
-    if (expirationdate_mask.value.length == 0) {
-        document.getElementById('svgexpire').innerHTML = '01/23';
+//expirationdate_mask.on('accept', function () {
+//    if (expirationdate_mask.value.length == 0) {
+//        document.getElementById('svgexpire').innerHTML = '01/23';
+//    } else {
+//        document.getElementById('svgexpire').innerHTML = expirationdate_mask.value;
+//    }
+//});
+
+expirationmonth_mask.on('accept', function () {
+    if (expirationmonth_mask.value.length == 0) {
+        document.getElementById('svgexpire').innerHTML = '01';
     } else {
-        document.getElementById('svgexpire').innerHTML = expirationdate_mask.value;
+        document.getElementById('svgexpire').innerHTML = expirationmonth_mask.value;
+    }
+});
+
+expirationyear_mask.on('accept', function () {
+    if (expirationyear_mask.value.length == 0) {
+        document.getElementById('svgexpire').innerHTML = '23';
+    } else {
+        document.getElementById('svgexpire').innerHTML = expirationyear_mask.value;
     }
 });
 
@@ -270,7 +302,15 @@ cardnumber.addEventListener('focus', function () {
     document.querySelector('.creditcard').classList.remove('flipped');
 });
 
-expirationdate.addEventListener('focus', function () {
+//expirationdate.addEventListener('focus', function () {
+//    document.querySelector('.creditcard').classList.remove('flipped');
+//});
+
+expirationmonth.addEventListener('focus', function () {
+    document.querySelector('.creditcard').classList.remove('flipped');
+});
+
+expirationyear.addEventListener('focus', function () {
     document.querySelector('.creditcard').classList.remove('flipped');
 });
 
