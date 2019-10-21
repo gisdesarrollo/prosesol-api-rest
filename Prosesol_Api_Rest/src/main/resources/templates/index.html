@@ -1,11 +1,64 @@
-<!DOCTYPE html>
-<html lang="en">
+
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <title>Prueba</title>
+<title>Inicio</title>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
+  	<meta name="description" content=""/>
+  	<meta name="author" content=""/>
+  	
+  	<!-- Bootstrap core CSS -->
+  <link th:href="@{/css/cssIndex/bootstrap.min.css}" rel="stylesheet">
+  <!-- Custom fonts for this template -->
+  <link th:href="@{/css/cssIndex/all.min.css}" rel="stylesheet">
+  <link th:href="@{/css/cssIndex/simple-line-icons.css}" rel="stylesheet" type="text/css">
+  <link href="https://fonts.googleapis.com/css?family=Lato:300,400,700,300italic,400italic,700italic" rel="stylesheet" type="text/css">
+
+  <!-- Custom styles for this template -->
+  <link th:href="@{/css/cssIndex/landing-page.min.css}" rel="stylesheet">
+  
+   <!-- Bootstrap core JavaScript -->
+  <script th:src="@{/js/jsIndex/jquery.min.js}"></script>
+  <script th:src="@{/js/jsIndex/bootstrap.bundle.min.js}"></script>
+  
 </head>
 <body>
-    <h1>Prueba</h1>
+    <!-- Navigation -->
+  <nav class="navbar navbar-light bg-light static-top">
+    <div class="container">
+      <h2>Prosesol</h2>
+      <div class="col-md-4">
+      <a th:href="@{/obtener/aviso}">Aviso de privacidad /</a>
+	  <a th:href="@{/obtener/termino}">Términos y condiciones</a>
+    </div>
+    </div>
+  </nav>
+
+  <!-- Masthead -->
+  <header class="masthead text-white text-center">
+    <div></div>
+    <div class="container">
+      <div class="row">
+        <div class="col-xl-9 mx-auto">
+          <h1 class="mb-5" style="color:black;">¡Bienvenido a la plataforma  de prosesol!</h1>
+        </div>
+        <div class="col-md-10 col-lg-8 col-xl-7 mx-auto">
+          <form>
+            <div class="form-row">
+              <div class="col-12 col-md-12 mb-2 mb-md-5">
+                <a class="btn btn-lg btn-primary" th:href="@{/afiliados/servicio}">Crear Afiliado</a>
+                <a class="btn btn-lg btn-primary" th:href="@{/prosesol/buscar}">Realizar Pago</a>
+              
+                <a class="btn btn-lg btn-primary" href="#">Saldos Vencidos</a>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </header>
+
+ 
 
 </body>
 </html>
