@@ -1,228 +1,240 @@
 
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-	<meta charset="utf-8">
-	<title>Bienvenido</title>
-	<meta http-equiv="X-UA-Compatible" content="IE=Edge">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<meta name="keywords" content="">
-	<meta name="description" content="">
-	
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-	
-	<link rel="stylesheet" th:href="@{/css/cssBienvenido/bootstrap.min.css}">
-	<link rel="stylesheet" th:href="@{/css/cssBienvenido/font-awesome.min.css}">
-	<link rel="stylesheet" th:href="@{/css/cssBienvendo/animate.min.css}">
-	<link rel="stylesheet" th:href="@{/css/cssBienvenido/et-line-font.css}">
-	<link rel="stylesheet" th:href="@{/css/cssBienvenido/nivo-lightbox.css}">
-	<link rel="stylesheet" th:href="@{/css/cssBienvenido/default.css}">
-	<link rel="stylesheet" th:href="@{/css/cssbienvenido/style.css}">
-	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+<meta charset="utf-8">
+<title>Bienvenido</title>
+<meta http-equiv="X-UA-Compatible" content="IE=Edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="keywords" content="">
+<meta name="description" content="">
+
+<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" rel="stylesheet"/>
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script
+	src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<link rel="stylesheet" th:href="@{/css/cssBienvenido/bootstrap.min.css}">
+<link rel="stylesheet" th:href="@{/css/cssbienvenido/style.css}">
+
 </head>
-<body data-spy="scroll" data-target=".navbar-collapse" data-offset="50" style="background-color:#f4f6f7">
+<body>
+	<!--data-spy="scroll" data-target=".navbar-collapse" data-offset="50" style="background-color:#f4f6f7"-->
 
-<!-- work section -->
-<section id="work" th:each="afiliados : ${afiliado}">
-	<div class="container" style="background-color:white;" >
+	<!-- work section -->
+	<!--<section id="work" >-->
+	<div 
+		th:each="afiliados : ${afiliado}">
+
 		
-			<div class="col-md-12 col-sm-12">
-				<div class="section-title" >
-					<strong  style="color: #313CAB;">Bienvenido Afiliado</strong>
-					<h1 class="heading bold" th:text=" ${afiliados.nombre}">alicia</h1>
-					<hr>
-				</div>
+			<div class="section-title" style="text-align:center;">
+				<strong style="color: #313CAB;">Afiliado</strong>
+				<hr>
 			</div>
-			<div class="col-lg-3 col-md-4 col-sm-4 wow fadeInUp" data-wow-delay="0.6s">
-			 <span class="glyphicon glyphicon-user"></span>
-					<h3>Apellidos</h3>
-					<hr>
-					<i class="far fa-address-book"></i>
-					<p th:text="${afiliados.apellidoPaterno}+' '+ ${afiliados.apellidoMaterno}"></p>
-			</div>
-			<div class="col-lg-3 col-md-4 col-sm-4 wow fadeInUp" data-wow-delay="0.9s">
-				<span class="glyphicon glyphicon-calendar"></span>
-					<h3>Fecha de nacimiento</h3>
-					<hr>
-					<p th:text="${afiliados.fechaNacimiento}"></p>
-			</div>
-			<div class="col-lg-3 col-md-4 col-sm-4 wow fadeInUp" data-wow-delay="1s">
-				<span class="glyphicon glyphicon-home"></span>
-					<h3>Lugar de nacimiento</h3>
-					<hr>
-					<p th:text="${afiliados.lugarNacimiento}"></p>
-			</div>
-			<div class="col-lg-3 col-md-4 col-sm-4 wow fadeInUp" data-wow-delay="1s">
-				<span class="glyphicon glyphicon-list"></span>
-					<h3>Estado civil</h3>
-					<hr>
-					<p th:text="${afiliados.estadoCivil}"></p>
-					<br><br>
-			</div>
-			<div class="col-lg-3 col-md-4 col-sm-4 wow fadeInUp" data-wow-delay="1s" style="padding:30px;">
-				<span class="glyphicon glyphicon-briefcase"></span>
-					<h3>Ocupación</h3>
-					<hr>
-					<p th:text="${afiliados.ocupacion}"></p>
-			</div>
-			<div class="col-lg-3 col-md-4 col-sm-4 wow fadeInUp" data-wow-delay="1s">
-				<i class="material-icons">supervisor_account</i>
-					<h3>Sexo</h3>
-					<hr>
-					<p th:text="${afiliados.sexo}"></p>
-			</div>
-			<div class="col-lg-3 col-md-4 col-sm-4 wow fadeInUp" data-wow-delay="1s">
-				<span class="glyphicon glyphicon-globe" ></span>
-					<h3>País</h3>
-					<hr>
-					<p th:text="${afiliados.pais}"></p>
-			</div>
-			<div class="col-lg-3 col-md-4 col-sm-4 wow fadeInUp" data-wow-delay="1s" >
-				<i class="material-icons">event</i>
-					<h3>Curp</h3>
-					<hr>
-					<p th:text="${afiliados.curp}"></p>
-			<br><br>		
-			</div>
-			
-			<div class="col-lg-3 col-md-4 col-sm-4 wow fadeInUp" data-wow-delay="1s" style="padding:30px;">
-				 <span class="glyphicon glyphicon-list-alt"></span>
-					<h3>Nss</h3>
-					<hr>
-					<p th:text="${afiliados.nss}"></p>
+		
+
+		<table class="table table-striped  text-center "
+			th:each="afiliado : ${afiliados}">
+			<thead>
+				<tr>
+
+					<th style="text-align: center;">Nombre</th>
+					<th style="text-align: center;">Apellido paterno</th>
+					<th style="text-align: center;">Apellido materno</th>
+					<th style="text-align: center;">Fecha de nacimiento</th>
+					<th style="text-align: center;">Lugar de nacimiento</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td>
+						<h5 th:text="${afiliado.nombre}"></h5>
+					</td>
+					<td>
+						<h5 th:text="${afiliado.apellidoPaterno}"></h5>
+					</td>
+					<td>
+						<h5 th:text="${afiliado.apellidoMaterno}"></h5>
+					</td>
+					<td>
+						<h5 th:text="${afiliado.fechaNacimiento}"></h5>
+					</td>
+					<td>
+						<h5 th:text="${afiliado.lugarNacimiento}"></h5>
+					</td>
+				</tr>
+
+			</tbody>
+			<thead>
+				<tr>
+					<th style="text-align: center;">Estado civil</th>
+					<th style="text-align: center;">Ocupación</th>
+					<th style="text-align: center;">Sexo</th>
+					<th style="text-align: center;">País</th>
+					<th style="text-align: center;">Curp</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td>
+						<h5 th:text="${afiliado.estadoCivil}"></h5>
+					</td>
+					<td>
+						<h5 th:text="${afiliado.ocupacion}"></h5>
+					</td>
+					<td>
+						<h5 th:text="${afiliado.sexo}"></h5>
+					</td>
+					<td>
+						<h5 th:text="${afiliado.pais}"></h5>
+					</td>
+					<td>
+						<h5 th:text="${afiliado.curp}"></h5>
+					</td>
+				</tr>
+			</tbody>
+			<thead>
+				<tr>
+					<th style="text-align: center;">Nss</th>
+					<th style="text-align: center;">Rfc</th>
+					<th style="text-align: center;">Tel.fijo</th>
+					<th style="text-align: center;">Tel.movil</th>
+					<th style="text-align: center;">Email</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td>
+						<h5 th:text="${afiliados.nss}"></h5>
+					</td>
+					<td>
+						<h5 th:text="${afiliado.rfc}"></h5>
+					</td>
+					<td>
+						<h5 th:text="${afiliado.telefonoFijo}"></h5>
+					</td>
+					<td>
+						<h5 th:text="${afiliado.telefonoMovil}"></h5>
+					</td>
+					<td>
+						<h5 th:text="${afiliado.email}"></h5>
+					</td>
+				</tr>
+
+			</tbody>
+			<thead>
+				<tr>
+					<th style="text-align: center;">Dirección</th>
+					<th style="text-align: center;">Municipio</th>
+					<th style="text-align: center;">Entidad federativa</th>
+					<th style="text-align: center;">Código postal</th>
+					<th style="text-align: center;">Numero infonavit</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td>
+						<h5 th:text="${afiliado.direccion}"></h5>
+					</td>
+					<td>
+						<h5 th:text="${afiliado.municipio}"></h5>
+					</td>
+					<td>
+						<h5 th:text="${afiliado.entidadFederativa}"></h5>
+					</td>
+					<td>
+						<h5 th:text="${afiliado.codigoPostal}"></h5>
+					</td>
+					<td>
+						<h5 th:text="${afiliado.numeroInfonavit}"></h5>
+					</td>
+				</tr>
+			</tbody>
+			<thead>
+				<tr>
 					
-			</div>
-			<div class="col-lg-3 col-md-4 col-sm-4 wow fadeInUp" data-wow-delay="1s">
-				 <span class="glyphicon glyphicon-list-alt"></span>
-					<h3>Rfc</h3>
-					<hr>
-					<p th:text="${afiliados.rfc}"></p>
-			</div>
-			<div class="col-lg-3 col-md-4 col-sm-4 wow fadeInUp" data-wow-delay="1s">
-				 <span class="glyphicon glyphicon-phone-alt"></span>
-					<h3>Tel.fijo</h3>
-					<hr>
-					<p th:text="${afiliados.telefonoFijo}"></p>
-			</div>
-			<div class="col-lg-3 col-md-4 col-sm-4 wow fadeInUp" data-wow-delay="1s">
-				<span class="glyphicon glyphicon-phone"></span>
-					<h3>Tel.movil</h3>
-					<hr>
-					<p th:text="${afiliados.telefonoMovil}"></p>
-					<br><br>
-			</div>
-			<div class="col-lg-3 col-md-4 col-sm-4 wow fadeInUp" data-wow-delay="1s" style="padding:30px;">
-				<i class="material-icons">email</i>
-					<h3>Email</h3>
-					<hr>
-					<p th:text="${afiliados.email}"></p>
-			</div>
-			<div class="col-lg-3 col-md-4 col-sm-4 wow fadeInUp" data-wow-delay="1s">
-				<i class="material-icons">person_pin_circle</i>
-					<h3>Dirección</h3>
-					<hr>
-					<p th:text="${afiliados.direccion}"></p>
-			</div>
-			<div class="col-lg-3 col-md-4 col-sm-4 wow fadeInUp" data-wow-delay="1s">
-				<i class="material-icons">store_mall_directory</i>
-					<h3>Municipio</h3>
-					<hr>
-					<p  th:text="${afiliados.municipio}"></p>
-			</div>
-			<div class="col-lg-3 col-md-4 col-sm-4 wow fadeInUp" data-wow-delay="1s">
-				<span class="glyphicon glyphicon-road"></span>
-					<h3>Entidad federativa</h3>
-					<hr>
-					<p th:text="${afiliados.entidadFederativa}"></p>
-					<br><br>
-			</div>
-			<div class="col-lg-3 col-md-4 col-sm-4 wow fadeInUp" data-wow-delay="1s" style="padding:30px;">
-				<i class="material-icons">tab</i>
-					<h3>Código postal</h3>
-					<hr>
-					<p th:text="${afiliados.codigoPostal}"></p>
-			</div>
-			<div class="col-lg-3 col-md-4 col-sm-4 wow fadeInUp" data-wow-delay="1s">
-				<i class="material-icons">web_asset</i>
-					<h3>Numero infonavit</h3>
-					<hr>
-					<p  th:text="${afiliados.numeroInfonavit}"></p>
-			</div>
-			<div class="col-lg-3 col-md-4 col-sm-4 wow fadeInUp" data-wow-delay="1s" th:switch="${afiliados.servicio.id}">
-				<i class="material-icons">contact_mail</i>
-					<h3>Servicio</h3>
-					<hr>
-				<p th:case="4">Servicio de prueba</p>
-				<p th:case="6">Nuevo servicio de prueba</p>
-				<p th:case="7">Servicio de prueba sin beneficios</p>
-				<p th:case="8">Servicios nuevo</p>
-				<p th:case="9">Servicio sin beneficios</p>
-				<p th:case="10">Nuevo servicio de prueba con modificaciones</p>
-				<p th:case="11">Servicio sin beneficios</p>	
-			</div>
-			<div class="col-lg-3 col-md-4 col-sm-4 wow fadeInUp" data-wow-delay="1s">
-				<i class="material-icons">attach_money</i>
-					<h3>Saldo acumulado</h3>
-					<hr>
-					<p th:text="${costoAfiliado}"></p>
-			</div>
-		</div>
-	
+					<th style="text-align: center;">Servicio</th>
+					<th style="text-align: center;">Saldo acumulado</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td th:switch="${afiliado.servicio.id}">
+						<p th:case="4">Servicio de prueba</p>
+						<p th:case="6">Nuevo servicio de prueba</p>
+						<p th:case="7">Servicio de prueba sin beneficios</p>
+						<p th:case="8">Servicios nuevo</p>
+						<p th:case="9">Servicio sin beneficios</p>
+						<p th:case="10">Nuevo servicio de prueba con modificaciones</p>
+						<p th:case="11">Servicio sin beneficios</p>
+					</td>
+					<td>
+						<h5 th:text="${costoAfiliado}"></h5>
+					</td>
 
-	<div class="container"  style="background-color:white; text-align:center;" th:if="${!beneficiarios.isEmpty()}">
-		<div class="col-md-12 col-sm-12">
-				<div class="section-title">
-				<br>
-					<strong style="color: #313CAB;">Beneficiarios</strong>
-					<hr>
-				</div>
-			</div>
-			<table class="table table-hover text-center info" >
-				<thead >
-					<tr>
+				</tr>
 
-						<th style="text-align:center;" >Nombre</th>
-						<th style="text-align:center;">Apellidos</th>
-						<th style="text-align:center;">Saldo acumulado</th>
-					</tr>
-				</thead>
-				 <tbody>
-					<tr th:each="afiliado : ${beneficiarios}">
+			</tbody>
+		</table>
 
-						<td>
-							<h5 th:text="${afiliado.nombre}"></h5>
-						</td>
-						<td>
-							<h5 th:text="${afiliado.apellidoPaterno}+' '+${afiliado.apellidoMaterno}"></h5>
-						</td>
-						<td>
-							<h5 th:text="${costoBeneficiario}"></h5>
-						</td>
-					</tr>
-				</tbody>
-				 
-			</table>
+</div>
+
+
+	<div 
+		style="text-align: center;"
+		th:if="${!beneficiarios.isEmpty()}">
+		
+			<div class="section-title">
+				<br> <strong style="color: #313CAB;">Beneficiarios</strong>
+				<hr>
 			</div>
 		
-<!-- footer section -->
+		<table class="table table-striped  text-center info">
+			<thead>
+				<tr>
 
-				<div class="container"  style="background-color:white;">
-				<a style="position:relative; left:450px;" th:href="@{/afiliados/guardar/}+${id}" class="btn btn-primary float-right" data-wow-delay="0.3s">Guardar</a>
-				<br><br><br>
-		</div>
+					<th style="text-align: center;">Nombre</th>
+					<th style="text-align: center;">Apellido paterno</th>
+					<th style="text-align: center;">Apellido materno</th>
+					<th style="text-align: center;">Rfc</th>
+					<th style="text-align: center;">Saldo acumulado</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr th:each="afiliado : ${beneficiarios}">
+
+					<td>
+						<h5 th:text="${afiliado.nombre}"></h5>
+					</td>
+					<td>
+						<h5
+							th:text="${afiliado.apellidoPaterno}"></h5>
+					</td>
+					<td>
+						<h5
+							th:text="${afiliado.apellidoMaterno}"></h5>
+					</td>
+					<td>
+						<h5 th:text="${afiliado.rfc}"></h5>
+					</td>
+					<td>
+						<h5 th:text="${costoBeneficiario}"></h5>
+					</td>
+				</tr>
+			</tbody>
+
+		</table>
+		
+	</div>
+
+	<!-- footer section -->
+	<a style="position:relative; right:30px;"
+			th:href="@{/afiliados/guardar/}+${id}"
+			class="btn btn-primary  float-right" >Guardar</a>
+		<br> <br> 
 	
-</section>
+		
+	
 
-<script th:src="@{/js/jsBienvenido/jquery.js}"></script>
-<script th:src="@{/js/jsBienvenido/bootstrap.min.js}"></script>
-<script th:src="@{/js/jsBienvenido/smoothscroll.js}"></script>
-<script th:src="@{/js/jsBienvenido/isotope.js}"></script>
-<script th:src="@{/js/jsBienvenido/imagesloaded.min.js}"></script>
-<script th:src="@{/js/jsBienvenido/nivo-lightbox.min.js}"></script>
-<script th:src="@{/js/jsBienvenido/jquery.backstretch.min.js}"></script>
-<script th:src="@{/js/jsBienvenido/wow.min.js}"></script>
-<script th:src="@{/js/jsBienvenido/custom.js}"></script>
-
+	
 </body>
 </html>
