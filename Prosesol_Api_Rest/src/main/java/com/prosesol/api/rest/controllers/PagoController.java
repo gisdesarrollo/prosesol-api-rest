@@ -37,10 +37,10 @@ public class PagoController {
     protected final Logger LOG = LoggerFactory.getLogger(PagoController.class);
 
     @Value("${openpay.id}")
-    private String openpayId;
+    private String merchantId;
 
     @Value("${openpay.pk}")
-    private String openpayPk;
+    private String privateKey;
 
     @Value("${openpay.url}")
     private String openpayURL;
@@ -126,7 +126,7 @@ public class PagoController {
         String periodo = "MENSUAL";
 		Integer corte=0;
 
-        apiOpenpay = new OpenpayAPI(openpayURL, openpayPk, openpayId);
+        apiOpenpay = new OpenpayAPI(openpayURL, privateKey, merchantId);
         BigDecimal amount = BigDecimal.valueOf(afiliado.getSaldoCorte());
 
         amount = amount.setScale(2, BigDecimal.ROUND_HALF_EVEN);
