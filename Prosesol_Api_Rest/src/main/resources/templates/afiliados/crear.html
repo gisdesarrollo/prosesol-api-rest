@@ -239,37 +239,16 @@
 												th:errors="*{numeroInfonavit}"></small>
 										</div>
 
-								  		<div class="form-group col-md-3" th:switch="${servicios}" >
-											<label>Servicio</label> <select name="servicio"
+								  		<div class="form-group col-md-3" >
+											<label>Servicio</label> <select name="servicio" 
 												th:field="*{servicio}" class="custom-select"
 												id="inputGroupSelect01">
-												<option th:if="${servicios}==4" 
-												th:case="4" th:value="${servicios}" th:selected="false">Servicio de prueba</option>
-												<option th:if="${servicios}==6" 
-												th:case="6" th:value="${servicios}" th:selected="false">Nuevo servicio de prueba</option>
-												<option  th:if="${servicios}==7" 
-												th:case="7" th:value="${servicios}" th:selected="false">Servicio de prueba sin beneficios</option>
-												<option  th:if="${servicios}==8" 
-												th:case="8" th:value="${servicios}" th:selected="false">Servicio nuevo</option>
-												<option  th:if="${servicios}==9" 
-												th:case="9" th:value="${servicios}" th:selected="false">Servicio sin beneficios</option>
-												<option  th:if="${servicios}==10" 
-												th:case="10" th:value="${servicios}" th:selected="false">Nuevo servicio de prueba con modificaciones</option>	
-												<option  th:if="${servicios}==11" 
-												th:case="11" th:value="${servicios}" th:selected="false">Prueba de servicios sin beneficios</option>
+												<option th:each="servicio : ${servicios}" th:if="${servicio.id}==${servicioInicial}" 
+												th:value="${servicio.id}" th:text="${servicio.nombre}" th:selected="false"></option>
 												</select> <small class="form-text text-danger"
 												th:if="${#fields.hasErrors('servicio')}"
 												th:errors="*{servicio}"></small> 
-								<!--    		<div class="form-group col-md-3" th:switch="${servicio}">
-											<label>Servicio</label> 
-											<p style="color:blue;font-family:ARIAL;" th:if="${servicio}==4" th:case="4">Servicio de prueba</p>
-											<p style="color:blue;font-family:ARIAL;" th:if="${servicio}==6" th:case="6">Nuevo servicio de prueba</p>
-											<p style="color:blue;font-family:ARIAL;" th:if="${servicio}==7" th:case="7">Servicio de prueba sin beneficios</p>
-											<p style="color:blue;font-family:ARIAL;" th:if="${servicio}==8" th:case="8">Servicios nuevo</p>
-											<p style="color:blue;font-family:ARIAL;" th:if="${servicio}==9" th:case="9">Servicio sin beneficios</p>
-											<p style="color:blue;font-family:ARIAL;" th:if="${servicio}==10" th:case="10">Nuevo servicio de prueba con modificaciones</p>
-											<p style="color:blue;font-family:ARIAL;" th:if="${servicio}==11" th:case="11">Prueba de servicios sin beneficios</p>
-									-->	</div> 
+									</div> 
 
 										
 

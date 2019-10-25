@@ -82,7 +82,7 @@ public class AfiliadoController {
 		}
 		
 
-		model.put("servicios", servicio);
+		model.put("servicioInicial", servicio);
 		model.put("afiliado", afiliado);
 		
 		return "afiliados/crear";
@@ -101,7 +101,7 @@ public class AfiliadoController {
 				Long servicio = afiliado.getServicio().getId();
 				if (servicio != null) {
 					System.out.println(servicio);
-					model.addAttribute("servicios", servicio);
+					model.addAttribute("servicioInicial", servicio);
 				}
 				return "/afiliados/crear";
 
