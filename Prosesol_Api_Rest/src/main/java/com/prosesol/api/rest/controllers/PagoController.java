@@ -138,10 +138,12 @@ public class PagoController {
             customer.setName(afiliado.getNombre());
             customer.setLastName(afiliado.getApellidoPaterno() + ' ' + afiliado.getApellidoMaterno());
 
-            if (!afiliado.getEmail().equals(null) && !afiliado.getEmail().equals("")) {
-                customer.setEmail(afiliado.getEmail());
-            } else {
+            boolean isNotValid = isNullOrEmpty(afiliado.getEmail());
+
+            if(isNotValid){
                 customer.setEmail("mail@mail.com");
+            }else{
+                customer.setEmail(afiliado.getEmail());
             }
 
             CreateCardChargeParams creditCardcharge = new CreateCardChargeParams()
@@ -233,6 +235,14 @@ public class PagoController {
         }
 
         return descripcionError;
+    }
+
+    public static boolean isNullOrEmpty(String str){
+        if(str != null && !str.isEmpty()){
+            return false;
+        }
+
+        return true;
     }
 
 }
