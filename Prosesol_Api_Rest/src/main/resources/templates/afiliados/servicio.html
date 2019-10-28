@@ -23,7 +23,7 @@
 								id="inputGroupSelect01">
 								<option value="">Ninguno</option >
 								<option th:each="servicio : ${servicios}"
-									th:value="${servicio.id}" th:text="${servicio.nombre}"
+									th:value="${servicio.id}" th:text="${servicio.nombre}" th:if="${servicio.tipoPrivacidad}!=true"
 									th:selected="false" />
 							</select> <small class="form-text text-danger"
 								th:if="${#fields.hasErrors('servicio')}" th:errors="*{servicio}"></small>
