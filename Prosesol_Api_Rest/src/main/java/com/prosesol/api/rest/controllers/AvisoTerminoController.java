@@ -14,7 +14,7 @@ import java.io.FileInputStream;
 
 @Controller
 @RequestMapping("/obtener")
-public class ObtenerAvisoTermino {
+public class AvisoTerminoController {
 
     @Value("${archivo.aviso}")
     private String avisoPrivacidad;
