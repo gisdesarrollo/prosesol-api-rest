@@ -31,7 +31,7 @@ import java.util.Arrays;
 import java.util.Date;
 
 @Controller
-@RequestMapping("/prosesol")
+@RequestMapping("/pagos")
 public class PagoController {
 
     protected final Logger LOG = LoggerFactory.getLogger(PagoController.class);
@@ -67,12 +67,17 @@ public class PagoController {
     }
 
 
-    @GetMapping(value = "/buscar")
-    public String index() {
-        return "main";
+    @GetMapping(value = "/tarjeta/buscar")
+    public String pagoTarjetaBuscar() {
+        return "/pagos/tarjeta";
     }
 
-    @RequestMapping(value = "/pagos")
+    @GetMapping(value = "/tienda/buscar")
+    public String pagoEfectivoTiendaBuscar() {
+        return "/pagos/main";
+    }
+
+    @RequestMapping(value = "/tarjeta")
     public String obtenerAfiliadoByRfc(@ModelAttribute(name = "rfc") String rfc, Model model,
                                        RedirectAttributes redirect) {
 
@@ -116,7 +121,7 @@ public class PagoController {
 
     }
 
-    @RequestMapping(value = "/realizarPago/{id}", method = RequestMethod.POST)
+    @RequestMapping(value = "/tarjeta/{id}", method = RequestMethod.POST)
     public String realizarCargoTarjeta(@PathVariable("id") Long id,
                                        @ModelAttribute("token_id") String tokenId,
                                        @ModelAttribute("deviceIdHiddenFieldName") String deviceSessionId,
@@ -203,11 +208,11 @@ public class PagoController {
 
             String descripcionError = evaluarCodigoError(errorCode);
             redirect.addFlashAttribute("error", descripcionError);
-            return "redirect:/prosesol/buscar";
+            return "redirect:/pagos/tarjeta/buscar";
 
         }
 
-        return "redirect:/prosesol/buscar";
+        return "redirect:/pagos/tarjeta/buscar";
     }
 
     private String evaluarCodigoError(int errorCode) {

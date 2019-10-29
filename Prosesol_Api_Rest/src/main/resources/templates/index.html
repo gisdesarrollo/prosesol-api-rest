@@ -1,4 +1,3 @@
-
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
 <title>Inicio</title>
@@ -8,7 +7,7 @@
   	<meta name="author" content=""/>
   	
   	<!-- Bootstrap core CSS -->
-  <link th:href="@{/css/cssIndex/bootstrap.min.css}" rel="stylesheet">
+  <link href="/css/cssIndex/bootstrap.min.css" rel="stylesheet">
   <!-- Custom fonts for this template -->
   <link th:href="@{/css/cssIndex/all.min.css}" rel="stylesheet">
   <link th:href="@{/css/cssIndex/simple-line-icons.css}" rel="stylesheet" type="text/css">
@@ -27,7 +26,7 @@
   <nav class="navbar navbar-light bg-light static-top">
     <div class="container">
       <h2>Prosesol</h2>
-      <div class="col-md-4">
+      <div class="col-md-8">
       <a th:href="@{/obtener/aviso}">Aviso de privacidad /</a>
 	  <a th:href="@{/obtener/termino}">Términos y condiciones</a>
     </div>
@@ -47,9 +46,16 @@
             <div class="form-row">
               <div class="col-12 col-md-12 mb-2 mb-md-5">
                 <a class="btn btn-lg btn-primary" th:href="@{/afiliados/servicio}">Crear Afiliado</a>
-                <a class="btn btn-lg btn-primary" th:href="@{/prosesol/buscar}">Realizar Pago</a>
-              
-                <a class="btn btn-lg btn-primary" href="#">Saldos Vencidos</a>
+                <div class="dropdown">
+                  <button class="btn btn-primary dropdown-toggle" type="button"
+                          data-toggle="dropdown">Métodos de pago
+                    <span class="caret"></span></button>
+                  <ul class="dropdown-menu">
+                    <li><a th:href="@{/pagos/tarjeta/buscar}">Pago con tarjeta</a></li>
+                    <li><a href="#">Pago en sucursal</a></li>
+                    <li><a href="#">Pago en tienda de autoservicio</a></li>
+                  </ul>
+                </div>
               </div>
             </div>
           </form>
