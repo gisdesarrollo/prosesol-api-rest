@@ -26,7 +26,7 @@
   <nav class="navbar navbar-light bg-light static-top">
     <div class="container">
       <h2>Prosesol</h2>
-      <div class="col-md-8">
+      <div class="col-md-8" style="position:relative; bottom:0px; right:13px;">
       <a th:href="@{/obtener/aviso}">Aviso de privacidad /</a>
 	  <a th:href="@{/obtener/termino}">Términos y condiciones</a>
     </div>
@@ -43,11 +43,11 @@
         </div>
         <div class="col-md-10 col-lg-8 col-xl-7 mx-auto">
           <form>
-            <div class="form-row">
-              <div class="col-12 col-md-12 mb-2 mb-md-5">
-                <a class="btn btn-lg btn-primary" th:href="@{/afiliados/servicio}">Crear Afiliado</a>
-                <div class="dropdown">
-                  <button class="btn btn-primary dropdown-toggle" type="button"
+            <div class="form-row" style="position:relative; left:200px; top:10px;">
+              <div class="col-12 col-md-12 mb-2 mb-md-5 " >
+                <a style="" class="btn btn-lg btn-primary" th:href="@{/afiliados/servicio}">Crear Afiliado</a>
+                <div class="dropdown btn-group"  >
+                  <button class="btn btn-lg btn-primary dropdown-toggle" type="button"
                           data-toggle="dropdown">Métodos de pago
                     <span class="caret"></span></button>
                   <ul class="dropdown-menu">
