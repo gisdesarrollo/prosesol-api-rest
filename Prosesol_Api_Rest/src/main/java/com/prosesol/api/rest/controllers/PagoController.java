@@ -10,6 +10,7 @@ import com.prosesol.api.rest.utils.CalcularFecha;
 import mx.openpay.client.Charge;
 import mx.openpay.client.Customer;
 import mx.openpay.client.core.OpenpayAPI;
+import mx.openpay.client.core.requests.transactions.CreateBankChargeParams;
 import mx.openpay.client.core.requests.transactions.CreateCardChargeParams;
 import mx.openpay.client.core.requests.transactions.CreateStoreChargeParams;
 import mx.openpay.client.exceptions.OpenpayServiceException;
@@ -31,6 +32,11 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+
+/**
+ * @author Luis Enrique Morales Soriano
+ * @version 1.0
+ */
 
 @Controller
 @RequestMapping("/pagos")
@@ -150,6 +156,16 @@ public class PagoController {
 
     }
 
+    /**
+     * Validación del RFC y generación de la referencia para pagos en tienda
+     * @param rfc
+     * @param model
+     * @param redirect
+     * @param servletResponse
+     * @throws {OpenpayServiceException, ServiceUnavailableException}
+     * @return
+     */
+
     @RequestMapping(value = "/tienda")
     public String generarReferenciaTiendaByRfc(@ModelAttribute(name = "rfc") String rfc,
                                                Model model, RedirectAttributes redirect,
@@ -252,6 +268,126 @@ public class PagoController {
 
         servletResponse.setHeader("Location", openpayDashboardUrl + "/paynet-pdf/" + merchantId + "/"
                 + reference);
+        servletResponse.setStatus(302);
+
+        return null;
+
+    }
+
+    /**
+     * Validación del RFC y generación de referencia SPEI bancaria
+     * @param rfc
+     * @param model
+     * @param redirect
+     * @param servletResponse
+     * @throws {OpenpayServiceException, ServiceUnavailableException}
+     * @return
+     */
+
+    @RequestMapping(value = "/banco")
+    public String generarReferenciaSpeiByRfc(@ModelAttribute(name = "rfc") String rfc,
+                                               Model model, RedirectAttributes redirect,
+                                               HttpServletResponse servletResponse) {
+
+        Afiliado afiliado = afiliadoService.findByRfc(rfc);
+        String id = null;
+
+        if (rfc.length() < 13) {
+
+            LOG.info("ERR: ", "El RFC no cumple con los campos necesarios");
+            redirect.addFlashAttribute("error", "El RFC No cumple con los campos necesarios");
+            return "redirect:/prosesol/buscar";
+
+        }
+
+        if (afiliado == null) {
+
+            LOG.info("ERR: ", "No existe el afiliado, proporcione otro RFC");
+            redirect.addFlashAttribute("error", "No existe el afiliado, proporcione otro RFC");
+            return "redirect:/prosesol/buscar";
+
+        } else {
+
+            System.out.println(afiliado.toString());
+
+            if (afiliado.getIsBeneficiario() == false) {
+                if (afiliado.getSaldoCorte().equals(0.0)) {
+                    LOG.info("El afiliado va al corriente de sus pagos");
+                    redirect.addFlashAttribute("info", "Usted va al corriente con su pago, " +
+                            "no es necesario que realice su pago");
+                    return "redirect:tienda/buscar";
+                } else {
+                    model.addAttribute("afiliado", afiliado);
+                }
+            } else {
+                LOG.info("ERR: ", "El afiliado no es titular del servicio");
+                redirect.addFlashAttribute("error", "El afiliado no es titular del servicio");
+                return "redirect:tienda/buscar";
+            }
+        }
+
+        try{
+
+            OpenpayAPI openpayAPI = new OpenpayAPI(openpayURL, privateKey, merchantId);
+            BigDecimal amount = BigDecimal.valueOf(afiliado.getSaldoCorte());
+
+            customer.setName(afiliado.getNombre());
+            customer.setLastName(afiliado.getApellidoPaterno() + ' '
+                    + afiliado.getApellidoMaterno());
+
+            boolean isNotValid = isNullOrEmpty(afiliado.getEmail());
+
+            if(isNotValid){
+                customer.setEmail("mail@mail.com");
+            }else{
+                customer.setEmail(afiliado.getEmail());
+            }
+
+            CreateBankChargeParams createStoreChargeParams = new CreateBankChargeParams()
+                    .description("Cargo con banco")
+                    .amount(amount)
+                    .customer(customer);
+
+            Charge charge = openpayAPI.charges().createCharge(createStoreChargeParams);
+
+            String response = charge.toString().substring(charge.toString().indexOf("("),
+                    charge.toString().lastIndexOf(")"));
+
+            String responseValues[] = response.split(",");
+
+            ArrayList<String> list = new ArrayList<String>(Arrays.asList(responseValues));
+
+            for(String value : list){
+                System.out.println(value);
+                if(value.contains("id")){
+                    id = value.substring(value.lastIndexOf("=") + 1);
+                    System.out.println(id);
+                }
+            }
+
+        }catch(OpenpayServiceException | ServiceUnavailableException e){
+            String response = e.toString().substring(e.toString().indexOf("("), e.toString().lastIndexOf(")"));
+            String responseValues[] = response.split(",");
+
+            ArrayList<String> list = new ArrayList<String>(Arrays.asList(responseValues));
+
+            for (String value : list) {
+                System.out.println(value);
+                if (value.contains("httpCode")) {
+                    code = Integer.parseInt(value.substring(value.lastIndexOf("=") + 1));
+                }
+                if (value.contains("errorCode")) {
+                    errorCode = Integer.parseInt(value.substring(value.lastIndexOf("=") + 1));
+                }
+            }
+
+            String descripcionError = evaluarCodigoError(errorCode);
+            redirect.addFlashAttribute("error", descripcionError);
+            return "redirect:/pagos/tienda/buscar";
+        }
+
+        servletResponse.setHeader("Location", openpayDashboardUrl + "/spei-pdf/" + merchantId + "/"
+                + id);
         servletResponse.setStatus(302);
 
         return null;
