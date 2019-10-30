@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.servlet.http.HttpServletResponse;
 import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -45,6 +46,9 @@ public class PagoController {
 
     @Value("${openpay.url}")
     private String openpayURL;
+
+    @Value("${openpay.url.dashboard.pdf}")
+    private String openpayDashboardUrl;
     
     @Autowired
 	private CalcularFecha calcularFechas;
@@ -147,10 +151,12 @@ public class PagoController {
     }
 
     @RequestMapping(value = "/tienda")
-    public String generarReferenciaTiendaByRfc(@ModelAttribute(name = "rfc") String rfc, Model model,
-                                       RedirectAttributes redirect) {
+    public String generarReferenciaTiendaByRfc(@ModelAttribute(name = "rfc") String rfc,
+                                               Model model, RedirectAttributes redirect,
+                                               HttpServletResponse servletResponse) {
 
         Afiliado afiliado = afiliadoService.findByRfc(rfc);
+        String reference = null;
 
         if (rfc.length() < 13) {
 
@@ -192,7 +198,8 @@ public class PagoController {
             BigDecimal amount = BigDecimal.valueOf(afiliado.getSaldoCorte());
 
             customer.setName(afiliado.getNombre());
-            customer.setLastName(afiliado.getApellidoPaterno() + ' ' + afiliado.getApellidoMaterno());
+            customer.setLastName(afiliado.getApellidoPaterno() + ' '
+                    + afiliado.getApellidoMaterno());
 
             boolean isNotValid = isNullOrEmpty(afiliado.getEmail());
 
@@ -209,7 +216,18 @@ public class PagoController {
 
             Charge charge = openpayAPI.charges().createCharge(createStoreChargeParams);
 
-            System.out.println(charge);
+            String response = charge.toString().substring(charge.toString().indexOf("("),
+                    charge.toString().lastIndexOf(")"));
+
+            String responseValues[] = response.split(",");
+
+            ArrayList<String> list = new ArrayList<String>(Arrays.asList(responseValues));
+
+            for(String value : list){
+                if(value.contains("reference")){
+                    reference = value.substring(value.lastIndexOf("=") + 1);
+                }
+            }
 
         }catch(OpenpayServiceException | ServiceUnavailableException e){
             String response = e.toString().substring(e.toString().indexOf("("), e.toString().lastIndexOf(")"));
@@ -232,7 +250,11 @@ public class PagoController {
             return "redirect:/pagos/tienda/buscar";
         }
 
-        return "/";
+        servletResponse.setHeader("Location", openpayDashboardUrl + "/paynet-pdf/" + merchantId + "/"
+                + reference);
+        servletResponse.setStatus(302);
+
+        return null;
 
     }
 

@@ -1,12 +1,12 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-<title>Inicio</title>
-    <meta charset="UTF-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
-  	<meta name="description" content=""/>
-  	<meta name="author" content=""/>
-  	
-  	<!-- Bootstrap core CSS -->
+  <title>Prosesol</title>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
+  <meta name="description" content=""/>
+  <meta name="author" content=""/>
+
+  <!-- Bootstrap core CSS -->
   <link href="/css/cssIndex/bootstrap.min.css" rel="stylesheet">
   <!-- Custom fonts for this template -->
   <link th:href="@{/css/cssIndex/all.min.css}" rel="stylesheet">
@@ -15,56 +15,55 @@
 
   <!-- Custom styles for this template -->
   <link th:href="@{/css/cssIndex/landing-page.min.css}" rel="stylesheet">
-  
-   <!-- Bootstrap core JavaScript -->
+
+  <!-- Bootstrap core JavaScript -->
   <script th:src="@{/js/jsIndex/jquery.min.js}"></script>
   <script th:src="@{/js/jsIndex/bootstrap.bundle.min.js}"></script>
-  
+
 </head>
 <body>
-    <!-- Navigation -->
-  <nav class="navbar navbar-light bg-light static-top">
-    <div class="container">
-      <h2>Prosesol</h2>
-      <div class="col-md-8" style="position:relative; bottom:0px; right:13px;">
+<!-- Navigation -->
+<nav class="navbar navbar-light bg-light static-top">
+  <div class="container">
+    <h2>Prosesol</h2>
+    <div class="col-md-8" style="position:relative; bottom:0px; right:13px;">
       <a th:href="@{/obtener/aviso}">Aviso de privacidad /</a>
-	  <a th:href="@{/obtener/termino}">Términos y condiciones</a>
+      <a th:href="@{/obtener/termino}">Términos y condiciones</a>
     </div>
-    </div>
-  </nav>
+  </div>
+</nav>
 
-  <!-- Masthead -->
-  <header class="masthead text-white text-center">
-    <div></div>
-    <div class="container">
-      <div class="row">
-        <div class="col-xl-9 mx-auto">
-          <h1 class="mb-5" style="color:black;">¡Bienvenido a la plataforma  de prosesol!</h1>
-        </div>
-        <div class="col-md-10 col-lg-8 col-xl-7 mx-auto">
-          <form>
-            <div class="form-row" style="position:relative; left:200px; top:10px;">
-              <div class="col-12 col-md-12 mb-2 mb-md-5 " >
-                <a style="" class="btn btn-lg btn-primary" th:href="@{/afiliados/servicio}">Crear Afiliado</a>
-                <div class="dropdown btn-group"  >
-                  <button class="btn btn-lg btn-primary dropdown-toggle" type="button"
-                          data-toggle="dropdown">Métodos de pago
-                    <span class="caret"></span></button>
-                  <ul class="dropdown-menu">
-                    <li><a th:href="@{/pagos/tarjeta/buscar}">Pago con tarjeta</a></li>
-                    <li><a th:href="@{/pagos/banco/buscar}">Pago en sucursal</a></li>
-                    <li><a th:href="@{/pagos/tienda/buscar}">Pago en tienda de autoservicio</a></li>
-                  </ul>
-                </div>
+<!-- Masthead -->
+<header class="masthead text-white text-center">
+  <div></div>
+  <div class="container">
+    <div class="row">
+      <div class="col-xl-9 mx-auto">
+        <h1 class="mb-5" style="color:black;">¡Bienvenido a la plataforma  de prosesol!</h1>
+      </div>
+      <div class="col-md-10 col-lg-8 col-xl-7 mx-auto">
+        <form>
+          <div class="form-row" style="position:relative; left:200px; top:10px;">
+            <div class="btn-group " >
+              <a style="" class="btn btn-lg btn-primary" th:href="@{/afiliados/servicio}">Crear Afiliado</a>
+              <div class="dropdown btn-group" style="position:relative; left:5px"  >
+                <button class="btn btn-lg btn-primary dropdown-toggle" type="button"
+                        data-toggle="dropdown">Métodos de pago
+                  <span class="caret"></span></button>
+
+                <ul class="dropdown-menu">
+                  <li><a th:href="@{/pagos/tarjeta/buscar}">Pago con tarjeta</a></li>
+                  <li><a th:href="@{/pagos/banco/buscar}">Pago en sucursal</a></li>
+                  <li><a th:href="@{/pagos/tienda/buscar}">Pago en tienda de autoservicio</a></li>
+                </ul>
               </div>
+              <!-- <a style="position:relative; left:10px"  class="btn btn-lg btn-primary" th:href="@{/afiliados/servicio}">boton</a>-->
             </div>
-          </form>
-        </div>
+          </div>
+        </form>
       </div>
     </div>
-  </header>
-
- 
-
+  </div>
+</header>
 </body>
 </html>
