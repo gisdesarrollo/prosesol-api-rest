@@ -29,7 +29,7 @@
 
 
 								<form class="formInput" name="formu" id="formu"
-									th:action="@{/afiliados/crear}" th:object="${afiliado}"
+									th:action="@{/afiliados/crear/} + ${servicio.id}" th:object="${afiliado}"
 									method="post">
 									<div class="row">
 										<div class="form-group col-md-3">
@@ -240,20 +240,18 @@
 										</div>
 
 								  		<div class="form-group col-md-3" >
-											<label>Servicio</label> <select name="servicio" 
-												th:field="*{servicio}" class="custom-select"
-												id="inputGroupSelect01">
-												<option th:each="servicio : ${servicios}" th:if="${servicio.id}==${servicioInicial}" 
-												th:value="${servicio.id}" th:text="${servicio.nombre}" th:selected="false"></option>
-												</select> <small class="form-text text-danger"
-												th:if="${#fields.hasErrors('servicio')}"
-												th:errors="*{servicio}"></small> 
-									</div> 
+											<label>Servicio</label>
+											<input type="text"
+												   th:value="${servicio.nombre}"
+												   class="form-control form-control-user"
+												   disabled>
 
-										
-
+											<input type="hidden"
+												   th:field="*{servicio}"
+												   th:value="${servicio.id}"
+												   class="form-control form-control-user">
+										</div>
 									</div>
-
 									<hr>
 									<div class="clearfix"></div>
 									<div class="row">
