@@ -159,7 +159,7 @@
 			<tbody>
 				<tr>
 					<td th:each="servicio : ${servicios}" th:if="${servicio.id}==${afiliado.servicio.id}">
-						<p th:text="${servicio.nombre}">Servicio de prueba</p>
+						<p th:text="${servicio.nombre}"></p>
 					</td>
 					<td>
 						<h5 th:text="${costoAfiliado}"></h5>
