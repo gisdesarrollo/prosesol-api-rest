@@ -18,8 +18,7 @@
 
 </head>
 <body>
-<div class="alert alert-danger" th:if="${error != null}"
-						th:text="${error}"></div>
+
 	<div 
 		th:each="afiliados : ${afiliado}">
 
@@ -156,8 +155,8 @@
 			</thead>
 			<tbody>
 				<tr>
-					<td th:each="servicio : ${servicios}" th:if="${servicio.id}==${afiliado.servicio.id}">
-						<p th:text="${servicio.nombre}"></p>
+					<td >
+						<p th:text="${afiliado.servicio.nombre}"></p>
 					</td>
 					<td>
 						<h5 th:text="${costoAfiliado}"></h5>
