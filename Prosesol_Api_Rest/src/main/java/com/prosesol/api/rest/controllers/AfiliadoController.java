@@ -73,20 +73,26 @@ public class AfiliadoController {
 
         model.put("afiliado", afiliado);
         model.put("servicio", servicio);
+        model.put("idServicio",servicio.getId());
 
         return "afiliados/crear";
     }
 
-    @RequestMapping(value = "/crear/{idAfiliado}", method = RequestMethod.POST, params = "action=save")
-    public String guardar(@PathVariable("idAfiliado") Long id, Afiliado afiliado,
+    @RequestMapping(value = "/crear/{idServicio}", method = RequestMethod.POST, params = "action=save")
+    public String guardar(@PathVariable(value="idServicio")Long idServicio,@Valid Afiliado afiliado,
                           BindingResult result, Model model, RedirectAttributes redirect, SessionStatus status) {
 
         String mensajeFlash = null;
         Date date = new Date();
 
         try {
+        	 Servicio servicio = servicioService.findById(idServicio);
+        	if (result.hasErrors()) {
+        		model.addAttribute("servicio", servicio);
+        		return "afiliados/crear";
+        		
+        	}
 
-            Servicio servicio = servicioService.findById(id);
 
             if (afiliado.getId() != null) {
 

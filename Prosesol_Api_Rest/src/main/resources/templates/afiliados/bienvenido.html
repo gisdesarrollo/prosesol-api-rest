@@ -158,14 +158,8 @@
 			</thead>
 			<tbody>
 				<tr>
-					<td th:switch="${afiliado.servicio.id}">
-						<p th:case="4">Servicio de prueba</p>
-						<p th:case="6">Nuevo servicio de prueba</p>
-						<p th:case="7">Servicio de prueba sin beneficios</p>
-						<p th:case="8">Servicios nuevo</p>
-						<p th:case="9">Servicio sin beneficios</p>
-						<p th:case="10">Nuevo servicio de prueba con modificaciones</p>
-						<p th:case="11">Servicio sin beneficios</p>
+					<td th:each="servicio : ${servicios}" th:if="${servicio.id}==${afiliado.servicio.id}">
+						<p th:text="${servicio.nombre}">Servicio de prueba</p>
 					</td>
 					<td>
 						<h5 th:text="${costoAfiliado}"></h5>
