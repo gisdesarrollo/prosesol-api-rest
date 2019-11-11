@@ -25,6 +25,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import javax.validation.Valid;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/afiliados")
@@ -48,20 +49,21 @@ public class AfiliadoController {
     private GenerarClave generarClave;
 
     @RequestMapping(value = "/servicio")
-    public String seleccionarServicio(Model model) {
-        List<Servicio> servicios = servicioService.findAll();
+    public String seleccionarServicio(Map<String, Object> model) {
+        Afiliado afiliado = new Afiliado();
 
-        model.addAttribute("servicios", servicios);
+
+        model.put("afiliado", afiliado);
+
         return "afiliados/servicio";
     }
 
     @RequestMapping(value = "/servicio/{id}")
-    public String getIdServicio(@PathVariable("id") Long id, Model model,
+    public String getIdServicio(@PathVariable("id") Long id, Map<String, Object> model,
                                 RedirectAttributes redirect) {
 
         Servicio servicio = servicioService.findById(id);
         Afiliado afiliado = new Afiliado();
-        afiliado.setServicio(servicio);
 
         if (servicio == null) {
 
@@ -69,20 +71,29 @@ public class AfiliadoController {
             return "redirect:/afiliados/servicio";
         }
 
-        model.addAttribute("afiliado", afiliado);
-        model.addAttribute("servicio", afiliado.getServicio());
+        model.put("afiliado", afiliado);
+        model.put("servicio", servicio);
+        model.put("idServicio",servicio.getId());
 
         return "afiliados/crear";
     }
 
-    @RequestMapping(value = "/crear/", method = RequestMethod.POST, params = "action=save")
-    public String guardar(@Valid Afiliado afiliado, BindingResult result,
-                          Model model, RedirectAttributes redirect, SessionStatus status) {
+    @RequestMapping(value = "/crear/{idServicio}", method = RequestMethod.POST, params = "action=save")
+    public String guardar(@PathVariable(value="idServicio")Long idServicio,@Valid Afiliado afiliado,
+                          BindingResult result, Model model, RedirectAttributes redirect, SessionStatus status) {
 
         String mensajeFlash = null;
         Date date = new Date();
 
         try {
+        	 Servicio servicio = servicioService.findById(idServicio);
+        	if (result.hasErrors()) {
+        		model.addAttribute("servicio", servicio);
+        		return "afiliados/crear";
+        		
+        	}
+
+
             if (afiliado.getId() != null) {
 
                 if (afiliado.getIsBeneficiario().equals(true)) {
@@ -94,6 +105,7 @@ public class AfiliadoController {
                 mensajeFlash = "Registro editado con éxito";
 
             } else {
+                afiliado.setServicio(servicio);
                 afiliado.setIsBeneficiario(false);
                 afiliado.setFechaAlta(date);
                 afiliado.setClave(generarClave.getClaveAfiliado(clave));
@@ -156,6 +168,7 @@ public class AfiliadoController {
             }
 
             model.addAttribute("costoAfiliado", costoTotalAfiliado);
+            //	model.addAttribute("mensualidad", mensualidad);
             model.addAttribute("id", id);
             model.addAttribute("afiliado", afiliado);
 
@@ -234,6 +247,17 @@ public class AfiliadoController {
     @ModelAttribute("paises")
     public List<Paises> getAllPaises() {
         return afiliadoService.getAllPaises();
+    }
+
+    /**
+     * Método para mostrar los servicios Dentro del list box de crear afiliados
+     *
+     * @param(name = "servicios")
+     */
+
+    @ModelAttribute("servicios")
+    public List<Servicio> getAllServicios() {
+        return servicioService.findAll();
     }
 
 }

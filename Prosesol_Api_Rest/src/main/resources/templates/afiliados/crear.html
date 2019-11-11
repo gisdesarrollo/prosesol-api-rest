@@ -29,7 +29,7 @@
 
 
 								<form class="formInput" name="formu" id="formu"
-									th:action="@{/afiliados/crear/}" th:object="${afiliado}"
+									th:action="@{/afiliados/crear/} + ${idServicio}" th:object="${afiliado}"
 									method="post">
 									<div class="row">
 										<div class="form-group col-md-3">
@@ -247,8 +247,8 @@
 												   disabled>
 
 											<input type="hidden"
-												   th:field="*{servicio}"
-												   th:value="${servicio.id}"
+												  	id="servicio" name="servicio"
+												   th:value="${idServicio}"
 												   class="form-control form-control-user">
 										</div>
 									</div>
@@ -275,7 +275,14 @@
 
 		</div>
 	</div>
-
+ <script>
+        $('#fechaNacimiento').datepicker({
+            format: 'dd/mm/yyyy',
+            language: "es-ES",
+            autoHide: true
+            
+        });
+    </script>
 </body>
 
 </html>
