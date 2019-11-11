@@ -84,6 +84,10 @@ public class AfiliadoController {
         Date date = new Date();
 
         try {
+        	if (result.hasErrors()) {
+        		 model.addAttribute("servicio", afiliado.getServicio());
+        		 return "afiliados/crear";
+        	}
             if (afiliado.getId() != null) {
 
                 if (afiliado.getIsBeneficiario().equals(true)) {
@@ -127,7 +131,7 @@ public class AfiliadoController {
     }
 
     @RequestMapping(value = "/bienvenido/{id}")
-    public String mostrar(@PathVariable("id") Long id, Model model) {
+    public String mostrar(@PathVariable("id") Long id, Model model, RedirectAttributes redirect) {
 
         Double costoTitular, inscripcionTitular, costoBeneficiario, inscripcionBeneficiario, costoTotalAfiliado, costoTotalBeneficiario, mensualidad;
         try {
@@ -148,27 +152,25 @@ public class AfiliadoController {
 
                 model.addAttribute("costoBeneficiario", costoTotalBeneficiario);
                 model.addAttribute("beneficiarios", beneficiarios);
-                for (Integer x = 0; x < beneficiarios.size(); x++) {
-                    //d3 = servicio.getCostoBeneficiario();
-                    // d4=servicio.getInscripcionBeneficiario();
-                    //mensualidad += d3;
-                }
-
+             
             }
 
             model.addAttribute("costoAfiliado", costoTotalAfiliado);
-            //	model.addAttribute("mensualidad", mensualidad);
             model.addAttribute("id", id);
             model.addAttribute("afiliado", afiliado);
 
         } catch (Exception e) {
-            System.out.println("error al momento de buscar en afiliado" + e);
+        	 e.printStackTrace();
+             logger.error("Error al momento de ejecutar el proceso: " + e);
+             redirect.addFlashAttribute("error", "Ocurrió un error al momento de insertar el saldo acumulado");
+
+             return "redirect:/afiliados/bienvenido/"+id;
         }
         return "afiliados/bienvenido";
     }
 
     @RequestMapping(value = "/guardar/{id}")
-    public String guardaSaldoAfiliado(@PathVariable("id") Long id, Model model, SessionStatus status) {
+    public String guardaSaldoAfiliado(@PathVariable("id") Long id, Model model, SessionStatus status,RedirectAttributes redirect) {
 
         Afiliado afiliado = new Afiliado();
 
@@ -197,20 +199,17 @@ public class AfiliadoController {
 
             }
 
-		/*	 DateFormat formatoFecha = new SimpleDateFormat("dd");
-			 String dia=formatoFecha.format(afiliado.getFechaAlta());
-			 corte = Integer.parseInt(dia);
-			System.out.println(afiliado.getFechaAlta());
-			Date fechaCorte = calcularFechas.calcularFechas(periodo,corte);
-
-			afiliado.setFechaCorte(fechaCorte);*/
             afiliado.setSaldoAcumulado(saldoAcumulado);
             afiliado.setSaldoCorte(saldoAcumulado);
             afiliadoService.save(afiliado);
             status.setComplete();
 
         } catch (Exception e) {
-            System.out.println("error al momento de insertar Saldo acumulado" + e);
+        	 e.printStackTrace();
+             logger.error("Error al momento de ejecutar el proceso: " + e);
+             redirect.addFlashAttribute("error", "Ocurrió un error al momento de insertar el saldo acumulado");
+
+             return "redirect:/afiliados/bienvenido/"+id;
         }
 
         return "redirect:/";

@@ -18,10 +18,8 @@
 
 </head>
 <body>
-	<!--data-spy="scroll" data-target=".navbar-collapse" data-offset="50" style="background-color:#f4f6f7"-->
-
-	<!-- work section -->
-	<!--<section id="work" >-->
+<div class="alert alert-danger" th:if="${error != null}"
+						th:text="${error}"></div>
 	<div 
 		th:each="afiliados : ${afiliado}">
 
