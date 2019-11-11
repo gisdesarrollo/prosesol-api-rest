@@ -213,7 +213,7 @@ public class AfiliadoController {
             System.out.println("error al momento de insertar Saldo acumulado" + e);
         }
 
-        return "redirect:/prosesol/buscar";
+        return "redirect:/";
     }
 
     /**
