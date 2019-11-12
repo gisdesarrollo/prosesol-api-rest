@@ -84,10 +84,6 @@ public class AfiliadoController {
         Date date = new Date();
 
         try {
-        	if (result.hasErrors()) {
-        		 model.addAttribute("servicio", afiliado.getServicio());
-        		 return "afiliados/crear";
-        	}
             if (afiliado.getId() != null) {
 
                 if (afiliado.getIsBeneficiario().equals(true)) {
