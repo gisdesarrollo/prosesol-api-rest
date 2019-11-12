@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head th:replace="fragments/head :: head"></head>
+<head th:replace="fragments/head :: head">
+</head>
 <meta charset="utf-8" />
 <body>
 	<div class="col-sm-7" id="postResultDiv"></div>
@@ -27,10 +28,10 @@
 								<div class="clearfix"></div>
 								<hr>
 
-
+								<!--th:action="@{/afiliados/crear/}"-->
 								<form class="formInput" name="formu" id="formu"
-									th:action="@{/afiliados/crear/}" th:object="${afiliado}"
-									method="post">
+									 method="post" th:object="${afiliado}"
+									>
 									<div class="row">
 										<div class="form-group col-md-3">
 											<label>Nombre</label> <input type="text" th:field="*{nombre}"
@@ -38,6 +39,8 @@
 												class="form-control form-control-user"> <small
 												class="form-text text-danger"
 												th:if="${#fields.hasErrors('nombre')}" th:errors="*{nombre}"></small>
+											<div id="nombreVacio" style="display: none; color: red;">El campo nombre no debe quedar vacío
+												</div>	
 											<div id="validaNombre" style="display: none; color: red;">Campo
 												obligatorio</div>
 										</div>
@@ -51,6 +54,8 @@
 												class="form-text text-danger"
 												th:if="${#fields.hasErrors('apellidoPaterno')}"
 												th:errors="*{apellidoPaterno}"></small>
+											<div id="apellPaterVacio" style="display: none; color: red;">El campo apellido Paterno no debe quedar vacío
+												</div>		
 											<div id="validaApellidoPaterno"
 												style="display: none; color: red;">Campo obligatorio</div>
 										</div>
@@ -63,6 +68,8 @@
 												class="form-text text-danger"
 												th:if="${#fields.hasErrors('apellidoMaterno')}"
 												th:errors="*{apellidoMaterno}"></small>
+											<div id="apellMaterVacio" style="display: none; color: red;">El campo apellido materno no debe quedar vacío
+												</div>		
 											<div id="validaApellidoMaterno"
 												style="display: none; color: red;">Campo obligatorio</div>
 										</div>
@@ -75,6 +82,8 @@
 											<small class="form-text text-danger"
 												th:if="${#fields.hasErrors('fechaNacimiento')}"
 												th:errors="*{fechaNacimiento}"></small>
+											<div id="fechaNacVacio" style="display: none; color: red;">El campo fecha nacimiento no debe quedar vacío
+												</div>		
 											<div id="validaFechaNacimiento"
 												style="display: none; color: red;">Campo obligatorio</div>
 										</div>
@@ -153,10 +162,12 @@
 												class="form-control form-control-user rfcText"> <small
 												class="form-text text-danger"
 												th:if="${#fields.hasErrors('rfc')}" th:errors="*{rfc}"></small>
+											<div id="rfcVacio" style="display: none; color: red;">El campo rfc no debe quedar vacío
+												</div>	
 											<p>¿No cuentas con tu RFC?</p>
 											<input type="button" id="bot" name="bot"
 												value="Genéralo aquí" onclick="generar()">
-											<div id="respon"></div>
+											
 
 										</div>
 
@@ -256,9 +267,13 @@
 									<div class="clearfix"></div>
 									<div class="row">
 										<div class="col-sm-12">
-											<button type="submit" name="action" value="save"
+											<!--  <button type="submit" name="action" value="save"
+												class="btn btn-primary btn-square float-right">Crear
+												Afiliado</button>-->
+												<button type="button" onclick="validaDatosAfiliado()"
 												class="btn btn-primary btn-square float-right">Crear
 												Afiliado</button>
+												
 										</div>
 									</div>
 								</form>
@@ -281,6 +296,21 @@
             language: "es-ES",
             autoHide: true
             
+        });
+        $('#nombre').on('input', function (e) {
+            if (!/^[ a-záéíóúüñ]*$/i.test(this.value)) {
+                this.value = this.value.replace(/[^ a-záéíóúüñ]+/ig,"");
+            }
+        });
+        $('#apellidoPaterno').on('input', function (e) {
+            if (!/^[ a-záéíóúüñ]*$/i.test(this.value)) {
+                this.value = this.value.replace(/[^ a-záéíóúüñ]+/ig,"");
+            }
+        });
+        $('#apellidoMaterno').on('input', function (e) {
+            if (!/^[ a-záéíóúüñ]*$/i.test(this.value)) {
+                this.value = this.value.replace(/[^ a-záéíóúüñ]+/ig,"");
+            }
         });
     </script>
 </body>

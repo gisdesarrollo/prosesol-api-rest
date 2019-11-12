@@ -76,8 +76,8 @@ public class AfiliadoController {
         return "afiliados/crear";
     }
 
-    @RequestMapping(value = "/crear/", method = RequestMethod.POST, params = "action=save")
-    public String guardar(@Valid Afiliado afiliado, BindingResult result,
+    @RequestMapping(value = "/crear", method = RequestMethod.POST)
+    public String guardar(Afiliado afiliado, BindingResult result,
                           Model model, RedirectAttributes redirect, SessionStatus status) {
 
         String mensajeFlash = null;
@@ -110,14 +110,14 @@ public class AfiliadoController {
             logger.error("Error al momento de ejecutar el proceso: " + e);
             redirect.addFlashAttribute("error", "El RFC ya existe en la base de datos ");
 
-            return "redirect:/afiliados/crear";
+            return "redirect:/afiliados/servicio/"+afiliado.getServicio().getId();
         } catch (Exception e) {
             e.printStackTrace();
             logger.error("Error al momento de ejecutar el proceso: " + e);
 
             redirect.addFlashAttribute("error", "Ocurrió un error al momento de insertar el Afiliado");
 
-            return "redirect:/afiliados/crear";
+            return "redirect:/afiliados/servicio/"+afiliado.getServicio().getId();
         }
 
         mensajeFlash = "id del afiliado creado es: " + afiliado.getId();
