@@ -290,29 +290,9 @@
 
 		</div>
 	</div>
- <script>
-        $('#fechaNacimiento').datepicker({
-            format: 'dd/mm/yyyy',
-            language: "es-ES",
-            autoHide: true
-            
-        });
-        $('#nombre').on('input', function (e) {
-            if (!/^[ a-záéíóúüñ]*$/i.test(this.value)) {
-                this.value = this.value.replace(/[^ a-záéíóúüñ]+/ig,"");
-            }
-        });
-        $('#apellidoPaterno').on('input', function (e) {
-            if (!/^[ a-záéíóúüñ]*$/i.test(this.value)) {
-                this.value = this.value.replace(/[^ a-záéíóúüñ]+/ig,"");
-            }
-        });
-        $('#apellidoMaterno').on('input', function (e) {
-            if (!/^[ a-záéíóúüñ]*$/i.test(this.value)) {
-                this.value = this.value.replace(/[^ a-záéíóúüñ]+/ig,"");
-            }
-        });
+ <script th:src="@{/js/crearAfiliado.js}">     
     </script>
+
 </body>
 
 </html>

@@ -71,7 +71,7 @@ public class BeneficiarioController {
 	}
 
 	@RequestMapping(value = "/guardar", method = RequestMethod.POST, params = "action=save")
-	public String guardar(@ModelAttribute("clave") String clave, Afiliado afiliado, BindingResult result, Model model,
+	public String guardar(Afiliado afiliado, BindingResult result, Model model,
 			RedirectAttributes redirect, SessionStatus status) {
 
 		System.out.println("id: " + idAfiliado);
@@ -100,7 +100,7 @@ public class BeneficiarioController {
 				System.out.println(rfc.toString());
 
 			}
-
+			
 			buscoAfiliadoServicio.getServicio();
 			afiliado.setEstatus(2);
 			afiliado.setServicio(buscoAfiliadoServicio.getServicio());
@@ -159,7 +159,7 @@ public class BeneficiarioController {
 			afiliado.setEstatus(3);
 			afiliado.setServicio(resul.getServicio());
 			afiliado.setIsBeneficiario(true);
-			afiliado.setClave(clave);
+			afiliado.setClave(generarClave.getClaveAfiliado(clave));
 			afiliado.setFechaAlta(fechaAlta);
 
 			afiliadoService.save(afiliado);
