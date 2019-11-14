@@ -1,226 +1,140 @@
-
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-<meta charset="utf-8">
-<title>Bienvenido</title>
-<meta http-equiv="X-UA-Compatible" content="IE=Edge">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="keywords" content="">
-<meta name="description" content="">
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<!-- Tell the browser to be responsive to screen width -->
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="description" content="">
+	<meta name="author" content="">
+	<!-- Favicon icon -->
+	<title>Prosesol</title>
+	<!-- Bootstrap Core CSS -->
+	<link th:href="@{/css/afiliados/bootstrap.min.css}" rel="stylesheet">
+	<!-- Custom CSS -->
+	<link th:href="@{/css/afiliados/style.css}" rel="stylesheet">
+	<!-- You can change the theme colors from here -->
+	<link th:href="@{/css/afiliados/default.css}" id="theme" rel="stylesheet">
+	<!-- Jquery -->
+	<script type="text/javascript"
+			src="https://code.jquery.com/jquery-3.3.1.js"></script>
+	<!--datepicker -->
+	<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 
-<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" rel="stylesheet"/>
-<script
-	src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-<script
-	src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-<link rel="stylesheet" th:href="@{/css/cssBienvenido/bootstrap.min.css}">
-<link rel="stylesheet" th:href="@{/css/cssbienvenido/style.css}">
+	<script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+	<script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
 
 </head>
 <body>
-
-<!-- 	<div 
-		th:each="afiliados : ${afiliado}">-->
-
-		
-			<div class="section-title" style="text-align:center;">
-				<strong style="color: #313CAB;">Afiliado</strong>
-				<hr>
-			</div>
-		
-
-		<table class="table table-striped  text-center "
-			 th:each="afiliado : ${afiliados}">
-			<thead>
-				<tr>
-
-					<th style="text-align: center;">Nombre</th>
-					<th style="text-align: center;">Apellido paterno</th>
-					<th style="text-align: center;">Apellido materno</th>
-					<th style="text-align: center;">Fecha de nacimiento</th>
-					<th style="text-align: center;">Lugar de nacimiento</th>
-				</tr>
-			</thead>
-			<tbody>
-				<tr>
-					<td>
-						<h5 th:text="${afiliado.nombre}"></h5>
-					</td>
-					<td>
-						<h5 th:text="${afiliado.apellidoPaterno}"></h5>
-					</td>
-					<td>
-						<h5 th:text="${afiliado.apellidoMaterno}"></h5>
-					</td>
-					<td>
-						<h5 th:text="${afiliado.fechaNacimiento}"></h5>
-					</td>
-					<td>
-						<h5 th:text="${afiliado.lugarNacimiento}"></h5>
-					</td>
-				</tr>
-
-			</tbody>
-			<thead>
-				<tr>
-					<th style="text-align: center;">Estado civil</th>
-					<th style="text-align: center;">Ocupación</th>
-					<th style="text-align: center;">Sexo</th>
-					<th style="text-align: center;">País</th>
-					<th style="text-align: center;">Curp</th>
-				</tr>
-			</thead>
-			<tbody>
-				<tr>
-					<td>
-						<h5 th:text="${afiliado.estadoCivil}"></h5>
-					</td>
-					<td>
-						<h5 th:text="${afiliado.ocupacion}"></h5>
-					</td>
-					<td>
-						<h5 th:text="${afiliado.sexo}"></h5>
-					</td>
-					<td>
-						<h5 th:text="${afiliado.pais}"></h5>
-					</td>
-					<td>
-						<h5 th:text="${afiliado.curp}"></h5>
-					</td>
-				</tr>
-			</tbody>
-			<thead>
-				<tr>
-					<th style="text-align: center;">Nss</th>
-					<th style="text-align: center;">Rfc</th>
-					<th style="text-align: center;">Tel.fijo</th>
-					<th style="text-align: center;">Tel.movil</th>
-					<th style="text-align: center;">Email</th>
-				</tr>
-			</thead>
-			<tbody>
-				<tr>
-					<td>
-						<h5 th:text="${afiliados.nss}"></h5>
-					</td>
-					<td>
-						<h5 th:text="${afiliado.rfc}"></h5>
-					</td>
-					<td>
-						<h5 th:text="${afiliado.telefonoFijo}"></h5>
-					</td>
-					<td>
-						<h5 th:text="${afiliado.telefonoMovil}"></h5>
-					</td>
-					<td>
-						<h5 th:text="${afiliado.email}"></h5>
-					</td>
-				</tr>
-
-			</tbody>
-			<thead>
-				<tr>
-					<th style="text-align: center;">Dirección</th>
-					<th style="text-align: center;">Municipio</th>
-					<th style="text-align: center;">Entidad federativa</th>
-					<th style="text-align: center;">Código postal</th>
-					<th style="text-align: center;">Servicio</th>
-				</tr>
-			</thead>
-			<tbody>
-				<tr>
-					<td>
-						<h5 th:text="${afiliado.direccion}"></h5>
-					</td>
-					<td>
-						<h5 th:text="${afiliado.municipio}"></h5>
-					</td>
-					<td>
-						<h5 th:text="${afiliado.entidadFederativa}"></h5>
-					</td>
-					<td>
-						<h5 th:text="${afiliado.codigoPostal}"></h5>
-					</td>
-					<td >
-						<p th:text="${afiliado.servicio.nombre}"></p>
-					</td>
-				</tr>
-			</tbody>
-			<thead>
-				<tr>
-					<th style="text-align: center;">Saldo acumulado</th>
-				</tr>
-			</thead>
-			<tbody>
-				<tr>
-					<td>
-						<h5 th:text="${afiliado.saldoAcumulado}"></h5>
-					</td>
-
-				</tr>
-
-			</tbody>
-		</table>
-
- 
-
-
-	<div 
-		style="text-align: center;"
-		th:if="${!beneficiarios.isEmpty()}">
-		
-			<div class="section-title">
-				<br> <strong style="color: #313CAB;">Beneficiarios</strong>
-				<hr>
-			</div>
-		
-		<table class="table table-striped  text-center info">
-			<thead>
-				<tr>
-
-					<th style="text-align: center;">Nombre</th>
-					<th style="text-align: center;">Apellido paterno</th>
-					<th style="text-align: center;">Apellido materno</th>
-					<th style="text-align: center;">Rfc</th>
-					<th style="text-align: center;">Saldo acumulado</th>
-				</tr>
-			</thead>
-			<tbody>
-				<tr th:each="afiliado : ${beneficiarios}">
-
-					<td>
-						<h5 th:text="${afiliado.nombre}"></h5>
-					</td>
-					<td>
-						<h5
-							th:text="${afiliado.apellidoPaterno}"></h5>
-					</td>
-					<td>
-						<h5
-							th:text="${afiliado.apellidoMaterno}"></h5>
-					</td>
-					<td>
-						<h5 th:text="${afiliado.rfc}"></h5>
-					</td>
-					<td>
-						<h5 th:text="${saldoAcumulado}"></h5>
-					</td>
-				</tr>
-			</tbody>
-
-		</table>
-		
+<nav class="navbar navbar-light bg-light static-top">
+	<div class="container">
+		<div class="col-md-8" style="position:relative; bottom:0px; right:13px;">
+			<img src="https://prosesol.org/wp-content/uploads/2019/06/logo_prosesol-1.png" alt="Prosesol.org">
+		</div>
 	</div>
-
-	<!-- footer section -->
-	<a style="position:relative; right:30px;"
-			th:href="@{/afiliados/guardar}"
-			class="btn btn-primary  float-right" >Guardar</a>
-		<br> <br> 
-	
-		
-	
-
-	
+</nav>
+<div class="container">
+	<div class="card">
+		<!-- Tab panes -->
+		<div class="card-body">
+			<form class="form-horizontal form-material">
+				<h5 class="card-title">Resumen de afiliación</h5>
+				<div class="clearfix"></div>
+				<hr>
+				<div class="form-group">
+					<label class="col-md-12">Nombre Completo</label>
+					<div class="col-md-12">
+						<input type="text" th:value="${afiliado.nombre} + ' ' +
+								${afiliado.apellidoPaterno} + ' ' + ${afiliado.apellidoMaterno}"
+							   class="form-control form-control-line" disabled>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-md-12">Fecha de Nacimiento</label>
+					<div class="col-md-12">
+						<input type="text" th:value="${afiliado.fechaNacimiento}"
+							   class="form-control form-control-line" disabled>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-md-12">Lugar de Nacimiento</label>
+					<div class="col-md-12">
+						<input type="text" th:value="${afiliado.lugarNacimiento}"
+							   class="form-control form-control-line" disabled>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-md-12">CURP</label>
+					<div class="col-md-12">
+						<input type="text" th:value="${afiliado.curp}"
+							   class="form-control form-control-line" disabled>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-md-12">Número de Seguridad Social</label>
+					<div class="col-md-12">
+						<input type="text" th:value="${afiliado.nss}"
+							   class="form-control form-control-line" disabled>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-md-12">RFC</label>
+					<div class="col-md-12">
+						<input type="text" th:value="${afiliado.rfc}"
+							   class="form-control form-control-line" disabled>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-md-12">Correo electrónico</label>
+					<div class="col-md-12">
+						<input type="text" th:value="${afiliado.email}"
+							   class="form-control form-control-line" disabled>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-md-12">Dirección</label>
+					<div class="col-md-12">
+						<input type="text" th:value="${afiliado.direccion}"
+							   class="form-control form-control-line" disabled>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-md-12">Municipio</label>
+					<div class="col-md-12">
+						<input type="text" th:value="${afiliado.municipio}"
+							   class="form-control form-control-line" disabled>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-md-12">Entidad Federativa</label>
+					<div class="col-md-12">
+						<input type="text" th:value="${afiliado.entidadFederativa}"
+							   class="form-control form-control-line" disabled>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-md-12">Servicio</label>
+					<div class="col-md-12">
+						<input type="text" th:value="${afiliado.servicio.nombre}"
+							   class="form-control form-control-line" disabled>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-md-12">Costo Total a Pagar</label>
+					<div class="col-md-12">
+						<input type="text" th:value="${afiliado.saldoCorte}"
+							   class="form-control form-control-line" disabled>
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-sm-12">
+						<a style="position:relative; right:30px;"
+						   th:href="@{/afiliados/guardar/}+${id}"
+						   class="btn btn-primary  float-right" >Guardar</a>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
 </body>
 </html>

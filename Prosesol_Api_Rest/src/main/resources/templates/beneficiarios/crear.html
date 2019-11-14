@@ -1,109 +1,137 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head th:replace="fragments/head :: head"></head>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<!-- Tell the browser to be responsive to screen width -->
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="description" content="">
+	<meta name="author" content="">
+	<!-- Favicon icon -->
+	<title>Prosesol</title>
+	<!-- Bootstrap Core CSS -->
+	<link th:href="@{/css/afiliados/bootstrap.min.css}" rel="stylesheet">
+	<!-- Custom CSS -->
+	<link th:href="@{/css/afiliados/style.css}" rel="stylesheet">
+	<!-- You can change the theme colors from here -->
+	<link th:href="@{/css/afiliados/default.css}" id="theme" rel="stylesheet">
+	<!-- Jquery -->
+	<script type="text/javascript"
+			src="https://code.jquery.com/jquery-3.3.1.js"></script>
+	<!--datepicker -->
+	<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+	<link  th:href="@{/css/datepicker.css}" rel="stylesheet">
+
+	<script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+	<script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+	<![endif]-->
+</head>
 <meta charset="utf-8" />
 <body>
-	<div class="page-wrapper">
-		<!-- Page Top Bar Area -->
-		<!--  	<div th:replace="fragments/header :: header"></div>-->
-		<div class="layout-container-area mt-70">
-			<!-- Side Menu Area -->
-			<!--  	<div th:replace="fragments/sidebar :: sidebar"></div> -->
-
-			<!-- Layout Container -->
-			<div class="layout-container sidemenu-container">
-				<div class="container-fluid">
-					<div class="alert alert-danger" th:if="${error != null}"
-						th:text="${error}"></div>
-					<div class="alert alert-success" th:if="${success != null}"
-						th:text="${success}"></div>
-					<div class="row ">
-						<div class="col-md mb-4">
-							<!-- Card Body -->
-							<div class="card-body bg-white appwork bg-boxshadow-2">
-								<h5 class="card-title">Crear Beneficiario</h5>
-
-								<div class="clearfix"></div>
-								<hr>
-
-								<form class="formInput" name="form" id="form" 
-									th:action="@{/beneficiarios/guardar}" th:object="${afiliado}"
-									method="post" action="datosAfiliado">
-									<div class="row">
-										<div class="form-group col-md-3">
-											<label>Nombre</label> <input type="text" th:field="*{nombre}"
-												name="nombre" required
-												class="form-control form-control-user">
-												<div id="validaNombre" style="display: none; color: red;">Campo
-												obligatorio</div>
-
-										</div>
-
-										<div class="form-group col-md-3">
-											<label>Apellido Paterno</label> <input type="text"
-												th:field="*{apellidoPaterno}" name="apellidoPaterno"
-												required class="form-control form-control-user">
-												<div id="validaApellidoPaterno"
-												style="display: none; color: red;">Campo obligatorio</div>
-										</div>
-
-										<div class="form-group col-md-3">
-											<label>Apelido Materno</label> <input type="text"
-												th:field="*{apellidoMaterno}" name="apellidoMaterno"
-												required class="form-control form-control-user">
-												<div id="validaApellidoMaterno"
-												style="display: none; color: red;">Campo obligatorio</div>
-										</div>
-
-										<div class="form-group col-md-3">
-											<label>Fecha de Nacimiento</label> <input type="text"
-												th:field="*{fechaNacimiento}" name="fechaNacimientos"
-												required class="form-control form-control-user"
-												id="fechaNacimiento" placeholder="">
-												<div id="validaFechaNacimiento"
-												style="display: none; color: red;">Campo obligatorio</div>
-										</div>
-										<div class="form-group col-md-3">
-											<label>RFC</label><input type="text" th:field="*{rfc}" name="rfc" id="rfc"
-											 maxlength="13"  class="form-control form-control-user rfcText">
-											<p>¿No cuentas con tu RFC?</p>
-											<input type="button" id="bot" name="bot"
-												value="Genéralo aquí" onclick="generar()">
-										</div>
-										
-									</div>
-
-									<hr>
-									<div Style="margin-left: 900px">
-									<div class="clearfix">
-										
-										<button type="submit"
-												class="btn btn-primary"
-												name="action" value="save">Guardar</button>
-										<button type="submit"
-												class="btn btn-primary"
-												name="action" value="saveCrear">Crear nuevo beneficiario</button>
-										<a class="btn btn-danger"
-											th:href="@{/afiliados/bienvenido/}+${id}">Cancelar</a>
-									</div>
-				
-									</div>
-
-								</form>
-								
-							</div>
-						</div>
-
-					</div>
-
-				</div>
-
-
-			</div>
-
+<nav class="navbar navbar-light bg-light static-top">
+	<div class="container">
+		<div class="col-md-8" style="position:relative; bottom:0px; right:13px;">
+			<img src="https://prosesol.org/wp-content/uploads/2019/06/logo_prosesol-1.png" alt="Prosesol.org">
 		</div>
 	</div>
-
+</nav>
+<div class="clearfix"></div>
+<div class="container">
+	<div class="card">
+		<!-- Tab panes -->
+		<div class="card-body">
+			<form class="form-horizontal form-material" name="form" id="form"
+				  th:action="@{/beneficiarios/guardar}" th:object="${afiliado}"
+				  method="post" action="datosAfiliado">
+				<h5 class="card-title">Crear Beneficiario</h5>
+				<div class="clearfix"></div>
+				<hr>
+				<div class="form-group">
+					<label class="col-md-12">Nombre</label>
+					<div class="col-md-12">
+						<input type="text" th:field="*{nombre}"
+							   name="nombre"
+							   class="form-control form-control-line" required>
+						<div id="validaNombre" style="display: none; color: red;">Campo
+							obligatorio</div>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-md-12">Apellido Paterno</label>
+					<div class="col-md-12">
+						<input type="text"
+							   th:field="*{apellidoPaterno}" name="apellidoPaterno"
+							   class="form-control form-control-line"
+							   required>
+						<div id="validaApellidoPaterno"
+							 style="display: none; color: red;">Campo obligatorio</div>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-md-12">Apellido Materno</label>
+					<div class="col-md-12">
+						<input type="text"
+							   th:field="*{apellidoMaterno}"
+							   name="apellidoMaterno"
+							   class="form-control form-control-line" required>
+						<div id="validaApellidoMaterno"
+							 style="display: none; color: red;">Campo obligatorio</div>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-md-12">Fecha de Nacimiento</label>
+					<div class="col-md-12">
+						<input type="text"
+							   th:field="*{fechaNacimiento}" id="fechaNacimiento"
+							   name="fechaNacimiento"
+							   class="form-control form-control-line" required>
+						<div id="validaFechaNacimiento"
+							 style="display: none; color: red;">Campo obligatorio</div>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-md-12">RFC</label>
+					<div class="col-md-12">
+						<input type="text" th:field="*{rfc}" name="rfc" id="rfc"
+							   maxlength="13"
+							   class="form-control form-control-line rfcText" required>
+						<p>¿No cuentas con tu RFC?</p>
+						<input type="button" id="bot" name="bot"
+							   value="Genéralo aquí" onclick="generar()">
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-sm-18">
+						<button type="submit" class="btn btn-success"
+								name="action" value="save">
+								Guardar
+						</button>
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-sm-18">
+						<button type="submit"
+								class="btn btn-success"
+								name="action"
+								value="saveCrear">
+							Crear nuevo beneficiario
+						</button>
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-sm-18">
+						<a class="btn btn-danger"
+						   th:href="@{/afiliados/bienvenido/} + ${id}">Cancelar</a>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+	<script src="/js/crearAfiliado.js"></script>
+	<script th:src="@{/js/rfc.js}"></script>
+	<script th:src="@{/js/datepicker.js}"></script>
+	<script th:src="@{/js/datepicker.es-ES.js}"></script>
 </body>
-<script th:src="@{/js/rfc.js}"></script>
 </html>

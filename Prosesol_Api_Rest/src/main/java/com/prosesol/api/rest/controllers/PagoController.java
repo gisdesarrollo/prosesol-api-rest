@@ -126,7 +126,7 @@ public class PagoController {
 
             LOG.info("ERR: ", "El RFC no cumple con los campos necesarios");
             redirect.addFlashAttribute("error", "El RFC No cumple con los campos necesarios");
-            return "redirect:/prosesol/buscar";
+            return "redirect:/pagos/tarjeta/buscar";
 
         }
 
@@ -134,7 +134,7 @@ public class PagoController {
 
             LOG.info("ERR: ", "No existe el afiliado, proporcione otro RFC");
             redirect.addFlashAttribute("error", "No existe el afiliado, proporcione otro RFC");
-            return "redirect:/prosesol/buscar";
+            return "redirect:/pagos/tarjeta/buscar";
 
         } else {
 
@@ -146,12 +146,12 @@ public class PagoController {
                     LOG.info("El afiliado va al corriente de sus pagos");
                     redirect.addFlashAttribute("info", "Usted no cuenta con un saldo al cual " +
                             "se le puede hacer el cargo, consulte a contacto@prosesol.org para dudas o aclaraciones");
-                    return "redirect:tarjeta/buscar";
+                    return "redirect:/pagos/tarjeta/buscar";
                 } else if (afiliado.getSaldoCorte().equals(0.0)) {
                     LOG.info("El afiliado va al corriente de sus pagos");
                     redirect.addFlashAttribute("info", "Usted va al corriente con su pago, " +
                             "no es necesario que realice su pago");
-                    return "redirect:tarjeta/buscar";
+                    return "redirect:/pagos/tarjeta/buscar";
                 } else {
                     model.addAttribute("afiliado", afiliado);
                 }
@@ -189,7 +189,7 @@ public class PagoController {
 
             LOG.info("ERR: ", "El RFC no cumple con los campos necesarios");
             redirect.addFlashAttribute("error", "El RFC No cumple con los campos necesarios");
-            return "redirect:/prosesol/buscar";
+            return "redirect:/pagos/tienda/buscar";
 
         }
 
@@ -197,7 +197,7 @@ public class PagoController {
 
             LOG.info("ERR: ", "No existe el afiliado, proporcione otro RFC");
             redirect.addFlashAttribute("error", "No existe el afiliado, proporcione otro RFC");
-            return "redirect:/prosesol/buscar";
+            return "redirect:/pagos/tienda/buscar";
 
         } else {
 
@@ -208,14 +208,14 @@ public class PagoController {
                     LOG.info("El afiliado va al corriente de sus pagos");
                     redirect.addFlashAttribute("info", "Usted va al corriente con su pago, " +
                             "no es necesario que realice su pago");
-                    return "redirect:tienda/buscar";
+                    return "redirect:/pagos/tienda/buscar";
                 } else {
                     model.addAttribute("afiliado", afiliado);
                 }
             } else {
                 LOG.info("ERR: ", "El afiliado no es titular del servicio");
                 redirect.addFlashAttribute("error", "El afiliado no es titular del servicio");
-                return "redirect:tienda/buscar";
+                return "redirect:/pagos/tienda/buscar";
             }
         }
 
@@ -308,7 +308,7 @@ public class PagoController {
 
             LOG.info("ERR: ", "El RFC no cumple con los campos necesarios");
             redirect.addFlashAttribute("error", "El RFC No cumple con los campos necesarios");
-            return "redirect:/prosesol/buscar";
+            return "redirect:/pagos/banco/buscar";
 
         }
 
@@ -316,7 +316,7 @@ public class PagoController {
 
             LOG.info("ERR: ", "No existe el afiliado, proporcione otro RFC");
             redirect.addFlashAttribute("error", "No existe el afiliado, proporcione otro RFC");
-            return "redirect:/prosesol/buscar";
+            return "redirect:/pagos/banco/buscar";
 
         } else {
 
@@ -327,14 +327,14 @@ public class PagoController {
                     LOG.info("El afiliado va al corriente de sus pagos");
                     redirect.addFlashAttribute("info", "Usted va al corriente con su pago, " +
                             "no es necesario que realice su pago");
-                    return "redirect:tienda/buscar";
+                    return "redirect:/pagos/banco/buscar";
                 } else {
                     model.addAttribute("afiliado", afiliado);
                 }
             } else {
                 LOG.info("ERR: ", "El afiliado no es titular del servicio");
                 redirect.addFlashAttribute("error", "El afiliado no es titular del servicio");
-                return "redirect:tienda/buscar";
+                return "redirect:/pagos/banco/buscar";
             }
         }
 
@@ -395,7 +395,7 @@ public class PagoController {
 
             String descripcionError = evaluarCodigoError(errorCode);
             redirect.addFlashAttribute("error", descripcionError);
-            return "redirect:/pagos/tienda/buscar";
+            return "redirect:/pagos/banco/buscar";
         }
 
         servletResponse.setHeader("Location", openpayDashboardUrl + "/spei-pdf/" + merchantId + "/"
