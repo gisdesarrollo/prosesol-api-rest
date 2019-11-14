@@ -55,10 +55,10 @@ public class PagoController {
 
     @Value("${openpay.url.dashboard.pdf}")
     private String openpayDashboardUrl;
-    
+
     @Autowired
-	private CalcularFecha calcularFechas;
-    
+    private CalcularFecha calcularFechas;
+
     @Autowired
     private IAfiliadoService afiliadoService;
 
@@ -80,6 +80,7 @@ public class PagoController {
 
     /**
      * Búsqueda de RFC para pagos con tarjeta
+     *
      * @return
      */
     @GetMapping(value = "/tarjeta/buscar")
@@ -89,6 +90,7 @@ public class PagoController {
 
     /**
      * Búsqueda de RFC para generar referencia bancaria
+     *
      * @return
      */
     @GetMapping(value = "/banco/buscar")
@@ -98,6 +100,7 @@ public class PagoController {
 
     /**
      * Búsqueda de RFC para generar referencia en pago en tiendas
+     *
      * @return
      */
     @GetMapping(value = "/tienda/buscar")
@@ -107,6 +110,7 @@ public class PagoController {
 
     /**
      * Validación de RFC y saldo al corte del Afiliado para pagos con tarjeta
+     *
      * @param rfc
      * @param model
      * @param redirect
@@ -114,7 +118,7 @@ public class PagoController {
      */
     @RequestMapping(value = "/tarjeta")
     public String obtenerAfiliadoByRfcTarjeta(@ModelAttribute(name = "rfc") String rfc, Model model,
-                                       RedirectAttributes redirect) {
+                                              RedirectAttributes redirect) {
 
         Afiliado afiliado = afiliadoService.findByRfc(rfc);
 
@@ -137,7 +141,13 @@ public class PagoController {
             System.out.println(afiliado.toString());
 
             if (afiliado.getIsBeneficiario() == false) {
-                if (afiliado.getSaldoCorte().equals(0.0)) {
+
+                if (afiliado.getSaldoCorte() == null) {
+                    LOG.info("El afiliado va al corriente de sus pagos");
+                    redirect.addFlashAttribute("info", "Usted no cuenta con un saldo al cual " +
+                            "se le puede hacer el cargo, consulte a contacto@prosesol.org para dudas o aclaraciones");
+                    return "redirect:tarjeta/buscar";
+                } else if (afiliado.getSaldoCorte().equals(0.0)) {
                     LOG.info("El afiliado va al corriente de sus pagos");
                     redirect.addFlashAttribute("info", "Usted va al corriente con su pago, " +
                             "no es necesario que realice su pago");
@@ -158,12 +168,13 @@ public class PagoController {
 
     /**
      * Validación del RFC y generación de la referencia para pagos en tienda
+     *
      * @param rfc
      * @param model
      * @param redirect
      * @param servletResponse
-     * @throws {OpenpayServiceException, ServiceUnavailableException}
      * @return
+     * @throws {OpenpayServiceException, ServiceUnavailableException}
      */
 
     @RequestMapping(value = "/tienda")
@@ -208,7 +219,7 @@ public class PagoController {
             }
         }
 
-        try{
+        try {
 
             OpenpayAPI openpayAPI = new OpenpayAPI(openpayURL, privateKey, merchantId);
             BigDecimal amount = BigDecimal.valueOf(afiliado.getSaldoCorte());
@@ -219,16 +230,16 @@ public class PagoController {
 
             boolean isNotValid = isNullOrEmpty(afiliado.getEmail());
 
-            if(isNotValid){
+            if (isNotValid) {
                 customer.setEmail("mail@mail.com");
-            }else{
+            } else {
                 customer.setEmail(afiliado.getEmail());
             }
 
             CreateStoreChargeParams createStoreChargeParams = new CreateStoreChargeParams()
-                                                .description("Cargo a Tienda")
-                                                .amount(amount)
-                                                .customer(customer);
+                    .description("Cargo a Tienda")
+                    .amount(amount)
+                    .customer(customer);
 
             Charge charge = openpayAPI.charges().createCharge(createStoreChargeParams);
 
@@ -239,13 +250,13 @@ public class PagoController {
 
             ArrayList<String> list = new ArrayList<String>(Arrays.asList(responseValues));
 
-            for(String value : list){
-                if(value.contains("reference")){
+            for (String value : list) {
+                if (value.contains("reference")) {
                     reference = value.substring(value.lastIndexOf("=") + 1);
                 }
             }
 
-        }catch(OpenpayServiceException | ServiceUnavailableException e){
+        } catch (OpenpayServiceException | ServiceUnavailableException e) {
             String response = e.toString().substring(e.toString().indexOf("("), e.toString().lastIndexOf(")"));
             String responseValues[] = response.split(",");
 
@@ -276,18 +287,19 @@ public class PagoController {
 
     /**
      * Validación del RFC y generación de referencia SPEI bancaria
+     *
      * @param rfc
      * @param model
      * @param redirect
      * @param servletResponse
-     * @throws {OpenpayServiceException, ServiceUnavailableException}
      * @return
+     * @throws {OpenpayServiceException, ServiceUnavailableException}
      */
 
     @RequestMapping(value = "/banco")
     public String generarReferenciaSpeiByRfc(@ModelAttribute(name = "rfc") String rfc,
-                                               Model model, RedirectAttributes redirect,
-                                               HttpServletResponse servletResponse) {
+                                             Model model, RedirectAttributes redirect,
+                                             HttpServletResponse servletResponse) {
 
         Afiliado afiliado = afiliadoService.findByRfc(rfc);
         String id = null;
@@ -326,7 +338,7 @@ public class PagoController {
             }
         }
 
-        try{
+        try {
 
             OpenpayAPI openpayAPI = new OpenpayAPI(openpayURL, privateKey, merchantId);
             BigDecimal amount = BigDecimal.valueOf(afiliado.getSaldoCorte());
@@ -337,9 +349,9 @@ public class PagoController {
 
             boolean isNotValid = isNullOrEmpty(afiliado.getEmail());
 
-            if(isNotValid){
+            if (isNotValid) {
                 customer.setEmail("mail@mail.com");
-            }else{
+            } else {
                 customer.setEmail(afiliado.getEmail());
             }
 
@@ -357,15 +369,15 @@ public class PagoController {
 
             ArrayList<String> list = new ArrayList<String>(Arrays.asList(responseValues));
 
-            for(String value : list){
+            for (String value : list) {
                 System.out.println(value);
-                if(value.contains("id")){
+                if (value.contains("id")) {
                     id = value.substring(value.lastIndexOf("=") + 1);
                     System.out.println(id);
                 }
             }
 
-        }catch(OpenpayServiceException | ServiceUnavailableException e){
+        } catch (OpenpayServiceException | ServiceUnavailableException e) {
             String response = e.toString().substring(e.toString().indexOf("("), e.toString().lastIndexOf(")"));
             String responseValues[] = response.split(",");
 
@@ -396,6 +408,7 @@ public class PagoController {
 
     /**
      * Generación de pago con tarjeta
+     *
      * @param id
      * @param tokenId
      * @param deviceSessionId
@@ -411,7 +424,7 @@ public class PagoController {
 
         Afiliado afiliado = afiliadoService.findById(id);
         String periodo = "MENSUAL";
-		Integer corte=0;
+        Integer corte = 0;
 
         apiOpenpay = new OpenpayAPI(openpayURL, privateKey, merchantId);
         BigDecimal amount = BigDecimal.valueOf(afiliado.getSaldoCorte());
@@ -427,9 +440,9 @@ public class PagoController {
 
             boolean isNotValid = isNullOrEmpty(afiliado.getEmail());
 
-            if(isNotValid){
+            if (isNotValid) {
                 customer.setEmail("mail@mail.com");
-            }else{
+            } else {
                 customer.setEmail(afiliado.getEmail());
             }
 
@@ -449,17 +462,16 @@ public class PagoController {
                 pago.setRfc(afiliado.getRfc());
                 pago.setReferenciaBancaria(charge.getAuthorization());
                 pago.setEstatus(charge.getStatus());
-                
+
                 DateFormat formatoFecha = new SimpleDateFormat("dd");
-                String dia=formatoFecha.format(afiliado.getFechaAlta());
+                String dia = formatoFecha.format(afiliado.getFechaAlta());
                 corte = Integer.parseInt(dia);
-                Date fechaCorte = calcularFechas.calcularFechas(periodo,corte);
-                
+                Date fechaCorte = calcularFechas.calcularFechas(periodo, corte);
+
                 afiliado.setEstatus(1);
-    			afiliado.setFechaCorte(fechaCorte);
+                afiliado.setFechaCorte(fechaCorte);
                 afiliado.setSaldoCorte(0.00);
-              
-                
+
 
                 pagoService.save(pago);
                 afiliadoService.save(afiliado);
@@ -500,6 +512,7 @@ public class PagoController {
 
     /**
      * Códigos de errores de open pay para las tarjetas rechazadas
+     *
      * @param errorCode
      * @return
      */
@@ -532,11 +545,12 @@ public class PagoController {
 
     /**
      * Método que evalúa si el email está vacío
+     *
      * @param str
      * @return
      */
-    public static boolean isNullOrEmpty(String str){
-        if(str != null && !str.isEmpty()){
+    public static boolean isNullOrEmpty(String str) {
+        if (str != null && !str.isEmpty()) {
             return false;
         }
 

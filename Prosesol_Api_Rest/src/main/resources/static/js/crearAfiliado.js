@@ -1,3 +1,30 @@
+$(document).ready(function() {
+	$('#fechaNacimiento').datepicker({
+		format : 'dd/mm/yyyy',
+		language : "es-ES",
+		autoHide : true
+
+	});
+
+	$('#nombre').on('input', function(e) {
+
+		if (!/^[ a-záéíóúüñ]*$/i.test(this.value)) {
+			this.value = this.value.replace(/[^ a-záéíóúüñ]+/ig, "");
+		}
+	});
+	$('#apellidoPaterno').on('input', function(e) {
+		if (!/^[ a-záéíóúüñ]*$/i.test(this.value)) {
+			this.value = this.value.replace(/[^ a-záéíóúüñ]+/ig, "");
+		}
+	});
+	$('#apellidoMaterno').on('input', function(e) {
+		if (!/^[ a-záéíóúüñ]*$/i.test(this.value)) {
+			this.value = this.value.replace(/[^ a-záéíóúüñ]+/ig, "");
+		}
+	});
+
+});
+
 function validaDatosAfiliado() {
 
 	var focusSet = false;
@@ -69,30 +96,3 @@ function validaDatosAfiliado() {
 		frm.submit();
 	}
 }
-
-$(document).ready(function() {
-	$('#fechaNacimiento').datepicker({
-		format : 'dd/mm/yyyy',
-		language : "es-ES",
-		autoHide : true
-
-	});
-
-	$('#nombre').on('input', function(e) {
-
-		if (!/^[ a-záéíóúüñ]*$/i.test(this.value)) {
-			this.value = this.value.replace(/[^ a-záéíóúüñ]+/ig, "");
-		}
-	});
-	$('#apellidoPaterno').on('input', function(e) {
-		if (!/^[ a-záéíóúüñ]*$/i.test(this.value)) {
-			this.value = this.value.replace(/[^ a-záéíóúüñ]+/ig, "");
-		}
-	});
-	$('#apellidoMaterno').on('input', function(e) {
-		if (!/^[ a-záéíóúüñ]*$/i.test(this.value)) {
-			this.value = this.value.replace(/[^ a-záéíóúüñ]+/ig, "");
-		}
-	});
-
-});
