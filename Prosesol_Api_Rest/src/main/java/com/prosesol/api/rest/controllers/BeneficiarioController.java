@@ -103,7 +103,7 @@ public class BeneficiarioController {
         	Afiliado.setSaldoAcumulado(saldoAcumulado);
         	Afiliado.setSaldoCorte(saldoAcumulado);
 	
-			beneficiario.setEstatus(2);
+			beneficiario.setEstatus(1);
 			beneficiario.setServicio(Afiliado.getServicio());
 			beneficiario.setIsBeneficiario(true);
 			beneficiario.setClave(generarClave.getClaveAfiliado(clave));
@@ -162,7 +162,7 @@ public class BeneficiarioController {
         	afiliado.setSaldoAcumulado(saldoAcumulado);
         	afiliado.setSaldoCorte(saldoAcumulado);
 			
-			beneficiario.setEstatus(3);
+			beneficiario.setEstatus(1);
 			beneficiario.setServicio(afiliado.getServicio());
 			beneficiario.setIsBeneficiario(true);
 			beneficiario.setClave(generarClave.getClaveAfiliado(clave));
