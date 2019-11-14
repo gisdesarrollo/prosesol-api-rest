@@ -82,7 +82,8 @@ public class AfiliadoController {
 
         String mensajeFlash = null;
         Date date = new Date();
-
+        Servicio servicio = servicioService.findById(afiliado.getServicio().getId());
+        Double saldoAcumulado=0.0;
         try {
             if (afiliado.getId() != null) {
 
@@ -95,6 +96,9 @@ public class AfiliadoController {
                 mensajeFlash = "Registro editado con éxito";
 
             } else {
+            	saldoAcumulado=servicio.getCostoTitular() + servicio.getInscripcionTitular();
+            	afiliado.setSaldoAcumulado(saldoAcumulado);
+            	afiliado.setSaldoCorte(saldoAcumulado);
                 afiliado.setIsBeneficiario(false);
                 afiliado.setFechaAlta(date);
                 afiliado.setClave(generarClave.getClaveAfiliado(clave));
@@ -129,84 +133,40 @@ public class AfiliadoController {
     @RequestMapping(value = "/bienvenido/{id}")
     public String mostrar(@PathVariable("id") Long id, Model model, RedirectAttributes redirect) {
 
-        Double costoTitular, inscripcionTitular, costoBeneficiario, inscripcionBeneficiario, costoTotalAfiliado, costoTotalBeneficiario, mensualidad;
         try {
             Afiliado afiliado = afiliadoService.findById(id);
-            Long idServicio = afiliado.getServicio().getId();
-            Servicio servicio = servicioService.findById(idServicio);
+           Servicio servicio = servicioService.findById(afiliado.getServicio().getId());
 
-            costoTitular = servicio.getCostoTitular();
-            inscripcionTitular = servicio.getInscripcionTitular();
-            //mensualidad = d1;
-            costoTotalAfiliado = costoTitular + inscripcionTitular;
+           Double saldoAcumulado=0.0;
+         
 
             List<Afiliado> beneficiarios = afiliadoService.getBeneficiarioByIdByIsBeneficiario(id);
             if (beneficiarios != null) {
-                costoBeneficiario = servicio.getCostoBeneficiario();
-                inscripcionBeneficiario = servicio.getInscripcionBeneficiario();
-                costoTotalBeneficiario = costoBeneficiario + inscripcionBeneficiario;
+               saldoAcumulado=servicio.getCostoBeneficiario() + servicio.getInscripcionBeneficiario();
 
-                model.addAttribute("costoBeneficiario", costoTotalBeneficiario);
+                model.addAttribute("saldoAcumulado", saldoAcumulado);
                 model.addAttribute("beneficiarios", beneficiarios);
              
             }
-
-            model.addAttribute("costoAfiliado", costoTotalAfiliado);
+   
+         
             model.addAttribute("id", id);
-            model.addAttribute("afiliado", afiliado);
+            model.addAttribute("afiliados", afiliado);
 
         } catch (Exception e) {
         	 e.printStackTrace();
              logger.error("Error al momento de ejecutar el proceso: " + e);
-             redirect.addFlashAttribute("error", "Ocurrió un error al momento de insertar el saldo acumulado");
+             redirect.addFlashAttribute("error", "Ocurrió un error ");
 
              return "redirect:/afiliados/bienvenido/"+id;
         }
         return "afiliados/bienvenido";
     }
 
-    @RequestMapping(value = "/guardar/{id}")
-    public String guardaSaldoAfiliado(@PathVariable("id") Long id, Model model, SessionStatus status,RedirectAttributes redirect) {
+    @RequestMapping(value = "/guardar")
+    public String guardaSaldoAfiliado(Model model, SessionStatus status,RedirectAttributes redirect) {
 
-        Afiliado afiliado = new Afiliado();
-
-        Double costoTitular, inscripcionTitular, costoBeneficiario, inscripcionBeneficiario, saldoAcumulado;
-        //	String periodo = "MENSUAL";
-        //	Integer corte=0;
-        try {
-            afiliado = afiliadoService.findById(id);
-            Long idServicio = afiliado.getServicio().getId();
-            Servicio serv = servicioService.findById(idServicio);
-
-            costoTitular = serv.getCostoTitular();
-            inscripcionTitular = serv.getInscripcionTitular();
-
-            saldoAcumulado = costoTitular + inscripcionTitular;
-
-            List<Afiliado> beneficiarios = afiliadoService.getBeneficiarioByIdByIsBeneficiario(id);
-            if (beneficiarios != null) {
-
-
-                for (Integer x = 0; x < beneficiarios.size(); x++) {
-                    costoBeneficiario = serv.getCostoBeneficiario();
-                    inscripcionBeneficiario = serv.getInscripcionBeneficiario();
-                    saldoAcumulado += costoBeneficiario + inscripcionBeneficiario;
-                }
-
-            }
-
-            afiliado.setSaldoAcumulado(saldoAcumulado);
-            afiliado.setSaldoCorte(saldoAcumulado);
-            afiliadoService.save(afiliado);
-            status.setComplete();
-
-        } catch (Exception e) {
-        	 e.printStackTrace();
-             logger.error("Error al momento de ejecutar el proceso: " + e);
-             redirect.addFlashAttribute("error", "Ocurrió un error al momento de insertar el saldo acumulado");
-
-             return "redirect:/afiliados/bienvenido/"+id;
-        }
+       
 
         return "redirect:/";
     }

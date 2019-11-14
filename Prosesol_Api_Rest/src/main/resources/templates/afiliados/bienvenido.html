@@ -19,8 +19,8 @@
 </head>
 <body>
 
-	<div 
-		th:each="afiliados : ${afiliado}">
+<!-- 	<div 
+		th:each="afiliados : ${afiliado}">-->
 
 		
 			<div class="section-title" style="text-align:center;">
@@ -30,7 +30,7 @@
 		
 
 		<table class="table table-striped  text-center "
-			th:each="afiliado : ${afiliados}">
+			 th:each="afiliado : ${afiliados}">
 			<thead>
 				<tr>
 
@@ -124,7 +124,7 @@
 					<th style="text-align: center;">Municipio</th>
 					<th style="text-align: center;">Entidad federativa</th>
 					<th style="text-align: center;">Código postal</th>
-					<th style="text-align: center;">Numero infonavit</th>
+					<th style="text-align: center;">Servicio</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -141,25 +141,20 @@
 					<td>
 						<h5 th:text="${afiliado.codigoPostal}"></h5>
 					</td>
-					<td>
-						<h5 th:text="${afiliado.numeroInfonavit}"></h5>
+					<td >
+						<p th:text="${afiliado.servicio.nombre}"></p>
 					</td>
 				</tr>
 			</tbody>
 			<thead>
 				<tr>
-					
-					<th style="text-align: center;">Servicio</th>
 					<th style="text-align: center;">Saldo acumulado</th>
 				</tr>
 			</thead>
 			<tbody>
 				<tr>
-					<td >
-						<p th:text="${afiliado.servicio.nombre}"></p>
-					</td>
 					<td>
-						<h5 th:text="${costoAfiliado}"></h5>
+						<h5 th:text="${afiliado.saldoAcumulado}"></h5>
 					</td>
 
 				</tr>
@@ -167,7 +162,7 @@
 			</tbody>
 		</table>
 
-</div>
+ 
 
 
 	<div 
@@ -208,7 +203,7 @@
 						<h5 th:text="${afiliado.rfc}"></h5>
 					</td>
 					<td>
-						<h5 th:text="${costoBeneficiario}"></h5>
+						<h5 th:text="${saldoAcumulado}"></h5>
 					</td>
 				</tr>
 			</tbody>
@@ -219,7 +214,7 @@
 
 	<!-- footer section -->
 	<a style="position:relative; right:30px;"
-			th:href="@{/afiliados/guardar/}+${id}"
+			th:href="@{/afiliados/guardar}"
 			class="btn btn-primary  float-right" >Guardar</a>
 		<br> <br> 
 	

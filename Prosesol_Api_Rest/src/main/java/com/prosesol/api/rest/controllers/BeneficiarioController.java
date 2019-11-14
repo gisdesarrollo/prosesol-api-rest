@@ -25,11 +25,11 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.josketres.rfcfacil.Rfc;
 import com.prosesol.api.rest.models.entity.Afiliado;
+import com.prosesol.api.rest.models.entity.Servicio;
 import com.prosesol.api.rest.services.IAfiliadoService;
 import com.prosesol.api.rest.services.IServicioService;
 
 @Controller
-//@SessionAttributes("afiliado")
 @RequestMapping("/beneficiarios")
 public class BeneficiarioController {
 
@@ -53,7 +53,6 @@ public class BeneficiarioController {
 	public String crear(@PathVariable("id") Long id, Map<String, Object> model, RedirectAttributes redirect) {
 
 		idAfiliado = id;
-		System.out.println("la id afiliado es: " + idAfiliado);
 
 		Afiliado afiliado = new Afiliado();
 		model.put("afiliado", afiliado);
@@ -62,54 +61,56 @@ public class BeneficiarioController {
 		if (afiliado == null) {
 			redirect.addFlashAttribute("error", "Afiliado no registrado");
 			return "redirect:/afiliados/servicio";
-		}
-		// System.out.println(afiliado.getServicio());
-		
+		}	
 		model.put("id", idAfiliado);
 
 		return "beneficiarios/crear";
 	}
 
 	@RequestMapping(value = "/guardar", method = RequestMethod.POST, params = "action=save")
-	public String guardar(Afiliado afiliado, BindingResult result, Model model,
+	public String guardar(Afiliado beneficiario, BindingResult result, Model model,
 			RedirectAttributes redirect, SessionStatus status) {
 
-		System.out.println("id: " + idAfiliado);
-
+	
 		Date fechaAlta = new Date();
-		Afiliado buscoAfiliadoServicio = afiliadoService.findById(idAfiliado);
+		Afiliado Afiliado = afiliadoService.findById(idAfiliado);
+		Servicio servicio = servicioService.findById(Afiliado.getServicio().getId());
+        Double saldoAcumulado=0.0;
 		Rfc rfc = null;
 		try {
-			if (afiliado.getFechaNacimiento() == null) {
+			if (beneficiario.getFechaNacimiento() == null) {
 				redirect.addFlashAttribute("error", "Fecha Nacimiento Invalido Debe Ser dd/mm/yyyy");
 
 				return "redirect:/beneficiarios/crear/" + idAfiliado;
 
 			}
-			if (afiliado.getRfc() == null || afiliado.getRfc().equals("")) {
-				LocalDate fechaNacimiento = afiliado.getFechaNacimiento().toInstant().atZone(ZoneId.systemDefault())
+			if (beneficiario.getRfc() == null || beneficiario.getRfc().equals("")) {
+				LocalDate fechaNacimiento = beneficiario.getFechaNacimiento().toInstant().atZone(ZoneId.systemDefault())
 						.toLocalDate();
 
-				rfc = new Rfc.Builder().name(afiliado.getNombre()).firstLastName(afiliado.getApellidoPaterno())
-						.secondLastName(afiliado.getApellidoMaterno()).birthday(fechaNacimiento.getDayOfMonth(),
+				rfc = new Rfc.Builder().name(beneficiario.getNombre()).firstLastName(beneficiario.getApellidoPaterno())
+						.secondLastName(beneficiario.getApellidoMaterno()).birthday(fechaNacimiento.getDayOfMonth(),
 								fechaNacimiento.getMonthValue(), fechaNacimiento.getYear())
 						.build();
 
-				afiliado.setRfc(rfc.toString());
+				beneficiario.setRfc(rfc.toString());
 
 				System.out.println(rfc.toString());
 
 			}
-			
-			buscoAfiliadoServicio.getServicio();
-			afiliado.setEstatus(2);
-			afiliado.setServicio(buscoAfiliadoServicio.getServicio());
-			afiliado.setIsBeneficiario(true);
-			afiliado.setClave(generarClave.getClaveAfiliado(clave));
-			afiliado.setFechaAlta(fechaAlta);
-
-			afiliadoService.save(afiliado);
-			guardarRelAfiliadoBeneficiario(afiliado, idAfiliado);
+			saldoAcumulado=Afiliado.getSaldoAcumulado();
+			saldoAcumulado += servicio.getCostoBeneficiario() + servicio.getInscripcionBeneficiario();
+        	Afiliado.setSaldoAcumulado(saldoAcumulado);
+        	Afiliado.setSaldoCorte(saldoAcumulado);
+	
+			beneficiario.setEstatus(2);
+			beneficiario.setServicio(Afiliado.getServicio());
+			beneficiario.setIsBeneficiario(true);
+			beneficiario.setClave(generarClave.getClaveAfiliado(clave));
+			beneficiario.setFechaAlta(fechaAlta);
+			afiliadoService.save(Afiliado);
+			afiliadoService.save(beneficiario);
+			guardarRelAfiliadoBeneficiario(beneficiario, idAfiliado);
 			status.setComplete();
 
 		} catch (Exception e) {
@@ -125,45 +126,50 @@ public class BeneficiarioController {
 	}
 
 	@RequestMapping(value = "/guardar", method = RequestMethod.POST, params = "action=saveCrear")
-	public String guardarCrear(Afiliado afiliado, BindingResult result,
+	public String guardarCrear(Afiliado beneficiario, BindingResult result,
 			Model model, RedirectAttributes redirect, SessionStatus status) {
 
-		System.out.println("id: " + idAfiliado);
+		
 
 		Date fechaAlta = new Date();
-		Afiliado resul = afiliadoService.findById(idAfiliado);
+		Afiliado afiliado = afiliadoService.findById(idAfiliado);
 		Rfc rfc = null;
+		Servicio servicio = servicioService.findById(afiliado.getServicio().getId());
+        Double saldoAcumulado=0.0;
 		try {
-			if (afiliado.getFechaNacimiento() == null) {
+			if (beneficiario.getFechaNacimiento() == null) {
 				redirect.addFlashAttribute("error", "Fecha Nacimiento Invalido Debe Ser dd/mm/yyyy");
 
 				return "redirect:/beneficiarios/crear/" + idAfiliado;
 
 			}
-			if (afiliado.getRfc() == null || afiliado.getRfc().equals("")) {
-				LocalDate fechaNacimiento = afiliado.getFechaNacimiento().toInstant().atZone(ZoneId.systemDefault())
+			if (beneficiario.getRfc() == null || beneficiario.getRfc().equals("")) {
+				LocalDate fechaNacimiento = beneficiario.getFechaNacimiento().toInstant().atZone(ZoneId.systemDefault())
 						.toLocalDate();
 
-				rfc = new Rfc.Builder().name(afiliado.getNombre()).firstLastName(afiliado.getApellidoPaterno())
-						.secondLastName(afiliado.getApellidoMaterno()).birthday(fechaNacimiento.getDayOfMonth(),
+				rfc = new Rfc.Builder().name(beneficiario.getNombre()).firstLastName(beneficiario.getApellidoPaterno())
+						.secondLastName(beneficiario.getApellidoMaterno()).birthday(fechaNacimiento.getDayOfMonth(),
 								fechaNacimiento.getMonthValue(), fechaNacimiento.getYear())
 						.build();
 
-				afiliado.setRfc(rfc.toString());
+				beneficiario.setRfc(rfc.toString());
 
 				System.out.println(rfc.toString());
 
 			}
-
-			resul.getServicio();
-			afiliado.setEstatus(3);
-			afiliado.setServicio(resul.getServicio());
-			afiliado.setIsBeneficiario(true);
-			afiliado.setClave(generarClave.getClaveAfiliado(clave));
-			afiliado.setFechaAlta(fechaAlta);
-
+			saldoAcumulado=afiliado.getSaldoAcumulado();
+			saldoAcumulado += servicio.getCostoBeneficiario() + servicio.getInscripcionBeneficiario();
+        	afiliado.setSaldoAcumulado(saldoAcumulado);
+        	afiliado.setSaldoCorte(saldoAcumulado);
+			
+			beneficiario.setEstatus(3);
+			beneficiario.setServicio(afiliado.getServicio());
+			beneficiario.setIsBeneficiario(true);
+			beneficiario.setClave(generarClave.getClaveAfiliado(clave));
+			beneficiario.setFechaAlta(fechaAlta);
 			afiliadoService.save(afiliado);
-			guardarRelAfiliadoBeneficiario(afiliado, idAfiliado);
+			afiliadoService.save(beneficiario);
+			guardarRelAfiliadoBeneficiario(beneficiario, idAfiliado);
 			status.setComplete();
 
 		} catch (Exception e) {
