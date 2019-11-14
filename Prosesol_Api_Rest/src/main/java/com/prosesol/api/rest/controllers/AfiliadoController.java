@@ -148,10 +148,9 @@ public class AfiliadoController {
                 model.addAttribute("beneficiarios", beneficiarios);
              
             }
-   
-         
+
             model.addAttribute("id", id);
-            model.addAttribute("afiliados", afiliado);
+            model.addAttribute("afiliado", afiliado);
 
         } catch (Exception e) {
         	 e.printStackTrace();

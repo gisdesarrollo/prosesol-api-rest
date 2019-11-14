@@ -1,308 +1,306 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-	<meta charset="utf-8">
-	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<!-- Tell the browser to be responsive to screen width -->
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<meta name="description" content="">
-	<meta name="author" content="">
-	<!-- Favicon icon -->
-	<title>Prosesol</title>
-	<!-- Bootstrap Core CSS -->
-	<link th:href="@{/css/afiliados/bootstrap.min.css}" rel="stylesheet">
-	<!-- Custom CSS -->
-	<link th:href="@{/css/afiliados/style.css}" rel="stylesheet">
-	<!-- You can change the theme colors from here -->
-	<link th:href="@{/css/afiliados/default.css}" id="theme" rel="stylesheet">
-	<!-- Jquery -->
-	<script type="text/javascript"
-			src="https://code.jquery.com/jquery-3.3.1.js"></script>
-	<!--datepicker -->
-	<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <!-- Tell the browser to be responsive to screen width -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <!-- Favicon icon -->
+    <title>Prosesol</title>
+    <!-- Bootstrap Core CSS -->
+    <link th:href="@{/css/afiliados/bootstrap.min.css}" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link th:href="@{/css/afiliados/style.css}" rel="stylesheet">
+    <!-- You can change the theme colors from here -->
+    <link th:href="@{/css/afiliados/default.css}" id="theme" rel="stylesheet">
+    <!-- Jquery -->
+    <script type="text/javascript"
+            src="https://code.jquery.com/jquery-3.3.1.js"></script>
+    <!--datepicker -->
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 
-	<link  th:href="@{/css/datepicker.css}" rel="stylesheet">
+    <link th:href="@{/css/datepicker.css}" rel="stylesheet">
 
-	<script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-	<script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-	<![endif]-->
+    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
 </head>
 <body>
 <!-- Navigation -->
-<nav class="navbar navbar-light bg-light static-top">
-	<div class="container">
-		<div class="col-md-8" style="position:relative; bottom:0px; right:13px;">
-			<img src="https://prosesol.org/wp-content/uploads/2019/06/logo_prosesol-1.png" alt="Prosesol.org">
-			<br>
-			<a th:href="@{/obtener/aviso}">Aviso de privacidad /</a>
-			<a th:href="@{/obtener/termino}">Términos y condiciones</a>
-		</div>
-	</div>
+<nav class="navbar navbar-light static-top">
+    <div class="container">
+        <div class="col-md-8" style="position:relative; bottom:0px; right:13px;">
+            <img src="https://prosesol.org/wp-content/uploads/2019/06/logo_prosesol-1.png" alt="Prosesol.org">
+            <br>
+            <a th:href="@{/obtener/aviso}">Aviso de privacidad /</a>
+            <a th:href="@{/obtener/termino}">Términos y condiciones</a>
+        </div>
+    </div>
 </nav>
-<div class="fix-header card-no-border fix-sidebar">
-	<!-- Page Top Bar Area -->
-	<!--  	<div th:replace="fragments/header :: header"></div>-->
-	<div class="layout-container-area mt-70">
-		<!-- Side Menu Area -->
-		<!--  	<div th:replace="fragments/sidebar :: sidebar"></div> -->
+<div class="container">
+    <div class="card">
+        <div class="card-body">
+            <div th:replace="fragments/navbar :: div-messages"></div>
+            <div class="row ">
+                <div class="col-md mb-4">
 
-		<!-- Layout Container -->
-		<div class="layout-container sidemenu-container">
-			<div class="container-fluid">
-				<div class="alert alert-danger" th:if="${error!= null}"
-					 th:text="${error}"></div>
-				<div class="alert alert-success" th:if="${success != null}"
-					 th:text="${success}"></div>
-				<div class="row ">
-					<div class="col-md mb-4">
-						<!-- Card Body -->
-						<div class="card-body bg-light appwork bg-boxshadow-2">
-							<h5 class="card-title">Crear Afiliado</h5>
+                    <!--th:action="@{/afiliados/crear/}"-->
+                    <form class="form-horizontal form-material" name="formu" id="formu"
+                          method="post" th:object="${afiliado}">
+                        <h5 class="card-title">Crear Afiliado</h5>
 
-							<div class="clearfix"></div>
-							<hr>
-
-							<!--th:action="@{/afiliados/crear/}"-->
-							<form class="form-horizontal form-material" name="formu" id="formu"
-								  method="post" th:object="${afiliado}"
-							>
-								<div class="row">
-									<div class="form-group col-md-3">
-										<label>Nombre</label>
-										<input type="text" th:field="*{nombre}"
-											   id="nombre" name="nombre"
-											   class="form-control form-control-line">
-										<div id="nombreVacio" style="display: none; color: red;">
-											Proporcione su nombre
-										</div>
-										<div id="validaNombre" style="display: none; color: red;">Campo
-											obligatorio</div>
-									</div>
+                        <div class="clearfix"></div>
+                        <hr>
+                        <div class="row">
+                            <div class="form-group col-md-3">
+                                <label>Nombre*</label>
+                                <input type="text" th:field="*{nombre}"
+                                       id="nombre" name="nombre"
+                                       class="form-control form-control-line">
+                                <div id="nombreVacio" style="display: none; color: red;">
+                                    Proporcione su nombre
+                                </div>
+                                <div id="validaNombre" style="display: none; color: red;">Campo
+                                    obligatorio
+                                </div>
+                            </div>
 
 
-									<div class="form-group col-md-3">
-										<label>Apellido Paterno</label>
-										<input type="text"
-											   th:field="*{apellidoPaterno}" id="apellidoPaterno"
-											   name="apellidoPaterno"
-											   class="form-control form-control-line">
-										<div id="apellPaterVacio" style="display: none; color: red;">
-											Proporcione su apellido paterno
-										</div>
-										<div id="validaApellidoPaterno"
-											 style="display: none; color: red;">Campo obligatorio</div>
-									</div>
+                            <div class="form-group col-md-3">
+                                <label>Apellido Paterno*</label>
+                                <input type="text"
+                                       th:field="*{apellidoPaterno}" id="apellidoPaterno"
+                                       name="apellidoPaterno"
+                                       class="form-control form-control-line">
+                                <div id="apellPaterVacio" style="display: none; color: red;">
+                                    Proporcione su apellido paterno
+                                </div>
+                                <div id="validaApellidoPaterno"
+                                     style="display: none; color: red;">Campo obligatorio
+                                </div>
+                            </div>
 
-									<div class="form-group col-md-3">
-										<label>Apellido Materno</label> <input
-											th:field="*{apellidoMaterno}" type="text"
-											id="apellidoMaterno" name="ApellidoMaterno"
-											class="form-control form-control-line">
-										<div id="apellMaterVacio" style="display: none; color: red;">
-											Proporciones su apellido materno
-										</div>
-										<div id="validaApellidoMaterno"
-											 style="display: none; color: red;">Campo obligatorio</div>
-									</div>
+                            <div class="form-group col-md-3">
+                                <label>Apellido Materno*</label> <input
+                                    th:field="*{apellidoMaterno}" type="text"
+                                    id="apellidoMaterno" name="ApellidoMaterno"
+                                    class="form-control form-control-line">
+                                <div id="apellMaterVacio" style="display: none; color: red;">
+                                    Proporciones su apellido materno
+                                </div>
+                                <div id="validaApellidoMaterno"
+                                     style="display: none; color: red;">Campo obligatorio
+                                </div>
+                            </div>
 
-									<div class="form-group col-md-3">
-										<label>Fecha de Nacimiento</label>
-										<input th:field="*{fechaNacimiento}" type="text"
-											   id="fechaNacimiento" name="fechaNacimiento"
-											   class="form-control form-control-user">
-										<div id="fechaNacVacio" style="display: none; color: red;">
-											Proporcione su fecha de nacimiento
-										</div>
-										<div id="validaFechaNacimiento"
-											 style="display: none; color: red;">Campo obligatorio</div>
-									</div>
+                            <div class="form-group col-md-3">
+                                <label>Fecha de Nacimiento*</label>
+                                <input th:field="*{fechaNacimiento}" type="text"
+                                       id="fechaNacimiento" name="fechaNacimiento"
+                                       class="form-control form-control-user">
+                                <div id="fechaNacVacio" style="display: none; color: red;">
+                                    Proporcione su fecha de nacimiento
+                                </div>
+                                <div id="validaFechaNacimiento"
+                                     style="display: none; color: red;">Campo obligatorio
+                                </div>
+                            </div>
 
-									<div class="form-group col-md-3">
-										<label>Lugar de Nacimiento</label>
-										<input type="text"
-											   th:field="*{lugarNacimiento}" id="lugarNacimiento"
-											   name="lugarNacimiento"
-											   class="form-control form-control-line">
-									</div>
-
-
-									<div class="form-group col-md-3">
-										<label>Estado Civil</label>
-										<select th:field="*{estadoCivil}"
-												id="estadoCivil" name="estadoCivil" class="form-control form-control-line">
-										<option th:value="'Soltero'" th:selected>Soltero(a)</option>
-										<option th:value="'Casado'">Casado(a)</option>
-										<option th:value="'Viudo'">Viudo(a)</option>
-										<option th:value="'Divorciado'">Divorciado(a)</option>
-										<option th:value="'Desconocido'">Desconocido</option>
-									</select><small class="form-text text-danger"
-													th:if="${#fields.hasErrors('estadoCivil')}"
-													th:errors="*{estadoCivil}"></small>
-									</div>
-
-									<div class="form-group col-md-3">
-										<label>Ocupación</label><input type="text"
-																	   th:field="*{ocupacion}" id="ocupacion" name="ocupacion"
-																	   class="form-control form-control-user" placeholder="">
-										<small class="form-text text-danger"
-											   th:if="${#fields.hasErrors('ocupacion')}"
-											   th:errors="*{ocupacion}"></small>
-									</div>
-
-									<div class="form-group col-md-3">
-										<label>Sexo</label> <select th:field="*{sexo}" id="sexo"
-																	name="sexo" class="form-control form-control-line">
-										<option th:value="'Masculino'" th:selected>Masculino</option>
-										<option th:value="'Femenino'">Femenino</option>
-									</select><small class="form-text text-danger"
-													th:if="${#fields.hasErrors('sexo')}" th:errors="*{sexo}"></small>
-									</div>
-
-									<div class="form-group col-md-3">
-										<label>País</label>
-										<select th:field="*{pais}"
-												id="pais" name="pais" class="form-control form-control-line">
-										<option th:each="pais : ${paises}" th:value="${pais}"
-												th:text="${pais}" />
-									</select> <small class="form-text text-danger"
-													 th:if="${#fields.hasErrors('pais')}" th:errors="*{pais}"></small>
-									</div>
-
-									<div class="form-group col-md-3">
-										<label>Curp</label><input type="text" th:field="*{curp}"
-																  id="curp" name="curp"
-																  class="form-control form-control-user curpText"><small
-											class="form-text text-danger"
-											th:if="${#fields.hasErrors('curp')}" th:errors="*{curp}"
-											id="smallCurp"></small>
-									</div>
-
-									<div class="form-group col-md-3">
-										<label>Número de seguridad social</label><input type="text"
-																						th:field="*{nss}" id="nss" name="nss"
-																						class="form-control form-control-user nssText"> <small
-											class="form-text text-danger"
-											th:if="${#fields.hasErrors('nss')}" th:errors="*{nss}"></small>
-									</div>
-
-									<div class="form-group col-md-3">
-										<label>RFC</label><input type="text" th:field="*{rfc}"
-																 id="rfc" name="rfc"
-																 class="form-control form-control-user rfcText"> <small
-											class="form-text text-danger"
-											th:if="${#fields.hasErrors('rfc')}" th:errors="*{rfc}"></small>
-										<div id="rfcVacio" style="display: none; color: red;">
-											Proporciones su RFC
-										</div>
-										<p>¿No cuentas con tu RFC?</p>
-										<input type="button" id="bot" name="bot"
-											   value="Genéralo aquí" onclick="generar()">
+                            <div class="form-group col-md-3">
+                                <label>Lugar de Nacimiento</label>
+                                <input type="text"
+                                       th:field="*{lugarNacimiento}" id="lugarNacimiento"
+                                       name="lugarNacimiento"
+                                       class="form-control form-control-line">
+                            </div>
 
 
-									</div>
+                            <div class="form-group col-md-3">
+                                <label>Estado Civil</label>
+                                <select th:field="*{estadoCivil}"
+                                        id="estadoCivil" name="estadoCivil" class="form-control form-control-line">
+                                    <option th:value="'Soltero'" th:selected>Soltero(a)</option>
+                                    <option th:value="'Casado'">Casado(a)</option>
+                                    <option th:value="'Viudo'">Viudo(a)</option>
+                                    <option th:value="'Divorciado'">Divorciado(a)</option>
+                                    <option th:value="'Desconocido'">Desconocido</option>
+                                </select><small class="form-text text-danger"
+                                                th:if="${#fields.hasErrors('estadoCivil')}"
+                                                th:errors="*{estadoCivil}"></small>
+                            </div>
 
-									<div class="form-group col-md-3">
-										<label>Teléfono Fijo</label><input type="text"
-																		   th:field="*{telefonoFijo}"
-																		   class="form-control form-control-user" placeholder="">
-										<small class="form-text text-danger"
-											   th:if="${#fields.hasErrors('telefonoFijo')}"
-											   th:errors="*{telefonoFijo}"></small>
-									</div>
+                            <div class="form-group col-md-3">
+                                <label>Ocupación</label><input type="text"
+                                                               th:field="*{ocupacion}" id="ocupacion"
+                                                               name="ocupacion"
+                                                               class="form-control form-control-user"
+                                                               placeholder="">
+                                <small class="form-text text-danger"
+                                       th:if="${#fields.hasErrors('ocupacion')}"
+                                       th:errors="*{ocupacion}"></small>
+                            </div>
 
-									<div class="form-group col-md-3">
-										<label>Teléfono móvil</label><input type="text"
-																			th:field="*{telefonoMovil}"
-																			class="form-control form-control-user" placeholder="">
-										<small class="form-text text-danger"
-											   th:if="${#fields.hasErrors('telefonoMovil')}"
-											   th:errors="*{telefonoMovil}"></small>
-									</div>
+                            <div class="form-group col-md-3">
+                                <label>Sexo</label> <select th:field="*{sexo}" id="sexo"
+                                                            name="sexo" class="form-control form-control-line">
+                                <option th:value="'Masculino'" th:selected>Masculino</option>
+                                <option th:value="'Femenino'">Femenino</option>
+                            </select><small class="form-text text-danger"
+                                            th:if="${#fields.hasErrors('sexo')}" th:errors="*{sexo}"></small>
+                            </div>
 
-									<div class="form-group col-md-3">
-										<label>Correo electrónico</label><input type="email"
-																				th:field="*{email}" class="form-control form-control-user"
-																				placeholder=""> <small class="form-text text-danger"
-																									   th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></small>
-									</div>
+                            <div class="form-group col-md-3">
+                                <label>País</label>
+                                <select th:field="*{pais}"
+                                        id="pais" name="pais" class="form-control form-control-line">
+                                    <option th:each="pais : ${paises}" th:value="${pais}"
+                                            th:text="${pais}"/>
+                                </select> <small class="form-text text-danger"
+                                                 th:if="${#fields.hasErrors('pais')}" th:errors="*{pais}"></small>
+                            </div>
 
-									<div class="form-group col-md-3">
-										<label>Dirección</label><input type="text"
-																	   th:field="*{direccion}"
-																	   class="form-control form-control-user" placeholder="">
-										<small class="form-text text-danger"
-											   th:if="${#fields.hasErrors('direccion')}"
-											   th:errors="*{direccion}"></small>
-									</div>
+                            <div class="form-group col-md-3">
+                                <label>Curp</label><input type="text" th:field="*{curp}"
+                                                          id="curp" name="curp"
+                                                          class="form-control form-control-user curpText"><small
+                                    class="form-text text-danger"
+                                    th:if="${#fields.hasErrors('curp')}" th:errors="*{curp}"
+                                    id="smallCurp"></small>
+                            </div>
 
-									<div class="form-group col-md-3">
-										<label>Municipio</label><input type="text"
-																	   th:field="*{municipio}"
-																	   class="form-control form-control-user" placeholder="">
-										<small class="form-text text-danger"
-											   th:if="${#fields.hasErrors('municipio')}"
-											   th:errors="*{municipio}"></small>
-									</div>
+                            <div class="form-group col-md-3">
+                                <label>Número de seguridad social</label><input type="text"
+                                                                                th:field="*{nss}" id="nss"
+                                                                                name="nss"
+                                                                                class="form-control form-control-user nssText">
+                                <small
+                                        class="form-text text-danger"
+                                        th:if="${#fields.hasErrors('nss')}" th:errors="*{nss}"></small>
+                            </div>
 
-									<div class="form-group col-md-3">
-										<label>Entidad Federativa</label> <select
-											name="entidadFederativa" th:field="*{entidadFederativa}"
-											class="form-control form-control-line">
-										<option th:each="estado : ${estados}" th:value="${estado}"
-												th:text="${estado}" th:selected="false" />
-									</select><small class="form-text text-danger"
-													th:if="${#fields.hasErrors('entidadFederativa')}"
-													th:errors="*{entidadFederativa}"></small>
-									</div>
-
-									<div class="form-group col-md-3">
-										<label>Código Postal</label><input type="text"
-																		   th:field="*{codigoPostal}"
-																		   class="form-control form-control-user" placeholder="">
-										<small class="form-text text-danger"
-											   th:if="${#fields.hasErrors('codigoPostal')}"
-											   th:errors="*{codigoPostal}"></small>
-									</div>
-
-									<div class="form-group col-md-3" >
-										<label>Servicio</label>
-										<input type="text"
-											   th:value="${servicio.nombre}"
-											   class="form-control form-control-user"
-											   disabled>
-
-										<input type="hidden"
-											   th:field="*{servicio}"
-											   th:value="${servicio.id}"
-											   class="form-control form-control-user">
-									</div>
-								</div>
-								<hr>
-								<div class="clearfix"></div>
-								<div class="row">
-									<div class="col-sm-12">
-										<!--  <button type="submit" name="action" value="save"
-                                            class="btn btn-primary btn-square float-right">Crear
-                                            Afiliado</button>-->
-										<button type="button" onclick="validaDatosAfiliado()"
-												class="btn btn-primary btn-square float-right">Crear
-											Afiliado</button>
-
-									</div>
-								</div>
-							</form>
-
-						</div>
-					</div>
-
-				</div>
-
-			</div>
+                            <div class="form-group col-md-3">
+                                <label>RFC*</label><input type="text" th:field="*{rfc}"
+                                                          id="rfc" name="rfc"
+                                                          class="form-control form-control-user rfcText"> <small
+                                    class="form-text text-danger"
+                                    th:if="${#fields.hasErrors('rfc')}" th:errors="*{rfc}"></small>
+                                <div id="rfcVacio" style="display: none; color: red;">
+                                    Proporcione su RFC
+                                </div>
+                                <p>¿No cuentas con tu RFC?</p>
+                                <input type="button" id="bot" name="bot"
+                                       value="Genéralo aquí" onclick="generar()">
 
 
-		</div>
+                            </div>
 
-	</div>
+                            <div class="form-group col-md-3">
+                                <label>Teléfono Fijo</label><input type="text"
+                                                                   th:field="*{telefonoFijo}"
+                                                                   class="form-control form-control-user"
+                                                                   placeholder="">
+                                <small class="form-text text-danger"
+                                       th:if="${#fields.hasErrors('telefonoFijo')}"
+                                       th:errors="*{telefonoFijo}"></small>
+                            </div>
+
+                            <div class="form-group col-md-3">
+                                <label>Teléfono móvil</label><input type="text"
+                                                                    th:field="*{telefonoMovil}"
+                                                                    class="form-control form-control-user"
+                                                                    placeholder="">
+                                <small class="form-text text-danger"
+                                       th:if="${#fields.hasErrors('telefonoMovil')}"
+                                       th:errors="*{telefonoMovil}"></small>
+                            </div>
+
+                            <div class="form-group col-md-3">
+                                <label>Correo electrónico</label><input type="email"
+                                                                        th:field="*{email}"
+                                                                        class="form-control form-control-user"
+                                                                        placeholder=""> <small
+                                    class="form-text text-danger"
+                                    th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></small>
+                            </div>
+
+                            <div class="form-group col-md-3">
+                                <label>Dirección</label><input type="text"
+                                                               th:field="*{direccion}"
+                                                               class="form-control form-control-user"
+                                                               placeholder="">
+                                <small class="form-text text-danger"
+                                       th:if="${#fields.hasErrors('direccion')}"
+                                       th:errors="*{direccion}"></small>
+                            </div>
+
+                            <div class="form-group col-md-3">
+                                <label>Municipio</label><input type="text"
+                                                               th:field="*{municipio}"
+                                                               class="form-control form-control-user"
+                                                               placeholder="">
+                                <small class="form-text text-danger"
+                                       th:if="${#fields.hasErrors('municipio')}"
+                                       th:errors="*{municipio}"></small>
+                            </div>
+
+                            <div class="form-group col-md-3">
+                                <label>Entidad Federativa</label> <select
+                                    name="entidadFederativa" th:field="*{entidadFederativa}"
+                                    class="form-control form-control-line">
+                                <option th:each="estado : ${estados}" th:value="${estado}"
+                                        th:text="${estado}" th:selected="false"/>
+                            </select><small class="form-text text-danger"
+                                            th:if="${#fields.hasErrors('entidadFederativa')}"
+                                            th:errors="*{entidadFederativa}"></small>
+                            </div>
+
+                            <div class="form-group col-md-3">
+                                <label>Código Postal</label><input type="text"
+                                                                   th:field="*{codigoPostal}"
+                                                                   class="form-control form-control-user"
+                                                                   placeholder="">
+                                <small class="form-text text-danger"
+                                       th:if="${#fields.hasErrors('codigoPostal')}"
+                                       th:errors="*{codigoPostal}"></small>
+                            </div>
+
+                            <div class="form-group col-md-3">
+                                <label>Servicio</label>
+                                <input type="text"
+                                       th:value="${servicio.nombre}"
+                                       class="form-control form-control-user"
+                                       disabled>
+
+                                <input type="hidden"
+                                       th:field="*{servicio}"
+                                       th:value="${servicio.id}"
+                                       class="form-control form-control-user">
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="clearfix"></div>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <!--  <button type="submit" name="action" value="save"
+                                    class="btn btn-primary btn-square float-right">Crear
+                                    Afiliado</button>-->
+                                <button type="button" onclick="validaDatosAfiliado()"
+                                        class="btn btn-primary btn-square float-right">Crear
+                                    Afiliado
+                                </button>
+
+                            </div>
+                        </div>
+                    </form>
+
+                </div>
+
+            </div>
+        </div>
+
+    </div>
 </div>
 <script src="/js/crearAfiliado.js"></script>
 <script th:src="@{/js/rfc.js}"></script>
