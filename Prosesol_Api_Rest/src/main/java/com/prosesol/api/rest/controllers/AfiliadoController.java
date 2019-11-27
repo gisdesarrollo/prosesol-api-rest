@@ -48,6 +48,9 @@ public class AfiliadoController {
     @Autowired
     private GenerarClave generarClave;
 
+    @Autowired
+    private EmailController emailController;
+
     @RequestMapping(value = "/servicio")
     public String seleccionarServicio(Model model) {
         List<Servicio> servicios = servicioService.findAll();
@@ -63,6 +66,8 @@ public class AfiliadoController {
         Servicio servicio = servicioService.findById(id);
         Afiliado afiliado = new Afiliado();
         afiliado.setServicio(servicio);
+
+        emailController.getAllTemplates();
 
         if (servicio == null) {
 
