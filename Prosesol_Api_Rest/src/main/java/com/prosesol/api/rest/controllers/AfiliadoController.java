@@ -22,10 +22,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import javax.validation.Valid;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 @Controller
 @RequestMapping("/afiliados")
@@ -67,8 +67,6 @@ public class AfiliadoController {
         Afiliado afiliado = new Afiliado();
         afiliado.setServicio(servicio);
 
-        emailController.getAllTemplates();
-
         if (servicio == null) {
 
             redirect.addFlashAttribute("error", "Debes seleccionar un servicio");
@@ -82,13 +80,14 @@ public class AfiliadoController {
     }
 
     @RequestMapping(value = "/crear", method = RequestMethod.POST)
-    public String guardar(Afiliado afiliado, BindingResult result,
-                          Model model, RedirectAttributes redirect, SessionStatus status) {
+    public String guardar(Afiliado afiliado, RedirectAttributes redirect, SessionStatus status) {
 
         String mensajeFlash = null;
         Date date = new Date();
         Servicio servicio = servicioService.findById(afiliado.getServicio().getId());
-        Double saldoAcumulado=0.0;
+        Double saldoAcumulado = 0.0;
+        List<String> templates;
+        List<String> correos = new ArrayList<>();
         try {
             if (afiliado.getId() != null) {
 
@@ -101,32 +100,45 @@ public class AfiliadoController {
                 mensajeFlash = "Registro editado con éxito";
 
             } else {
-            	saldoAcumulado=servicio.getCostoTitular() + servicio.getInscripcionTitular();
-            	afiliado.setSaldoAcumulado(saldoAcumulado);
-            	afiliado.setSaldoCorte(saldoAcumulado);
+                saldoAcumulado = servicio.getCostoTitular() + servicio.getInscripcionTitular();
+                afiliado.setSaldoAcumulado(saldoAcumulado);
+                afiliado.setSaldoCorte(saldoAcumulado);
                 afiliado.setIsBeneficiario(false);
                 afiliado.setFechaAlta(date);
                 afiliado.setClave(generarClave.getClaveAfiliado(clave));
                 mensajeFlash = "Registro creado con éxito";
             }
             afiliado.setEstatus(2);
+            boolean isnotEmptyEmail = isNullOrEmpty(afiliado.getEmail());
+            // Enviar email
+            if(!isnotEmptyEmail){
+                correos.add(afiliado.getEmail());
+                try{
+                    templates = emailController.getAllTemplates();
+                    String templateBienvenido = templates.get(0);
+                    logger.info("Template de bienvenido: " + templateBienvenido);
+                    emailController.sendEmail(templateBienvenido, correos);
+                }catch(Exception e){
+                    e.printStackTrace();
+                }
+            }
+
             logger.info(mensajeFlash);
             afiliadoService.save(afiliado);
+
             status.setComplete();
 
         } catch (DataIntegrityViolationException e) {
-            e.printStackTrace();
             logger.error("Error al momento de ejecutar el proceso: " + e);
             redirect.addFlashAttribute("error", "El RFC ya existe en la base de datos ");
 
-            return "redirect:/afiliados/servicio/"+afiliado.getServicio().getId();
+            return "redirect:/afiliados/servicio/" + afiliado.getServicio().getId();
         } catch (Exception e) {
-            e.printStackTrace();
             logger.error("Error al momento de ejecutar el proceso: " + e);
 
             redirect.addFlashAttribute("error", "Ocurrió un error al momento de insertar el Afiliado");
 
-            return "redirect:/afiliados/servicio/"+afiliado.getServicio().getId();
+            return "redirect:/afiliados/servicio/" + afiliado.getServicio().getId();
         }
 
         mensajeFlash = "id del afiliado creado es: " + afiliado.getId();
@@ -140,38 +152,33 @@ public class AfiliadoController {
 
         try {
             Afiliado afiliado = afiliadoService.findById(id);
-           Servicio servicio = servicioService.findById(afiliado.getServicio().getId());
+            Servicio servicio = servicioService.findById(afiliado.getServicio().getId());
 
-           Double saldoAcumulado=0.0;
-         
-
+            Double saldoAcumulado = 0.0;
             List<Afiliado> beneficiarios = afiliadoService.getBeneficiarioByIdByIsBeneficiario(id);
             if (beneficiarios != null) {
-               saldoAcumulado=servicio.getCostoBeneficiario() + servicio.getInscripcionBeneficiario();
+                saldoAcumulado = servicio.getCostoBeneficiario() + servicio.getInscripcionBeneficiario();
 
                 model.addAttribute("saldoAcumulado", saldoAcumulado);
                 model.addAttribute("beneficiarios", beneficiarios);
-             
+
             }
 
             model.addAttribute("id", id);
             model.addAttribute("afiliado", afiliado);
 
         } catch (Exception e) {
-        	 e.printStackTrace();
-             logger.error("Error al momento de ejecutar el proceso: " + e);
-             redirect.addFlashAttribute("error", "Ocurrió un error ");
+            e.printStackTrace();
+            logger.error("Error al momento de ejecutar el proceso: " + e);
+            redirect.addFlashAttribute("error", "Ocurrió un error ");
 
-             return "redirect:/afiliados/bienvenido/"+id;
+            return "redirect:/afiliados/bienvenido/" + id;
         }
         return "afiliados/bienvenido";
     }
 
     @RequestMapping(value = "/guardar")
-    public String guardaSaldoAfiliado(Model model, SessionStatus status,RedirectAttributes redirect) {
-
-       
-
+    public String guardaSaldoAfiliado(Model model, SessionStatus status, RedirectAttributes redirect) {
         return "redirect:/";
     }
 
@@ -195,6 +202,20 @@ public class AfiliadoController {
     @ModelAttribute("paises")
     public List<Paises> getAllPaises() {
         return afiliadoService.getAllPaises();
+    }
+
+    /**
+     * Validación de correo
+     * @param str
+     * @return
+     */
+
+    public static boolean isNullOrEmpty(String str) {
+        if (str != null && !str.isEmpty()) {
+            return false;
+        }
+
+        return true;
     }
 
 }
