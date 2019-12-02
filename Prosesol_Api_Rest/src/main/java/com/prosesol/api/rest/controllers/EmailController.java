@@ -1,9 +1,11 @@
 package com.prosesol.api.rest.controllers;
 
+import com.prosesol.api.rest.utils.Archivos;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -29,6 +31,9 @@ public class EmailController {
 
     @Value("${doppler.relay.api.key}")
     private String dopplerApiKey;
+
+    @Autowired
+    private Archivos archivos;
 
     /**
      * Obtiene los templates de doppler relay
@@ -71,7 +76,7 @@ public class EmailController {
         return templates;
     }
 
-    public void sendEmail(String idTemplate, List<String> correos){
+    public void sendEmail(String idTemplate, List<String> correos, List<File> attachments){
         try{
             URL url = new URL(dopplerUrl + accountId + "/templates/" + idTemplate + "/message");
 
@@ -89,14 +94,31 @@ public class EmailController {
             json.put("model", "{}");
 
             // Arreglo para el envío de correos
-            JSONArray jsonArray = new JSONArray();
-            JSONObject item = new JSONObject();
+            JSONArray jsonArrayCorreos = new JSONArray();
+            JSONObject itemCorreos = new JSONObject();
             for(String correo : correos){
-                item.put("email", correo);
-                item.put("type", "to");
+                itemCorreos.put("email", correo);
+                itemCorreos.put("type", "to");
             }
-            jsonArray.put(item);
-            json.put("recipients", jsonArray);
+            jsonArrayCorreos.put(itemCorreos);
+            json.put("recipients", jsonArrayCorreos);
+
+            // Agregar archivos adjuntos
+            JSONArray jsonArrayAdjuntos = new JSONArray();
+            JSONObject itemAdjuntos = new JSONObject();
+            if(attachments.size() > 0){
+                for(File adjunto : attachments){
+
+                    String archivo = archivos.encode(adjunto);
+
+                    itemAdjuntos.put("content_type", "application/pdf");
+                    itemAdjuntos.put("base64_content", archivo);
+                    itemAdjuntos.put("filename", "Archivo adjunto");
+                }
+
+                jsonArrayAdjuntos.put(itemAdjuntos);
+                json.put("attachments", jsonArrayAdjuntos);
+            }
 
             LOG.info("Arreglo para el envío de correos: " + json.toString());
 

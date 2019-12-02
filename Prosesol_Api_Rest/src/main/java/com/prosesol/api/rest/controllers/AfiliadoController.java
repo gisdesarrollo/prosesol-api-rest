@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.ResourceUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -35,6 +37,9 @@ public class AfiliadoController {
 
     @Value("${app.clave}")
     private String clave;
+
+    @Value("${archivo.aviso}")
+    private String avisoPrivacidad;
 
     @Autowired
     private CalcularFecha calcularFechas;
@@ -87,7 +92,7 @@ public class AfiliadoController {
         Servicio servicio = servicioService.findById(afiliado.getServicio().getId());
         Double saldoAcumulado = 0.0;
         List<String> templates;
-        List<String> correos = new ArrayList<>();
+
         try {
             if (afiliado.getId() != null) {
 
@@ -112,12 +117,19 @@ public class AfiliadoController {
             boolean isnotEmptyEmail = isNullOrEmpty(afiliado.getEmail());
             // Enviar email
             if(!isnotEmptyEmail){
-                correos.add(afiliado.getEmail());
+
+                List<String> correos = new ArrayList<>();
+                List<File> adjuntos = new ArrayList<>();
+
                 try{
+
+                    correos.add(afiliado.getEmail());
+                    adjuntos.add(ResourceUtils.getFile(avisoPrivacidad));
+
                     templates = emailController.getAllTemplates();
                     String templateBienvenido = templates.get(0);
                     logger.info("Template de bienvenido: " + templateBienvenido);
-                    emailController.sendEmail(templateBienvenido, correos);
+                    emailController.sendEmail(templateBienvenido, correos, adjuntos);
                 }catch(Exception e){
                     e.printStackTrace();
                 }
