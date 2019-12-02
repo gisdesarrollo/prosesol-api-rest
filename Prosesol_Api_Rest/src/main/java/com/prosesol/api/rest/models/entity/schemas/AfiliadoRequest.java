@@ -1,15 +1,21 @@
 package com.prosesol.api.rest.models.entity.schemas;
 
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.prosesol.api.rest.models.entity.Afiliado;
 import com.prosesol.api.rest.models.entity.Servicio;
 
+
 import javax.validation.constraints.NotNull;
+
+
 import java.util.Date;
 import java.util.List;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class AfiliadoRequest {
 
-    private Long id;
+	private Long id;
 
     private String clave;
 
@@ -72,7 +78,9 @@ public class AfiliadoRequest {
     private int estatus;
 
     private Double inscripcion;
-
+    
+  
+    @NotNull(message = "Proporcione su servicio")
     private Servicio servicio;
 
     private String comentarios;
@@ -81,7 +89,7 @@ public class AfiliadoRequest {
 
     private List<Afiliado> beneficiario;
 
-    public Long getId() {
+	public Long getId() {
         return id;
     }
 

@@ -20,13 +20,24 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+
 
 import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.*;
+import java.util.stream.Collectors;
+
+import javax.validation.Valid;
+
+
+
+
 
 @RestController
 @RequestMapping("/api")
@@ -144,17 +155,16 @@ public class AfiliadoRestController {
         return new ResponseEntity<LinkedHashMap<String, Object>>(response, HttpStatus.OK);
     }
 
-    @PostMapping("/afiliados/crear")
-    public ResponseEntity<?> createAfiliado(@RequestBody AfiliadoJsonRequest afiliadoJsonRequestList) {
-
+    @PostMapping(value="/afiliados/crear")
+    public ResponseEntity<?> createAfiliado(@RequestBody AfiliadoJsonRequest afiliadoJsonRequestList ,BindingResult result) {
+    	
         Afiliado afiliado = new Afiliado();
         LinkedHashMap<String, Object> response = new LinkedHashMap<String, Object>();
-
+        System.out.println(afiliadoJsonRequestList.getAfiliado());
         try {
 			AfiliadoJsonResponse afiliadoJsonResponse = new AfiliadoJsonResponse();
-
             for (AfiliadoRequest afiliadoRequest : afiliadoJsonRequestList.getAfiliado()) {
-
+            	
                 AfiliadoResponse afiliadoResponse = new AfiliadoResponse();
                 List<AfiliadoResponse> listaBeneficiarios = new ArrayList<AfiliadoResponse>();
 
@@ -213,24 +223,25 @@ public class AfiliadoRestController {
             response.put("estatus", "OK");
             response.put("code", HttpStatus.OK.value());
             response.put("mensaje", "Se han insertado correctamente los registros");
-
-        } catch (AfiliadoException e) {
+            
+        }catch (AfiliadoException e) {
             LOG.error("Error en el proceso de creación", e);
             response.put("estatus", "ERR");
             response.put("code", e.getCode());
             response.put("message", e.getMessage());
+          
 
             if (afiliado.getId() != null && afiliado.getId() > 0) {
                 afiliadoService.deleteById(afiliado.getId());
             }
 
             return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-        } catch (NullPointerException npe) {
+       } catch (NullPointerException npe) {
             LOG.error("Error en el proceso de creación", npe);
             response.put("estatus", "ERR");
             response.put("code", HttpStatus.INTERNAL_SERVER_ERROR);
-            response.put("message", "Hubo un error inseperado en el servicio");
-
+            response.put("message", "Hubo un error inesperado en el servicio");
+          
             return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         } catch (DataIntegrityViolationException dae) {
             response.put("estatus",
@@ -239,7 +250,7 @@ public class AfiliadoRestController {
             response.put("mensaje",
                     "El afiliado ya se encuentra registrado en la base de datos");
             return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        } 
 
         return new ResponseEntity<LinkedHashMap<String, Object>>(response, HttpStatus.OK);
     }
