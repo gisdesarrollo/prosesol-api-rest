@@ -88,6 +88,9 @@ public class ValidateAfiliadoRequest {
             }else{
                 if (afiliadoRequest.getServicio() != null) {
                     Servicio servicio = servicioService.findById(afiliadoRequest.getServicio().getId());
+                    if(servicio==null) {
+                    	 throw new AfiliadoException(4000, "El servicio no esta registrado");
+                    }
                     afiliado.setServicio(servicio);
                 } else {
                     throw new AfiliadoException(4000, "El servicio para el afiliado titular no debe quedar vacío, " +
