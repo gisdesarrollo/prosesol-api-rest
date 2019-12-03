@@ -7,6 +7,8 @@ import com.prosesol.api.rest.services.IServicioService;
 import com.prosesol.api.rest.utils.CalcularFecha;
 import com.prosesol.api.rest.utils.GenerarClave;
 import com.prosesol.api.rest.utils.Paises;
+
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -92,6 +94,9 @@ public class AfiliadoController {
         Servicio servicio = servicioService.findById(afiliado.getServicio().getId());
         Double saldoAcumulado = 0.0;
         List<String> templates;
+        Integer corte=0;
+        String periodo = "MENSUAL";
+       
 
         try {
             if (afiliado.getId() != null) {
@@ -111,6 +116,12 @@ public class AfiliadoController {
                 afiliado.setIsBeneficiario(false);
                 afiliado.setFechaAlta(date);
                 afiliado.setClave(generarClave.getClaveAfiliado(clave));
+                
+                DateFormat formatoFecha = new SimpleDateFormat("dd");
+                String dia=formatoFecha.format(afiliado.getFechaAlta());
+                corte = Integer.parseInt(dia);
+                Date fechaCorte = calcularFechas.calcularFechas(periodo,corte);
+				afiliado.setFechaCorte(fechaCorte);
                 mensajeFlash = "Registro creado con éxito";
             }
             afiliado.setEstatus(2);
