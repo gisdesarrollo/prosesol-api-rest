@@ -14,6 +14,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Luis Enrique Morales Soriano
@@ -76,7 +77,8 @@ public class EmailController {
         return templates;
     }
 
-    public void sendEmail(String idTemplate, List<String> correos, List<File> attachments){
+    public void sendEmail(String idTemplate, List<String> correos, List<File> attachments,
+                          Map<String, String> model){
         try{
             URL url = new URL(dopplerUrl + accountId + "/templates/" + idTemplate + "/message");
 
@@ -91,7 +93,13 @@ public class EmailController {
             JSONObject json = new JSONObject();
             json.put("from_name", "Prosesol");
             json.put("from_email", "contacto@prosesol.org");
-            json.put("model", "{}");
+
+            // Parámetros dinámicos para el template
+            JSONObject jsonObjectParameters = new JSONObject();
+            for(Map.Entry<String, String> parametros : model.entrySet()){
+                jsonObjectParameters.put(parametros.getKey(), parametros.getValue());
+            }
+            json.put("model", jsonObjectParameters);
 
             // Arreglo para el envío de correos
             JSONArray jsonArrayCorreos = new JSONArray();

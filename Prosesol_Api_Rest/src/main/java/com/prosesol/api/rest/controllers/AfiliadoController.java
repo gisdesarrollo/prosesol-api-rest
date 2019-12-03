@@ -25,9 +25,9 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 @Controller
 @RequestMapping("/afiliados")
@@ -123,13 +123,22 @@ public class AfiliadoController {
 
                 try{
 
+                    Map<String, String> model = new LinkedHashMap<>();
+                    model.put("nombre", afiliado.getNombre() + " " + afiliado.getApellidoPaterno() +
+                            " " + afiliado.getApellidoMaterno());
+                    model.put("servicio", afiliado.getServicio().getNombre());
+                    // Conversión de la fecha
+//                    DateFormat dateFormat = new SimpleDateFormat("dD/MM/yyyy");
+//                    String fechaCorte = dateFormat.format(afiliado.getFechaCorte());
+//                    model.put("fecha_corte", fechaCorte);
+
                     correos.add(afiliado.getEmail());
                     adjuntos.add(ResourceUtils.getFile(avisoPrivacidad));
 
                     templates = emailController.getAllTemplates();
                     String templateBienvenido = templates.get(0);
                     logger.info("Template de bienvenido: " + templateBienvenido);
-                    emailController.sendEmail(templateBienvenido, correos, adjuntos);
+                    emailController.sendEmail(templateBienvenido, correos, adjuntos, model);
                 }catch(Exception e){
                     e.printStackTrace();
                 }
