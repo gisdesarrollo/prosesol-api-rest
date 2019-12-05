@@ -67,9 +67,6 @@ public class EmailController {
                 templates.add(jsonArray.getJSONObject(i).getString("id"));
             }
 
-            for(String template : templates){
-                LOG.info("Id templates: " + template);
-            }
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -142,7 +139,7 @@ public class EmailController {
             LOG.info("Respuesta del servicio:");
             while((result = bufferedReader.readLine()) != null){
                 sb.append(result);
-                System.out.println(result);
+                LOG.info(sb.toString());
             }
 
             urlConnection.disconnect();

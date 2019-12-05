@@ -21,17 +21,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.ResourceUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletResponse;
+import java.io.File;
 import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
+import java.util.*;
 
 /**
  * @author Luis Enrique Morales Soriano
@@ -43,6 +43,10 @@ import java.util.Date;
 public class PagoController {
 
     protected final Logger LOG = LoggerFactory.getLogger(PagoController.class);
+    private final static String ID_TEMPLATE_FT = "77e17b72";
+    private final static String ID_TEMPLATE_IB = "2cd93909";
+    private final static String ID_TEMPLATE_PI = "0044a2f4";
+    private final static String ID_TEMPLATE_PM = "d1112f68";
 
     @Value("${openpay.id}")
     private String merchantId;
@@ -55,6 +59,21 @@ public class PagoController {
 
     @Value("${openpay.url.dashboard.pdf}")
     private String openpayDashboardUrl;
+
+    @Value("${afiliado.servicio.individual.id}")
+    private Long idIndividual;
+
+    @Value("${afiliado.servicio.total.id}")
+    private Long idTotal;
+
+    @Value("${archivo.plan.familiar}")
+    private String archivoPlanFamiliar;
+
+    @Value("${archivo.plan.individual}")
+    private String archivoPlanIndividual;
+
+    @Autowired
+    private EmailController emailController;
 
     @Autowired
     private CalcularFecha calcularFechas;
@@ -468,11 +487,80 @@ public class PagoController {
                 corte = Integer.parseInt(dia);
                 Date fechaCorte = calcularFechas.calcularFechas(periodo, corte);
 
-                afiliado.setEstatus(1);
+
                 afiliado.setFechaCorte(fechaCorte);
                 afiliado.setSaldoCorte(0.00);
 
+                // Envío email bienvenida
+                boolean isnotEmptyEmail = isNullOrEmpty(afiliado.getEmail());
+                if (!isnotEmptyEmail) {
 
+                    List<String> correos = new ArrayList<>();
+                    List<File> adjuntos = new ArrayList<>();
+                    List<String> templates;
+
+                    try {
+
+                        Map<String, String> model = new LinkedHashMap<>();
+                        model.put("nombre", afiliado.getNombre() + " " + afiliado.getApellidoPaterno() +
+                                " " + afiliado.getApellidoMaterno());
+                        model.put("servicio", afiliado.getServicio().getNombre());
+                        model.put("rfc", afiliado.getRfc());
+
+                        correos.add(afiliado.getEmail());
+                        templates = emailController.getAllTemplates();
+
+                        // Se compara el id del estatus para saber qué tipo de correo se enviará
+                        if (afiliado.getEstatus() == 3) {
+                            // Comparamos los id's de los servicios para obtener el template correcto
+                            if (afiliado.getServicio().getId() == idIndividual) {
+                                for (String template : templates) {
+                                    int separator = template.indexOf("-");
+                                    String idTemplateStr = template.substring(0, separator);
+                                    if (idTemplateStr.equals(ID_TEMPLATE_IB)) {
+                                        adjuntos.add(ResourceUtils.getFile(archivoPlanIndividual));
+                                        String templateBienvenidoIB = template;
+                                        LOG.info("Template de bienvenido Individual Básico: " + templateBienvenidoIB);
+                                        emailController.sendEmail(templateBienvenidoIB, correos, adjuntos, model);
+                                    }if(idTemplateStr.equals(ID_TEMPLATE_PI)){
+                                        String templatePagoIN = template;
+                                        LOG.info("Template de inscripción: " + templatePagoIN);
+                                        emailController.sendEmail(templatePagoIN, correos, adjuntos, model);
+                                    }
+                                }
+                            } else if (afiliado.getServicio().getId() == idTotal) {
+                                for (String template : templates) {
+                                    int separator = template.indexOf("-");
+                                    String idTemplateStr = template.substring(0, separator);
+                                    if (idTemplateStr.equals(ID_TEMPLATE_FT)) {
+                                        adjuntos.add(ResourceUtils.getFile(archivoPlanFamiliar));
+                                        String templateBienvenidoFT = template;
+                                        LOG.info("Template de bienvenido Familiar Total: " + templateBienvenidoFT);
+                                        emailController.sendEmail(templateBienvenidoFT, correos, adjuntos, model);
+                                    }if(idTemplateStr.equals(ID_TEMPLATE_PI)){
+                                        String templatePagoIN = template;
+                                        LOG.info("Template de inscripción: " + templatePagoIN);
+                                        emailController.sendEmail(templatePagoIN, correos, adjuntos, model);
+                                    }
+                                }
+                            }
+                        }else if(afiliado.getEstatus() == 1){
+                            for (String template : templates) {
+                                int separator = template.indexOf("-");
+                                String idTemplateStr = template.substring(0, separator);
+                                if (idTemplateStr.equals(ID_TEMPLATE_PM)) {
+                                    String templateBienvenidoPM = template;
+                                    LOG.info("Template pago mensualidad: " + templateBienvenidoPM);
+                                    emailController.sendEmail(templateBienvenidoPM, correos, adjuntos, model);
+                                }
+                            }
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                afiliado.setEstatus(1);
                 pagoService.save(pago);
                 afiliadoService.save(afiliado);
 

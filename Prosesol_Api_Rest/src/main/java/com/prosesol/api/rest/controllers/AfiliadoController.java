@@ -7,8 +7,6 @@ import com.prosesol.api.rest.services.IServicioService;
 import com.prosesol.api.rest.utils.CalcularFecha;
 import com.prosesol.api.rest.utils.GenerarClave;
 import com.prosesol.api.rest.utils.Paises;
-
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,8 +14,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.util.ResourceUtils;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,11 +21,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.io.File;
-import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Date;
+import java.util.List;
 
 @Controller
 @RequestMapping("/afiliados")
@@ -39,9 +34,6 @@ public class AfiliadoController {
 
     @Value("${app.clave}")
     private String clave;
-
-    @Value("${archivo.aviso}")
-    private String avisoPrivacidad;
 
     @Autowired
     private CalcularFecha calcularFechas;
@@ -54,9 +46,6 @@ public class AfiliadoController {
 
     @Autowired
     private GenerarClave generarClave;
-
-    @Autowired
-    private EmailController emailController;
 
     @RequestMapping(value = "/servicio")
     public String seleccionarServicio(Model model) {
@@ -91,14 +80,16 @@ public class AfiliadoController {
 
         String mensajeFlash = null;
         Date date = new Date();
-        Servicio servicio = servicioService.findById(afiliado.getServicio().getId());
+
         Double saldoAcumulado = 0.0;
-        List<String> templates;
+
         Integer corte=0;
         String periodo = "MENSUAL";
-       
 
         try {
+
+            Servicio servicio = servicioService.findById(afiliado.getServicio().getId());
+
             if (afiliado.getId() != null) {
 
                 if (afiliado.getIsBeneficiario().equals(true)) {
@@ -124,37 +115,7 @@ public class AfiliadoController {
 				afiliado.setFechaCorte(fechaCorte);
                 mensajeFlash = "Registro creado con éxito";
             }
-            afiliado.setEstatus(2);
-            boolean isnotEmptyEmail = isNullOrEmpty(afiliado.getEmail());
-            // Enviar email
-            if(!isnotEmptyEmail){
-
-                List<String> correos = new ArrayList<>();
-                List<File> adjuntos = new ArrayList<>();
-
-                try{
-
-                    Map<String, String> model = new LinkedHashMap<>();
-                    model.put("nombre", afiliado.getNombre() + " " + afiliado.getApellidoPaterno() +
-                            " " + afiliado.getApellidoMaterno());
-                    model.put("servicio", afiliado.getServicio().getNombre());
-                    // Conversión de la fecha
-//                    DateFormat dateFormat = new SimpleDateFormat("dD/MM/yyyy");
-//                    String fechaCorte = dateFormat.format(afiliado.getFechaCorte());
-//                    model.put("fecha_corte", fechaCorte);
-
-                    correos.add(afiliado.getEmail());
-                    adjuntos.add(ResourceUtils.getFile(avisoPrivacidad));
-
-                    templates = emailController.getAllTemplates();
-                    String templateBienvenido = templates.get(0);
-                    logger.info("Template de bienvenido: " + templateBienvenido);
-                    emailController.sendEmail(templateBienvenido, correos, adjuntos, model);
-                }catch(Exception e){
-                    e.printStackTrace();
-                }
-            }
-
+            afiliado.setEstatus(3);
             logger.info(mensajeFlash);
             afiliadoService.save(afiliado);
 
