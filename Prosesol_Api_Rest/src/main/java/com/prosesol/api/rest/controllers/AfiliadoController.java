@@ -87,7 +87,14 @@ public class AfiliadoController {
         String periodo = "MENSUAL";
 
         try {
+        	Afiliado buscarAfiliadoExistente=afiliadoService.findByRfc(afiliado.getRfc());
+        	if(buscarAfiliadoExistente!=null) {
+        		 logger.error("Error afiliado ya se encuentra registrado");
+                 redirect.addFlashAttribute("error", "El Afiliado ya se encuentra registrado");
 
+        		return "redirect:/afiliados/servicio/" + afiliado.getServicio().getId();
+        	}
+        	
             Servicio servicio = servicioService.findById(afiliado.getServicio().getId());
 
             if (afiliado.getId() != null) {
