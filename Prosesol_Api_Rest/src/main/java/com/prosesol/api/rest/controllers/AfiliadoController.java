@@ -23,6 +23,9 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -34,6 +37,9 @@ public class AfiliadoController {
 
     @Value("${app.clave}")
     private String clave;
+
+    @Value("${afiliado.servicio.total.id}")
+    private Long idTotal;
 
     @Autowired
     private CalcularFecha calcularFechas;
@@ -83,19 +89,31 @@ public class AfiliadoController {
 
         Double saldoAcumulado = 0.0;
 
-        Integer corte=0;
+        Integer corte = 0;
         String periodo = "MENSUAL";
 
         try {
-        	Afiliado buscarAfiliadoExistente=afiliadoService.findByRfc(afiliado.getRfc());
-        	if(buscarAfiliadoExistente!=null) {
-        		 logger.error("Error afiliado ya se encuentra registrado");
-                 redirect.addFlashAttribute("error", "El Afiliado ya se encuentra registrado");
 
-        		return "redirect:/afiliados/servicio/" + afiliado.getServicio().getId();
-        	}
-        	
+            Afiliado buscarAfiliadoExistente = afiliadoService.findByRfc(afiliado.getRfc());
             Servicio servicio = servicioService.findById(afiliado.getServicio().getId());
+
+            if (buscarAfiliadoExistente != null) {
+                logger.error("Error afiliado ya se encuentra registrado");
+                redirect.addFlashAttribute("error", "El Afiliado ya se encuentra registrado");
+
+                return "redirect:/afiliados/servicio/" + afiliado.getServicio().getId();
+            }
+
+            int currentYear = Calendar.getInstance().get(Calendar.YEAR);
+            LocalDate fechaNacimiento = afiliado.getFechaNacimiento().toInstant()
+                    .atZone(ZoneId.systemDefault()).toLocalDate();
+            int fNacimiento = fechaNacimiento.getDayOfYear();
+
+            int rangoEdad = currentYear - fNacimiento;
+            if (rangoEdad >= 55 && servicio.getId() == idTotal) {
+                redirect.addFlashAttribute("error", "A partir de los 55 años, no puede contratar este servicio");
+                return "redirect:/afiliados/servicio/" + afiliado.getServicio().getId();
+            }
 
             if (afiliado.getId() != null) {
 
@@ -114,12 +132,12 @@ public class AfiliadoController {
                 afiliado.setIsBeneficiario(false);
                 afiliado.setFechaAlta(date);
                 afiliado.setClave(generarClave.getClaveAfiliado(clave));
-                
+
                 DateFormat formatoFecha = new SimpleDateFormat("dd");
-                String dia=formatoFecha.format(afiliado.getFechaAlta());
+                String dia = formatoFecha.format(afiliado.getFechaAlta());
                 corte = Integer.parseInt(dia);
-                Date fechaCorte = calcularFechas.calcularFechas(periodo,corte);
-				afiliado.setFechaCorte(fechaCorte);
+                Date fechaCorte = calcularFechas.calcularFechas(periodo, corte);
+                afiliado.setFechaCorte(fechaCorte);
                 mensajeFlash = "Registro creado con éxito";
             }
             afiliado.setEstatus(3);
@@ -206,6 +224,7 @@ public class AfiliadoController {
 
     /**
      * Validación de correo
+     *
      * @param str
      * @return
      */
