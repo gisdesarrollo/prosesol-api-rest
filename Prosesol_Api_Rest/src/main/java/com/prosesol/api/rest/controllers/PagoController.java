@@ -204,6 +204,8 @@ public class PagoController {
         Afiliado afiliado = afiliadoService.findByRfc(rfc);
         String reference = null;
 
+        Pago pago = new Pago();
+
         if (rfc.length() < 13) {
 
             LOG.info("ERR: ", "El RFC no cumple con los campos necesarios");
@@ -275,6 +277,17 @@ public class PagoController {
                 }
             }
 
+            pago.setRfc(rfc);
+            pago.setMonto(amount.doubleValue());
+            pago.setNombreCompleto(afiliado.getNombre() + ' ' + afiliado.getApellidoPaterno() +
+                    ' ' + afiliado.getApellidoMaterno());
+            pago.setFechaPago(new Date());
+            pago.setReferenciaBancaria("000000000");
+            pago.setEstatus("in_progress");
+
+
+            pagoService.save(pago);
+
         } catch (OpenpayServiceException | ServiceUnavailableException e) {
             String response = e.toString().substring(e.toString().indexOf("("), e.toString().lastIndexOf(")"));
             String responseValues[] = response.split(",");
@@ -322,6 +335,8 @@ public class PagoController {
 
         Afiliado afiliado = afiliadoService.findByRfc(rfc);
         String id = null;
+
+        Pago pago = new Pago();
 
         if (rfc.length() < 13) {
 
@@ -395,6 +410,17 @@ public class PagoController {
                     System.out.println(id);
                 }
             }
+
+            pago.setRfc(rfc);
+            pago.setMonto(amount.doubleValue());
+            pago.setNombreCompleto(afiliado.getNombre() + ' ' + afiliado.getApellidoPaterno() +
+                    ' ' + afiliado.getApellidoMaterno());
+            pago.setFechaPago(new Date());
+            pago.setReferenciaBancaria("000000000");
+            pago.setEstatus("in_progress");
+
+
+            pagoService.save(pago);
 
         } catch (OpenpayServiceException | ServiceUnavailableException e) {
             String response = e.toString().substring(e.toString().indexOf("("), e.toString().lastIndexOf(")"));

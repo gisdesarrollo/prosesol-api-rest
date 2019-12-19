@@ -14,13 +14,13 @@ public class Webhook {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "body")
-    private String body;
+    @Column(name = "estatus")
+    private String estatus;
 
     public Webhook(){}
 
-    public Webhook(String body) {
-        this.body = body;
+    public Webhook(String estatus) {
+        this.estatus = estatus;
     }
 
     public Long getId() {
@@ -31,11 +31,11 @@ public class Webhook {
         this.id = id;
     }
 
-    public String getBody() {
-        return body;
+    public String getEstatus() {
+        return estatus;
     }
 
-    public void setBody(String body) {
-        this.body = body;
+    public void setEstatus(String estatus) {
+        this.estatus = estatus;
     }
 }

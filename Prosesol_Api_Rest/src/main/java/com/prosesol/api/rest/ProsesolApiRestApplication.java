@@ -2,7 +2,6 @@ package com.prosesol.api.rest;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 
 @SpringBootApplication
 public class ProsesolApiRestApplication {
@@ -10,6 +9,5 @@ public class ProsesolApiRestApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(ProsesolApiRestApplication.class, args);
 	}
-
 
 }

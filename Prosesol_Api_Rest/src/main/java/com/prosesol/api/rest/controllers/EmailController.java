@@ -1,5 +1,6 @@
 package com.prosesol.api.rest.controllers;
 
+import com.prosesol.api.rest.services.IHttpUrlConnection;
 import com.prosesol.api.rest.utils.Archivos;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -20,7 +21,7 @@ import java.util.Map;
  * @author Luis Enrique Morales Soriano
  */
 @Service
-public class EmailController {
+public class EmailController implements IHttpUrlConnection {
 
     protected static final Log LOG = LogFactory.getLog(EmailController.class);
 
@@ -149,6 +150,7 @@ public class EmailController {
         }
     }
 
+    @Override
     public HttpURLConnection openConnection(HttpURLConnection urlConnection, String method, URL url){
 
         try {

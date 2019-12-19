@@ -1,11 +1,12 @@
 package com.prosesol.api.rest.controllers;
 
 import com.prosesol.api.rest.models.entity.Webhook;
+import com.prosesol.api.rest.services.IHttpUrlConnection;
 import com.prosesol.api.rest.services.IWebhookService;
+import jdk.nashorn.internal.parser.JSONParser;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.json.HTTP;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.LinkedHashMap;
 
 /**
@@ -25,7 +29,7 @@ import java.util.LinkedHashMap;
 
 @RestController
 @RequestMapping("/api/webhook")
-public class NotificacionRestController {
+public class NotificacionRestController implements IHttpUrlConnection {
 
     protected static final Log LOG = LogFactory.getLog(NotificacionRestController.class);
 
@@ -37,16 +41,20 @@ public class NotificacionRestController {
 
         LinkedHashMap<String, Object> response = new LinkedHashMap<String, Object>();
         Webhook wh = null;
-
         String jb = null;
 
         try{
             jb = IOUtils.toString(request.getReader());
             LOG.info(jb);
 
-            wh = new Webhook(jb);
+            JSONObject json = new JSONObject(jb);
+            String status = json.getJSONObject("transaction").getString("status");
 
-            webhookService.save(wh);
+            LOG.info(status);
+
+            if(status.equals("completed")){
+
+            }
 
             response.put("status", "OK");
             response.put("code", HttpStatus.OK);
@@ -58,4 +66,17 @@ public class NotificacionRestController {
         return new ResponseEntity<LinkedHashMap<String, Object>>(response, HttpStatus.OK);
     }
 
+    @Override
+    public HttpURLConnection openConnection(HttpURLConnection urlConnection, String method, URL url) {
+        try {
+            urlConnection = (HttpURLConnection)url.openConnection();
+            urlConnection.setRequestMethod(method);
+            urlConnection.setRequestProperty("Content-Type", "application/json; charset=utf-8;");
+            urlConnection.setRequestProperty("Authorization", "Bearer " + "dopplerApiKey");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return urlConnection;
+    }
 }

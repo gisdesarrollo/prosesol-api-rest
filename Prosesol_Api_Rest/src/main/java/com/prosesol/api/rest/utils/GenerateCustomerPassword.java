@@ -15,7 +15,7 @@ public class GenerateCustomerPassword {
     @Test
     public void generateCustomerPassword(){
         BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
-        String hashValue = "9b995744-15d4-442a-94f3-ae4402c4d81c";
+        String hashValue = "230c958b-54f2-4929-8a31-c0cbbcd350dc";
 
         String password = "";
 

@@ -50,6 +50,9 @@ public class Pago implements Serializable{
 
 	@Column(name = "estatus")
 	private String estatus;
+
+	@Column(name = "nombre_completo")
+	private String nombreCompleto;
 		
 	public Long getId() {
 		return id;
@@ -105,5 +108,13 @@ public class Pago implements Serializable{
 
 	public void setEstatus(String estatus) {
 		this.estatus = estatus;
+	}
+
+	public String getNombreCompleto() {
+		return nombreCompleto;
+	}
+
+	public void setNombreCompleto(String nombreCompleto) {
+		this.nombreCompleto = nombreCompleto;
 	}
 }
