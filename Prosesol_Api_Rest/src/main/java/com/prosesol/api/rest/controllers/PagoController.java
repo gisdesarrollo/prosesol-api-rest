@@ -283,6 +283,7 @@ public class PagoController {
                     ' ' + afiliado.getApellidoMaterno());
             pago.setFechaPago(new Date());
             pago.setReferenciaBancaria("000000000");
+            pago.setTipoTransaccion("Referencia en tienda");
             pago.setEstatus("in_progress");
 
 
@@ -417,6 +418,7 @@ public class PagoController {
                     ' ' + afiliado.getApellidoMaterno());
             pago.setFechaPago(new Date());
             pago.setReferenciaBancaria("000000000");
+            pago.setTipoTransaccion("SPEI");
             pago.setEstatus("in_progress");
 
 
@@ -507,6 +509,9 @@ public class PagoController {
                 pago.setRfc(afiliado.getRfc());
                 pago.setReferenciaBancaria(charge.getAuthorization());
                 pago.setEstatus(charge.getStatus());
+                pago.setNombreCompleto(afiliado.getNombre() + ' ' + afiliado.getApellidoPaterno() +
+                        ' ' + afiliado.getApellidoMaterno());
+                pago.setTipoTransaccion("Pago con tarjeta");
 
                 DateFormat formatoFecha = new SimpleDateFormat("dd");
                 String dia = formatoFecha.format(afiliado.getFechaAlta());

@@ -53,6 +53,9 @@ public class Pago implements Serializable{
 
 	@Column(name = "nombre_completo")
 	private String nombreCompleto;
+
+	@Column(name = "tipo_transaccion")
+	private String tipoTransaccion;
 		
 	public Long getId() {
 		return id;
@@ -116,5 +119,13 @@ public class Pago implements Serializable{
 
 	public void setNombreCompleto(String nombreCompleto) {
 		this.nombreCompleto = nombreCompleto;
+	}
+
+	public String getTipoTransaccion() {
+		return tipoTransaccion;
+	}
+
+	public void setTipoTransaccion(String tipoTransaccion) {
+		this.tipoTransaccion = tipoTransaccion;
 	}
 }

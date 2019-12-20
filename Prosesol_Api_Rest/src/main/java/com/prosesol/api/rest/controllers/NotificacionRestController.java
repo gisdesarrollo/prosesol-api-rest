@@ -1,9 +1,10 @@
 package com.prosesol.api.rest.controllers;
 
+import com.prosesol.api.rest.models.entity.Pago;
 import com.prosesol.api.rest.models.entity.Webhook;
 import com.prosesol.api.rest.services.IHttpUrlConnection;
+import com.prosesol.api.rest.services.IPagoService;
 import com.prosesol.api.rest.services.IWebhookService;
-import jdk.nashorn.internal.parser.JSONParser;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -18,7 +19,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.LinkedHashMap;
@@ -35,6 +35,9 @@ public class NotificacionRestController implements IHttpUrlConnection {
 
     @Autowired
     private IWebhookService webhookService;
+
+    @Autowired
+    private IPagoService pagoService;
 
     @PostMapping(value = "/transfer")
     public ResponseEntity<?> createWebhook(HttpServletRequest request){
@@ -54,6 +57,20 @@ public class NotificacionRestController implements IHttpUrlConnection {
 
             if(status.equals("completed")){
 
+                Pago pago = new Pago();
+                String customerName = json.getJSONObject("customer").getString("name");
+                String customerLastName = json.getJSONObject("customer").getString("last_name");
+
+                String method = json.getString("method");
+                if(method.equals("store")){
+                    String reference = json.getJSONObject("payment_method").getString("reference");
+                    pagoService.actualizarEstatusPago(reference, status, customerName + ' ' +
+                            customerLastName);
+                }else if(method.equals("bank_account")){
+                    String reference = json.getJSONObject("payment_method").getString("bank");
+                    pagoService.actualizarEstatusPago(reference, status, customerName + ' ' +
+                            customerLastName);
+                }
             }
 
             response.put("status", "OK");
