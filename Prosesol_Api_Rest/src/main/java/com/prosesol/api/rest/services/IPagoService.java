@@ -1,6 +1,7 @@
 package com.prosesol.api.rest.services;
 
 import com.prosesol.api.rest.models.entity.Pago;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
@@ -14,6 +15,9 @@ public interface IPagoService {
 	
 	public void deleteById(Long id);
 
-	public void actualizarEstatusPago(String referencia, String estatus, String nombreCompleto);
+	public void actualizarEstatusPagoByIdTransaccion(String referencia, String estatus,
+													 String idTransaccion);
+
+	public Pago getRfcByIdTransaccion(String idTransaccion);
 	
 }

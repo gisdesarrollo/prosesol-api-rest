@@ -1,7 +1,9 @@
 package com.prosesol.api.rest.controllers;
 
+import com.prosesol.api.rest.models.entity.Afiliado;
 import com.prosesol.api.rest.models.entity.Pago;
 import com.prosesol.api.rest.models.entity.Webhook;
+import com.prosesol.api.rest.services.IAfiliadoService;
 import com.prosesol.api.rest.services.IHttpUrlConnection;
 import com.prosesol.api.rest.services.IPagoService;
 import com.prosesol.api.rest.services.IWebhookService;
@@ -39,6 +41,9 @@ public class NotificacionRestController implements IHttpUrlConnection {
     @Autowired
     private IPagoService pagoService;
 
+    @Autowired
+    private IAfiliadoService afiliadoService;
+
     @PostMapping(value = "/transfer")
     public ResponseEntity<?> createWebhook(HttpServletRequest request){
 
@@ -57,20 +62,31 @@ public class NotificacionRestController implements IHttpUrlConnection {
 
             if(status.equals("completed")){
 
-                Pago pago = new Pago();
-                String customerName = json.getJSONObject("customer").getString("name");
-                String customerLastName = json.getJSONObject("customer").getString("last_name");
+                String idTransaccion = json.getJSONObject("transaction").getString("id");
 
-                String method = json.getString("method");
+                String method = json.getJSONObject("transaction").getString("method");
                 if(method.equals("store")){
-                    String reference = json.getJSONObject("payment_method").getString("reference");
-                    pagoService.actualizarEstatusPago(reference, status, customerName + ' ' +
-                            customerLastName);
+                    String reference = json.getJSONObject("transaction").getJSONObject("payment_method")
+                            .getString("reference");
+                    pagoService.actualizarEstatusPagoByIdTransaccion(reference, status, idTransaccion);
                 }else if(method.equals("bank_account")){
-                    String reference = json.getJSONObject("payment_method").getString("bank");
-                    pagoService.actualizarEstatusPago(reference, status, customerName + ' ' +
-                            customerLastName);
+                    String reference = json.getJSONObject("transaction").getJSONObject("payment_method")
+                            .getString("bank");
+                    pagoService.actualizarEstatusPagoByIdTransaccion(reference, status, idTransaccion);
                 }
+
+                // Obtener el rfc de la tabla de Pagos
+                Pago getPago = pagoService.getRfcByIdTransaccion(idTransaccion);
+
+                String rfc = getPago.getRfc();
+                Afiliado afiliado = afiliadoService.findByRfc(rfc);
+
+                // Actualizar saldo al corte a ceros
+                Double amount = json.getJSONObject("transaction").getDouble("amount");
+                afiliado.setSaldoCorte(amount);
+
+                afiliadoService.save(afiliado);
+
             }
 
             response.put("status", "OK");

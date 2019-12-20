@@ -40,8 +40,14 @@ public class PagoServiceImpl implements IPagoService{
 
 	@Override
 	@Transactional
-	public void actualizarEstatusPago(String referencia, String estatus, String nombreCompleto) {
-		pagoDao.actualizarEstatusPago(referencia, estatus, nombreCompleto);
+	public void actualizarEstatusPagoByIdTransaccion(String referencia, String estatus, String idTransaccion) {
+		pagoDao.actualizarEstatusPagoByIdTransaccion(referencia, estatus, idTransaccion);
+	}
+
+	@Override
+	@Transactional
+	public Pago getRfcByIdTransaccion(String idTransaccion) {
+		return pagoDao.getRfcByIdTransaccion(idTransaccion);
 	}
 
 }

@@ -1,21 +1,12 @@
 package com.prosesol.api.rest.models.entity;
 
-import java.io.Serializable;
-import java.util.Date;
+import org.springframework.format.annotation.DateTimeFormat;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-import javax.persistence.Transient;
+import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
-
-import org.springframework.format.annotation.DateTimeFormat;
+import java.io.Serializable;
+import java.util.Date;
 
 @Entity
 @Table(name = "pagos")
@@ -45,17 +36,14 @@ public class Pago implements Serializable{
 	@Column(name = "fecha_pago")
 	private Date fechaPago;
 
-	@Column(name = "concepto")
-	private String concepto;
-
 	@Column(name = "estatus")
 	private String estatus;
 
-	@Column(name = "nombre_completo")
-	private String nombreCompleto;
-
 	@Column(name = "tipo_transaccion")
 	private String tipoTransaccion;
+
+	@Column(name = "id_transaccion")
+	private String idTransaccion;
 		
 	public Long getId() {
 		return id;
@@ -97,14 +85,6 @@ public class Pago implements Serializable{
 		this.referenciaBancaria = referenciaBancaria;
 	}
 
-	public String getConcepto() {
-		return concepto;
-	}
-
-	public void setConcepto(String concepto) {
-		this.concepto = concepto;
-	}
-
 	public String getEstatus() {
 		return estatus;
 	}
@@ -113,19 +93,19 @@ public class Pago implements Serializable{
 		this.estatus = estatus;
 	}
 
-	public String getNombreCompleto() {
-		return nombreCompleto;
-	}
-
-	public void setNombreCompleto(String nombreCompleto) {
-		this.nombreCompleto = nombreCompleto;
-	}
-
 	public String getTipoTransaccion() {
 		return tipoTransaccion;
 	}
 
 	public void setTipoTransaccion(String tipoTransaccion) {
 		this.tipoTransaccion = tipoTransaccion;
+	}
+
+	public String getIdTransaccion() {
+		return idTransaccion;
+	}
+
+	public void setIdTransaccion(String idTransaccion) {
+		this.idTransaccion = idTransaccion;
 	}
 }

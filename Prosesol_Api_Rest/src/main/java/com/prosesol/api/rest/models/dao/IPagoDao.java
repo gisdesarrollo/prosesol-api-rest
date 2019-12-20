@@ -16,9 +16,12 @@ public interface IPagoDao extends CrudRepository<Pago, Long>{
 
 	@Modifying
 	@Query("update Pago p set p.referenciaBancaria = :referencia, p.estatus = :estatus " +
-			"where p.nombreCompleto like :nombreCompleto")
-	public void actualizarEstatusPago(@Param("referencia")String referencia,
+			"where p.idTransaccion like :idTransaccion")
+	public void actualizarEstatusPagoByIdTransaccion(@Param("referencia")String referencia,
 									  @Param("estatus") String estatus,
-									  @Param("nombreCompleto")String nombreCompleto);
+									  @Param("idTransaccion")String nombreCompleto);
+
+	@Query("select p from Pago p where p.idTransaccion like :idTransaccion")
+	public Pago getRfcByIdTransaccion(@Param("idTransaccion")String idTransaccion);
 	
 }

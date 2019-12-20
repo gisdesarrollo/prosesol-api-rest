@@ -208,6 +208,7 @@ public class PagoController {
 
         Afiliado afiliado = afiliadoService.findByRfc(rfc);
         String reference = null;
+        String idTransaccion = null;
 
         Pago pago = new Pago();
 
@@ -277,19 +278,22 @@ public class PagoController {
             ArrayList<String> list = new ArrayList<String>(Arrays.asList(responseValues));
 
             for (String value : list) {
+                LOG.info(value);
                 if (value.contains("reference")) {
                     reference = value.substring(value.lastIndexOf("=") + 1);
+                }
+                if (value.contains("id=")){
+                    idTransaccion = value.substring(value.lastIndexOf("=") + 1);
                 }
             }
 
             pago.setRfc(rfc);
             pago.setMonto(amount.doubleValue());
-            pago.setNombreCompleto(afiliado.getNombre() + ' ' + afiliado.getApellidoPaterno() +
-                    ' ' + afiliado.getApellidoMaterno());
             pago.setFechaPago(new Date());
             pago.setReferenciaBancaria("000000000");
             pago.setTipoTransaccion("Referencia en tienda");
             pago.setEstatus("in_progress");
+            pago.setIdTransaccion(idTransaccion);
 
 
             pagoService.save(pago);
@@ -301,7 +305,6 @@ public class PagoController {
             ArrayList<String> list = new ArrayList<String>(Arrays.asList(responseValues));
 
             for (String value : list) {
-                System.out.println(value);
                 if (value.contains("httpCode")) {
                     code = Integer.parseInt(value.substring(value.lastIndexOf("=") + 1));
                 }
@@ -340,7 +343,7 @@ public class PagoController {
                                              HttpServletResponse servletResponse) {
 
         Afiliado afiliado = afiliadoService.findByRfc(rfc);
-        String id = null;
+        String idTransaccion = null;
 
         Pago pago = new Pago();
 
@@ -410,21 +413,18 @@ public class PagoController {
             ArrayList<String> list = new ArrayList<String>(Arrays.asList(responseValues));
 
             for (String value : list) {
-                System.out.println(value);
                 if (value.contains("id")) {
-                    id = value.substring(value.lastIndexOf("=") + 1);
-                    System.out.println(id);
+                    idTransaccion = value.substring(value.lastIndexOf("=") + 1);
                 }
             }
 
             pago.setRfc(rfc);
             pago.setMonto(amount.doubleValue());
-            pago.setNombreCompleto(afiliado.getNombre() + ' ' + afiliado.getApellidoPaterno() +
-                    ' ' + afiliado.getApellidoMaterno());
             pago.setFechaPago(new Date());
             pago.setReferenciaBancaria("000000000");
             pago.setTipoTransaccion("SPEI");
             pago.setEstatus("in_progress");
+            pago.setIdTransaccion(idTransaccion);
 
 
             pagoService.save(pago);
@@ -451,7 +451,7 @@ public class PagoController {
         }
 
         servletResponse.setHeader("Location", openpayDashboardUrl + "/spei-pdf/" + merchantId + "/"
-                + id);
+                + idTransaccion);
         servletResponse.setStatus(302);
 
         return null;
@@ -463,7 +463,6 @@ public class PagoController {
      *
      * @param id
      * @param tokenId
-     * @param deviceSessionId
      * @param redirect
      * @param status
      * @return
@@ -580,10 +579,8 @@ public class PagoController {
                 pago.setRfc(afiliado.getRfc());
                 pago.setReferenciaBancaria(charge.getAuthorization());
                 pago.setEstatus(charge.getStatus());
-                pago.setNombreCompleto(afiliado.getNombre() + ' ' + afiliado.getApellidoPaterno() +
-                        ' ' + afiliado.getApellidoMaterno());
                 pago.setTipoTransaccion("Pago con tarjeta");
-
+                pago.setIdTransaccion(charge.getId());
                
                 afiliado.setFechaCorte(fechaCorte);
                 afiliado.setSaldoCorte(0.00);
