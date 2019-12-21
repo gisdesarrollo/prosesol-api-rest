@@ -475,9 +475,12 @@ public class PagoController {
                                        RedirectAttributes redirect, SessionStatus status) {
 
         Afiliado afiliado = afiliadoService.findById(id);
-        String periodo = "MENSUAL",diaCorte,diaDomiciliar;
-        Integer corte = 0,dia= 0;
-
+        String periodo = "MENSUAL";
+        String diaCorte="";
+        String diaDomiciliar="";
+        Integer corte = 0;
+        Integer dia= 0;
+        
         apiOpenpay = new OpenpayAPI(openpayURL, privateKey, merchantId);
         BigDecimal amount = BigDecimal.valueOf(afiliado.getSaldoCorte());
 
@@ -497,7 +500,7 @@ public class PagoController {
             } else {
                 customer.setEmail(afiliado.getEmail());
             }
-          //creo el cliente
+          //se crea cliente para crear la tarjeta
             customer = apiOpenpay.customers().create(customer);
             System.out.println(customer);
             if(!customer.getStatus().equals("active")) {
@@ -515,7 +518,7 @@ public class PagoController {
     			diaDomiciliar = formatoFecha.format(fechaCorte);
     			
                 dia = Integer.parseInt(diaDomiciliar);
-                //se crea el plan
+                //se crea el plan para la suscripción
                 Plan plan = new Plan();
     			plan.name(afiliado.getServicio().getNombre());
     			plan.amount(amount);
@@ -528,14 +531,14 @@ public class PagoController {
                 System.out.println(plan);
     			if(plan.getStatus().equals("active")) {
     				
-    			//creo la tarjeta
+    			//se crea la tarjeta para la suscripción
     				 Card card = new Card()
     					  .tokenId(tokenId);
     				 
     				 card = apiOpenpay.cards().create(customer.getId(),card);
     		            System.out.println("id_card: "+card.getId());
     		        if(!card.getId().equals(null)){    
-    		        //creo la suscripción					
+    		        //se crea la suscripción del afiliado					
     		            Subscription suscribir = new Subscription();
     		            suscribir.planId(plan.getId());
     		            suscribir.trialEndDate(fechaCorte);
@@ -560,7 +563,7 @@ public class PagoController {
     			
     		
               
-            //cargo la tarjeta
+            //se crea el cargo a la tarjeta
 
             CreateCardChargeParams creditCardcharge = new CreateCardChargeParams()
                     .cardId(tokenId)
