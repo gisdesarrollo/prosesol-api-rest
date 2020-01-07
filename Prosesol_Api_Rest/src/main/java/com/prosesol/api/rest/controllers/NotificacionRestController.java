@@ -82,8 +82,7 @@ public class NotificacionRestController implements IHttpUrlConnection {
                 Afiliado afiliado = afiliadoService.findByRfc(rfc);
 
                 // Actualizar saldo al corte a ceros
-                Double amount = json.getJSONObject("transaction").getDouble("amount");
-                afiliado.setSaldoCorte(amount);
+                afiliado.setSaldoCorte(0.0);
 
                 afiliadoService.save(afiliado);
 
@@ -94,6 +93,11 @@ public class NotificacionRestController implements IHttpUrlConnection {
 
         }catch(JSONException | IOException je){
             je.printStackTrace();
+        }catch(NullPointerException ne){
+            response.put("status", "ERR");
+            response.put("code", HttpStatus.INTERNAL_SERVER_ERROR);
+
+            return new ResponseEntity<LinkedHashMap<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
         return new ResponseEntity<LinkedHashMap<String, Object>>(response, HttpStatus.OK);

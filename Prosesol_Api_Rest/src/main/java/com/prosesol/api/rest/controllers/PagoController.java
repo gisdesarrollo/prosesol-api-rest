@@ -282,7 +282,7 @@ public class PagoController {
                 if (value.contains("reference")) {
                     reference = value.substring(value.lastIndexOf("=") + 1);
                 }
-                if (value.contains("id=")){
+                if (value.contains("id=")) {
                     idTransaccion = value.substring(value.lastIndexOf("=") + 1);
                 }
             }
@@ -471,16 +471,16 @@ public class PagoController {
     public String realizarCargoTarjeta(@PathVariable("id") Long id,
                                        @ModelAttribute("token_id") String tokenId,
                                        //@ModelAttribute("deviceIdHiddenFieldName") String deviceSessionId,
-                                       @RequestParam(value= "suscripcion",required = false) boolean suscripcion,
+                                       @RequestParam(value = "suscripcion", required = false) boolean suscripcion,
                                        RedirectAttributes redirect, SessionStatus status) {
 
         Afiliado afiliado = afiliadoService.findById(id);
         String periodo = "MENSUAL";
-        String diaCorte="";
-        String diaDomiciliar="";
+        String diaCorte = "";
+        String diaDomiciliar = "";
         Integer corte = 0;
-        Integer dia= 0;
-        
+        Integer dia = 0;
+
         apiOpenpay = new OpenpayAPI(openpayURL, privateKey, merchantId);
         BigDecimal amount = BigDecimal.valueOf(afiliado.getSaldoCorte());
 
@@ -500,69 +500,66 @@ public class PagoController {
             } else {
                 customer.setEmail(afiliado.getEmail());
             }
-          //se crea cliente para crear la tarjeta
+            //se crea cliente para crear la tarjeta
             customer = apiOpenpay.customers().create(customer);
             System.out.println(customer);
-            if(!customer.getStatus().equals("active")) {
-            	redirect.addFlashAttribute("error","Error al momento de crear el cliente");
-	        	return "redirect:/pagos/tarjeta/buscar";
+            if (!customer.getStatus().equals("active")) {
+                redirect.addFlashAttribute("error", "Error al momento de crear el cliente");
+                return "redirect:/pagos/tarjeta/buscar";
             }
-			
+
             DateFormat formatoFecha = new SimpleDateFormat("dd");
-			 diaCorte = formatoFecha.format(afiliado.getFechaAlta());
-             corte = Integer.parseInt(diaCorte);
-             Date fechaCorte = calcularFechas.calcularFechas(periodo, corte);
-             
-            if(suscripcion) {
-            	
-    			diaDomiciliar = formatoFecha.format(fechaCorte);
-    			
+            diaCorte = formatoFecha.format(afiliado.getFechaAlta());
+            corte = Integer.parseInt(diaCorte);
+            Date fechaCorte = calcularFechas.calcularFechas(periodo, corte);
+
+            if (suscripcion) {
+
+                diaDomiciliar = formatoFecha.format(fechaCorte);
+
                 dia = Integer.parseInt(diaDomiciliar);
                 //se crea el plan para la suscripción
                 Plan plan = new Plan();
-    			plan.name(afiliado.getServicio().getNombre());
-    			plan.amount(amount);
-    			plan.repeatEvery(dia, PlanRepeatUnit.MONTH);
-    			plan.retryTimes(3);
-    			plan.statusAfterRetry(PlanStatusAfterRetry.CANCELLED);
-    			plan.trialDays(30);
-    			plan = apiOpenpay.plans().create(plan);
-    			
-                System.out.println(plan);
-    			if(plan.getStatus().equals("active")) {
-    				
-    			//se crea la tarjeta para la suscripción
-    				 Card card = new Card()
-    					  .tokenId(tokenId);
-    				 
-    				 card = apiOpenpay.cards().create(customer.getId(),card);
-    		            System.out.println("id_card: "+card.getId());
-    		        if(!card.getId().equals(null)){    
-    		        //se crea la suscripción del afiliado					
-    		            Subscription suscribir = new Subscription();
-    		            suscribir.planId(plan.getId());
-    		            suscribir.trialEndDate(fechaCorte);
-    		            suscribir.sourceId(card.getId());
-    		            suscribir = apiOpenpay.subscriptions().create(customer.getId(),suscribir);
-    		            System.out.println(suscribir);
-    		            if(!suscribir.getStatus().equals("trial")) {
-    		            	 redirect.addFlashAttribute("error","Error al momento de suscribir");
-    		                 return "redirect:/pagos/tarjeta/buscar";
-    		            }
-    		            
-    		        }else {
-    		        	redirect.addFlashAttribute("error","Error al momento de crear la tarjeta");
-    		        	return "redirect:/pagos/tarjeta/buscar";
-    		        	}
-    		        }else {
-    		        	redirect.addFlashAttribute("error","Error al momento de crear el plan");
-    		        	return "redirect:/pagos/tarjeta/buscar";	
-    		        }
-    			}
-    			
-    			
-    		
-              
+                plan.name(afiliado.getServicio().getNombre());
+                plan.amount(amount);
+                plan.repeatEvery(dia, PlanRepeatUnit.MONTH);
+                plan.retryTimes(3);
+                plan.statusAfterRetry(PlanStatusAfterRetry.CANCELLED);
+                plan.trialDays(30);
+                plan = apiOpenpay.plans().create(plan);
+
+                LOG.info("Plan: ", plan);
+                if (plan.getStatus().equals("active")) {
+
+                    //se crea la tarjeta para la suscripción
+                    Card card = new Card()
+                            .tokenId(tokenId);
+
+                    card = apiOpenpay.cards().create(customer.getId(), card);
+                    LOG.info("ID Card: ", card.getId());
+                    if (!card.getId().equals(null)) {
+                        //se crea la suscripción del afiliado
+                        Subscription suscribir = new Subscription();
+                        suscribir.planId(plan.getId());
+                        suscribir.trialEndDate(fechaCorte);
+                        suscribir.sourceId(card.getId());
+                        suscribir = apiOpenpay.subscriptions().create(customer.getId(), suscribir);
+                        LOG.info("Suscription: ", suscribir);
+                        if (!suscribir.getStatus().equals("trial")) {
+                            redirect.addFlashAttribute("error", "Error al momento de suscribir");
+                            return "redirect:/pagos/tarjeta/buscar";
+                        }
+
+                    } else {
+                        redirect.addFlashAttribute("error", "Error al momento de crear la tarjeta");
+                        return "redirect:/pagos/tarjeta/buscar";
+                    }
+                } else {
+                    redirect.addFlashAttribute("error", "Error al momento de crear el plan");
+                    return "redirect:/pagos/tarjeta/buscar";
+                }
+            }
+
             //se crea el cargo a la tarjeta
 
             CreateCardChargeParams creditCardcharge = new CreateCardChargeParams()
@@ -574,8 +571,8 @@ public class PagoController {
                     ;
 
             @SuppressWarnings("deprecation")
-            Charge charge = apiOpenpay.charges().create(customer.getId(),creditCardcharge);
-            System.out.println(charge);
+            Charge charge = apiOpenpay.charges().create(customer.getId(), creditCardcharge);
+            LOG.info("Charge: ", charge);
             if (charge.getStatus().equals("completed")) {
                 pago.setFechaPago(new Date());
                 pago.setMonto(charge.getAmount().doubleValue());
@@ -584,7 +581,7 @@ public class PagoController {
                 pago.setEstatus(charge.getStatus());
                 pago.setTipoTransaccion("Pago con tarjeta");
                 pago.setIdTransaccion(charge.getId());
-               
+
                 afiliado.setFechaCorte(fechaCorte);
                 afiliado.setSaldoCorte(0.00);
 
@@ -619,7 +616,8 @@ public class PagoController {
                                         String templateBienvenidoIB = template;
                                         LOG.info("Template de bienvenido Individual Básico: " + templateBienvenidoIB);
                                         emailController.sendEmail(templateBienvenidoIB, correos, adjuntos, model);
-                                    }if(idTemplateStr.equals(ID_TEMPLATE_PI)){
+                                    }
+                                    if (idTemplateStr.equals(ID_TEMPLATE_PI)) {
                                         String templatePagoIN = template;
                                         LOG.info("Template de inscripción: " + templatePagoIN);
                                         emailController.sendEmail(templatePagoIN, correos, adjuntos, model);
@@ -634,14 +632,15 @@ public class PagoController {
                                         String templateBienvenidoFT = template;
                                         LOG.info("Template de bienvenido Familiar Total: " + templateBienvenidoFT);
                                         emailController.sendEmail(templateBienvenidoFT, correos, adjuntos, model);
-                                    }if(idTemplateStr.equals(ID_TEMPLATE_PI)){
+                                    }
+                                    if (idTemplateStr.equals(ID_TEMPLATE_PI)) {
                                         String templatePagoIN = template;
                                         LOG.info("Template de inscripción: " + templatePagoIN);
                                         emailController.sendEmail(templatePagoIN, correos, adjuntos, model);
                                     }
                                 }
                             }
-                        }else if(afiliado.getEstatus() == 1){
+                        } else if (afiliado.getEstatus() == 1) {
                             for (String template : templates) {
                                 int separator = template.indexOf("-");
                                 String idTemplateStr = template.substring(0, separator);
