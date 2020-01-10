@@ -36,6 +36,7 @@ import java.io.File;
 import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.time.ZoneId;
 import java.util.*;
 
 /**
@@ -475,11 +476,11 @@ public class PagoController {
                                        RedirectAttributes redirect, SessionStatus status) {
 
         Afiliado afiliado = afiliadoService.findById(id);
-        String periodo = "MENSUAL";
-        String diaCorte = "";
-        String diaDomiciliar = "";
-        Integer corte = 0;
-        Integer dia = 0;
+//        String periodo = "MENSUAL";
+//        String diaCorte = "";
+//        String diaDomiciliar = "";
+//        Integer corte = 0;
+//        Integer dia = 0;
 
         apiOpenpay = new OpenpayAPI(openpayURL, privateKey, merchantId);
         BigDecimal amount = BigDecimal.valueOf(afiliado.getSaldoCorte());
@@ -502,33 +503,46 @@ public class PagoController {
             }
             //se crea cliente para crear la tarjeta
             customer = apiOpenpay.customers().create(customer);
-            System.out.println(customer);
+            LOG.info("Customer: " + customer);
             if (!customer.getStatus().equals("active")) {
                 redirect.addFlashAttribute("error", "Error al momento de crear el cliente");
                 return "redirect:/pagos/tarjeta/buscar";
             }
 
-            DateFormat formatoFecha = new SimpleDateFormat("dd");
-            diaCorte = formatoFecha.format(afiliado.getFechaAlta());
-            corte = Integer.parseInt(diaCorte);
-            Date fechaCorte = calcularFechas.calcularFechas(periodo, corte);
+//            DateFormat formatoFecha = new SimpleDateFormat("dd");
+//            diaCorte = formatoFecha.format(afiliado.getFechaCorte());
+//            corte = Integer.parseInt(diaCorte);
+//            Date fechaCorte = calcularFechas.calcularFechas(periodo, corte);
+
+            String idPlan = null;
 
             if (suscripcion) {
 
-                diaDomiciliar = formatoFecha.format(fechaCorte);
+//                diaDomiciliar = formatoFecha.format(fechaCorte);
+//
+//                dia = Integer.parseInt(diaDomiciliar);
 
-                dia = Integer.parseInt(diaDomiciliar);
+                Calendar cFechaCorte = new GregorianCalendar();
+                cFechaCorte.setTime(afiliado.getFechaCorte());
+
+                int diFa = cFechaCorte.get(Calendar.YEAR) -
+                        Calendar.getInstance().get(Calendar.YEAR);
+                int difM = (diFa * 12) + cFechaCorte.get(Calendar.MONTH) -
+                        Calendar.getInstance().get(Calendar.MONTH);
+
                 //se crea el plan para la suscripción
                 Plan plan = new Plan();
                 plan.name(afiliado.getServicio().getNombre());
                 plan.amount(amount);
-                plan.repeatEvery(dia, PlanRepeatUnit.MONTH);
+                plan.repeatEvery(difM, PlanRepeatUnit.MONTH);
                 plan.retryTimes(3);
                 plan.statusAfterRetry(PlanStatusAfterRetry.CANCELLED);
                 plan.trialDays(30);
                 plan = apiOpenpay.plans().create(plan);
 
-                LOG.info("Plan: ", plan);
+                idPlan = plan.getId();
+
+                LOG.info("Plan: " + plan);
                 if (plan.getStatus().equals("active")) {
 
                     //se crea la tarjeta para la suscripción
@@ -536,15 +550,15 @@ public class PagoController {
                             .tokenId(tokenId);
 
                     card = apiOpenpay.cards().create(customer.getId(), card);
-                    LOG.info("ID Card: ", card.getId());
+                    LOG.info("ID Card: " + card.getId());
                     if (!card.getId().equals(null)) {
                         //se crea la suscripción del afiliado
                         Subscription suscribir = new Subscription();
                         suscribir.planId(plan.getId());
-                        suscribir.trialEndDate(fechaCorte);
+                        suscribir.trialEndDate(afiliado.getFechaCorte());
                         suscribir.sourceId(card.getId());
                         suscribir = apiOpenpay.subscriptions().create(customer.getId(), suscribir);
-                        LOG.info("Suscription: ", suscribir);
+                        LOG.info("Suscription: " + suscribir);
                         if (!suscribir.getStatus().equals("trial")) {
                             redirect.addFlashAttribute("error", "Error al momento de suscribir");
                             return "redirect:/pagos/tarjeta/buscar";
@@ -572,7 +586,7 @@ public class PagoController {
 
             @SuppressWarnings("deprecation")
             Charge charge = apiOpenpay.charges().create(customer.getId(), creditCardcharge);
-            LOG.info("Charge: ", charge);
+            LOG.info("Charge: " + charge);
             if (charge.getStatus().equals("completed")) {
                 pago.setFechaPago(new Date());
                 pago.setMonto(charge.getAmount().doubleValue());
@@ -582,7 +596,13 @@ public class PagoController {
                 pago.setTipoTransaccion("Pago con tarjeta");
                 pago.setIdTransaccion(charge.getId());
 
-                afiliado.setFechaCorte(fechaCorte);
+                boolean isHasPlan = isNullOrEmpty(idPlan);
+
+                if(!isHasPlan){
+                    pago.setIdSuscripcion(idPlan);
+                }
+
+//                afiliado.setFechaCorte(fechaCorte);
                 afiliado.setSaldoCorte(0.00);
 
                 // Envío email bienvenida
@@ -656,7 +676,13 @@ public class PagoController {
                     }
                 }
 
-                afiliado.setEstatus(1);
+                System.out.println(afiliado.getServicio().getId());
+
+                if(afiliado.getEstatus() != 1 && afiliado.getServicio().getId() != idTotal){
+                    afiliado.setEstatus(1);
+                    afiliado.setFechaAfiliacion(new Date());
+                }
+
                 pagoService.save(pago);
                 afiliadoService.save(afiliado);
 
