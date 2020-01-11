@@ -47,6 +47,9 @@ public class Pago implements Serializable{
 
 	@Column(name = "id_suscripcion")
 	private String idSuscripcion;
+
+	@Column(name = "id_cliente")
+	private String idCliente;
 		
 	public Long getId() {
 		return id;
@@ -118,5 +121,13 @@ public class Pago implements Serializable{
 
 	public void setIdSuscripcion(String idSuscripcion) {
 		this.idSuscripcion = idSuscripcion;
+	}
+
+	public String getIdCliente() {
+		return idCliente;
+	}
+
+	public void setIdCliente(String idCliente) {
+		this.idCliente = idCliente;
 	}
 }

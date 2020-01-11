@@ -31,7 +31,7 @@ import java.util.LinkedHashMap;
 
 @RestController
 @RequestMapping("/api/webhook")
-public class NotificacionRestController implements IHttpUrlConnection {
+public class NotificacionRestController {
 
     protected static final Log LOG = LogFactory.getLog(NotificacionRestController.class);
 
@@ -49,7 +49,7 @@ public class NotificacionRestController implements IHttpUrlConnection {
 
         LinkedHashMap<String, Object> response = new LinkedHashMap<String, Object>();
         Webhook wh = null;
-        String jb = null;
+        String jb;
 
         try{
             jb = IOUtils.toString(request.getReader());
@@ -101,19 +101,5 @@ public class NotificacionRestController implements IHttpUrlConnection {
         }
 
         return new ResponseEntity<LinkedHashMap<String, Object>>(response, HttpStatus.OK);
-    }
-
-    @Override
-    public HttpURLConnection openConnection(HttpURLConnection urlConnection, String method, URL url) {
-        try {
-            urlConnection = (HttpURLConnection)url.openConnection();
-            urlConnection.setRequestMethod(method);
-            urlConnection.setRequestProperty("Content-Type", "application/json; charset=utf-8;");
-            urlConnection.setRequestProperty("Authorization", "Bearer " + "dopplerApiKey");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return urlConnection;
     }
 }

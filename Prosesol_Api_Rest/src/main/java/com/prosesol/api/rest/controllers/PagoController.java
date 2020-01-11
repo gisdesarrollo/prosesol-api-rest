@@ -92,16 +92,9 @@ public class PagoController {
 
     private OpenpayAPI apiOpenpay;
 
-    private Customer customer;
-
     private int code;
 
     private int errorCode;
-
-    public PagoController() {
-        customer = new Customer();
-    }
-
 
     /**
      * Búsqueda de RFC para pagos con tarjeta
@@ -212,6 +205,7 @@ public class PagoController {
         String idTransaccion = null;
 
         Pago pago = new Pago();
+        Customer customer = new Customer();
 
         if (rfc.length() < 13) {
 
@@ -347,6 +341,7 @@ public class PagoController {
         String idTransaccion = null;
 
         Pago pago = new Pago();
+        Customer customer = new Customer();
 
         if (rfc.length() < 13) {
 
@@ -476,11 +471,7 @@ public class PagoController {
                                        RedirectAttributes redirect, SessionStatus status) {
 
         Afiliado afiliado = afiliadoService.findById(id);
-//        String periodo = "MENSUAL";
-//        String diaCorte = "";
-//        String diaDomiciliar = "";
-//        Integer corte = 0;
-//        Integer dia = 0;
+        Customer customer = new Customer();
 
         apiOpenpay = new OpenpayAPI(openpayURL, privateKey, merchantId);
         BigDecimal amount = BigDecimal.valueOf(afiliado.getSaldoCorte());
@@ -509,18 +500,9 @@ public class PagoController {
                 return "redirect:/pagos/tarjeta/buscar";
             }
 
-//            DateFormat formatoFecha = new SimpleDateFormat("dd");
-//            diaCorte = formatoFecha.format(afiliado.getFechaCorte());
-//            corte = Integer.parseInt(diaCorte);
-//            Date fechaCorte = calcularFechas.calcularFechas(periodo, corte);
-
             String idPlan = null;
 
             if (suscripcion) {
-
-//                diaDomiciliar = formatoFecha.format(fechaCorte);
-//
-//                dia = Integer.parseInt(diaDomiciliar);
 
                 Calendar cFechaCorte = new GregorianCalendar();
                 cFechaCorte.setTime(afiliado.getFechaCorte());
@@ -595,14 +577,14 @@ public class PagoController {
                 pago.setEstatus(charge.getStatus());
                 pago.setTipoTransaccion("Pago con tarjeta");
                 pago.setIdTransaccion(charge.getId());
+                pago.setIdCliente(customer.getId());
 
                 boolean isHasPlan = isNullOrEmpty(idPlan);
 
-                if(!isHasPlan){
+                if (!isHasPlan) {
                     pago.setIdSuscripcion(idPlan);
                 }
 
-//                afiliado.setFechaCorte(fechaCorte);
                 afiliado.setSaldoCorte(0.00);
 
                 // Envío email bienvenida
@@ -676,9 +658,7 @@ public class PagoController {
                     }
                 }
 
-                System.out.println(afiliado.getServicio().getId());
-
-                if(afiliado.getEstatus() != 1 && afiliado.getServicio().getId() != idTotal){
+                if (afiliado.getEstatus() != 1 && afiliado.getServicio().getId() != idTotal) {
                     afiliado.setEstatus(1);
                     afiliado.setFechaAfiliacion(new Date());
                 }

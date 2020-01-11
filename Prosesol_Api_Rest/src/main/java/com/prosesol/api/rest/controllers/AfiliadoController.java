@@ -107,7 +107,7 @@ public class AfiliadoController {
             int currentYear = Calendar.getInstance().get(Calendar.YEAR);
             LocalDate fechaNacimiento = afiliado.getFechaNacimiento().toInstant()
                     .atZone(ZoneId.systemDefault()).toLocalDate();
-            int fNacimiento = fechaNacimiento.getDayOfYear();
+            int fNacimiento = fechaNacimiento.getYear();
 
             int rangoEdad = currentYear - fNacimiento;
             if (rangoEdad >= 55 && servicio.getId() == idTotal) {
