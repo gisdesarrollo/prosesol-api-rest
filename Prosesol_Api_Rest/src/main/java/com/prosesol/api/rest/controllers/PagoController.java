@@ -500,6 +500,7 @@ public class PagoController {
                 return "redirect:/pagos/tarjeta/buscar";
             }
 
+            String idSuscripcion = null;
             String idPlan = null;
 
             if (suscripcion) {
@@ -524,7 +525,6 @@ public class PagoController {
 
                 idPlan = plan.getId();
 
-                LOG.info("Plan: " + plan);
                 if (plan.getStatus().equals("active")) {
 
                     //se crea la tarjeta para la suscripción
@@ -540,7 +540,10 @@ public class PagoController {
                         suscribir.trialEndDate(afiliado.getFechaCorte());
                         suscribir.sourceId(card.getId());
                         suscribir = apiOpenpay.subscriptions().create(customer.getId(), suscribir);
-                        LOG.info("Suscription: " + suscribir);
+
+                        idSuscripcion = suscribir.getId();
+
+                        LOG.info("Subscription: " + suscribir);
                         if (!suscribir.getStatus().equals("trial")) {
                             redirect.addFlashAttribute("error", "Error al momento de suscribir");
                             return "redirect:/pagos/tarjeta/buscar";
@@ -578,11 +581,12 @@ public class PagoController {
                 pago.setTipoTransaccion("Pago con tarjeta");
                 pago.setIdTransaccion(charge.getId());
                 pago.setIdCliente(customer.getId());
+                pago.setIdPlan(idPlan);
 
-                boolean isHasPlan = isNullOrEmpty(idPlan);
+                boolean isHasPlan = isNullOrEmpty(idSuscripcion);
 
                 if (!isHasPlan) {
-                    pago.setIdSuscripcion(idPlan);
+                    pago.setIdSuscripcion(idSuscripcion);
                 }
 
                 afiliado.setSaldoCorte(0.00);
