@@ -138,6 +138,7 @@ public class AfiliadoController {
                 corte = Integer.parseInt(dia);
                 Date fechaCorte = calcularFechas.calcularFechas(periodo, corte);
                 afiliado.setFechaCorte(fechaCorte);
+                afiliado.setIdPeriodicidad(1L);
                 mensajeFlash = "Registro creado con éxito";
             }
             afiliado.setEstatus(3);

@@ -134,6 +134,9 @@ public class Afiliado implements Serializable {
 	@Column(name = "is_beneficiario")
 	private Boolean isBeneficiario;
 
+	@Column(name = "id_periodicidad")
+	private Long idPeriodicidad;
+
 	@Transient
 	private Integer corte;
 
@@ -407,6 +410,22 @@ public class Afiliado implements Serializable {
 
 	public void setCorte(Integer corte) {
 		this.corte = corte;
+	}
+
+	public Boolean getBeneficiario() {
+		return isBeneficiario;
+	}
+
+	public void setBeneficiario(Boolean beneficiario) {
+		isBeneficiario = beneficiario;
+	}
+
+	public Long getIdPeriodicidad() {
+		return idPeriodicidad;
+	}
+
+	public void setIdPeriodicidad(Long idPeriodicidad) {
+		this.idPeriodicidad = idPeriodicidad;
 	}
 
 	@Override

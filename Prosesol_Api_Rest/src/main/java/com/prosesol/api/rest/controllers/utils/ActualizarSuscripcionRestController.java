@@ -56,9 +56,10 @@ public class ActualizarSuscripcionRestController {
 
         try {
 
+            Subscription suscripcion = null;
+
             for(Pago pago : pagos){
                 boolean isSuscripcion = isNullOrEmpty(pago.getIdSuscripcion());
-                Subscription suscripcion;
                 if(!isSuscripcion){
                     // Obtener la suscripcion con base a los datos de la tabla de pagos
                     suscripcion = openpayAPI.subscriptions().get(pago.getIdCliente(), pago.getIdSuscripcion());
@@ -71,9 +72,11 @@ public class ActualizarSuscripcionRestController {
 
                     suscripcion = openpayAPI.subscriptions().update(suscripcion);
 
-                    LOG.info("Suscripcion actualizada: " + suscripcion);
+
                 }
             }
+
+            LOG.info("Suscripcion actualizada: " + suscripcion);
 
         }catch (ServiceUnavailableException | OpenpayServiceException opEx){
             opEx.printStackTrace();
