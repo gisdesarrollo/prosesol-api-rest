@@ -140,6 +140,7 @@
 	<div class="sctn-col">
 		<label>RFC</label>
 		<label th:text="*{rfc}"></label>
+		<input type="hidden" id="rfc" name="rfc" th:value="*{rfc}"> 
 	</div>
 	<div class="sctn-col l">
 		<label>Monto a pagar</label>
@@ -203,5 +204,6 @@
 		</div>
 	</div>
 </form>
+<script th:src="@{/js/validaSuscripcion.js}"></script>
 </body>
 </html>
