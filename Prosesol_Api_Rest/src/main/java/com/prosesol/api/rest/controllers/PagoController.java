@@ -1,17 +1,12 @@
 package com.prosesol.api.rest.controllers;
 
-import com.prosesol.api.rest.controllers.exception.OpenpayException;
 import com.prosesol.api.rest.models.entity.Afiliado;
 import com.prosesol.api.rest.models.entity.Pago;
+import com.prosesol.api.rest.repository.AfiliadoRepository;
 import com.prosesol.api.rest.services.IAfiliadoService;
 import com.prosesol.api.rest.services.IPagoService;
 import com.prosesol.api.rest.utils.CalcularFecha;
-
-import mx.openpay.client.Card;
-import mx.openpay.client.Charge;
-import mx.openpay.client.Customer;
-import mx.openpay.client.Plan;
-import mx.openpay.client.Subscription;
+import mx.openpay.client.*;
 import mx.openpay.client.core.OpenpayAPI;
 import mx.openpay.client.core.requests.transactions.CreateBankChargeParams;
 import mx.openpay.client.core.requests.transactions.CreateCardChargeParams;
@@ -34,9 +29,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.math.BigDecimal;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.time.ZoneId;
 import java.util.*;
 
 /**
@@ -89,6 +81,9 @@ public class PagoController {
 
     @Autowired
     private IPagoService pagoService;
+
+    @Autowired
+    private AfiliadoRepository afiliadoRepository;
 
     private OpenpayAPI apiOpenpay;
 
@@ -292,6 +287,7 @@ public class PagoController {
 
 
             pagoService.save(pago);
+            afiliadoRepository.insertRelAfiliadosPagos(afiliado, pago.getId());
 
         } catch (OpenpayServiceException | ServiceUnavailableException e) {
             String response = e.toString().substring(e.toString().indexOf("("), e.toString().lastIndexOf(")"));
@@ -359,8 +355,6 @@ public class PagoController {
 
         } else {
 
-            System.out.println(afiliado.toString());
-
             if (afiliado.getIsBeneficiario() == false) {
                 if (afiliado.getSaldoCorte().equals(0.0)) {
                     LOG.info("El afiliado va al corriente de sus pagos");
@@ -424,6 +418,7 @@ public class PagoController {
 
 
             pagoService.save(pago);
+            afiliadoRepository.insertRelAfiliadosPagos(afiliado, pago.getId());
 
         } catch (OpenpayServiceException | ServiceUnavailableException e) {
             String response = e.toString().substring(e.toString().indexOf("("), e.toString().lastIndexOf(")"));
@@ -669,6 +664,7 @@ public class PagoController {
 
                 pagoService.save(pago);
                 afiliadoService.save(afiliado);
+                afiliadoRepository.insertRelAfiliadosPagos(afiliado, pago.getId());
 
                 redirect.addFlashAttribute("success", "Su pago se ha realizado correctamente con el " +
                         "siguiente número de folio: " + charge.getAuthorization());

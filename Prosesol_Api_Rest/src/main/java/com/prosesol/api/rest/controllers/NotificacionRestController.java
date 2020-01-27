@@ -4,7 +4,6 @@ import com.prosesol.api.rest.models.entity.Afiliado;
 import com.prosesol.api.rest.models.entity.Pago;
 import com.prosesol.api.rest.models.entity.Webhook;
 import com.prosesol.api.rest.services.IAfiliadoService;
-import com.prosesol.api.rest.services.IHttpUrlConnection;
 import com.prosesol.api.rest.services.IPagoService;
 import com.prosesol.api.rest.services.IWebhookService;
 import org.apache.commons.io.IOUtils;
@@ -21,8 +20,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.LinkedHashMap;
 
 /**
