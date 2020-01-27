@@ -27,7 +27,7 @@ import java.util.LinkedHashMap;
  */
 
 @RestController
-@RequestMapping("/api/webhook")
+@RequestMapping("/webhook")
 public class NotificacionRestController {
 
     protected static final Log LOG = LogFactory.getLog(NotificacionRestController.class);
@@ -41,7 +41,7 @@ public class NotificacionRestController {
     @Autowired
     private IAfiliadoService afiliadoService;
 
-    @PostMapping(value = "/transfer")
+    @PostMapping(value = "/notificaciones")
     public ResponseEntity<?> createWebhook(HttpServletRequest request){
 
         LinkedHashMap<String, Object> response = new LinkedHashMap<String, Object>();
@@ -73,9 +73,7 @@ public class NotificacionRestController {
                 }
 
                 // Obtener el rfc de la tabla de Pagos
-                Pago getPago = pagoService.getRfcByIdTransaccion(idTransaccion);
-
-                String rfc = getPago.getRfc();
+                String rfc = pagoService.getRfcByIdTransaccion(idTransaccion);
                 Afiliado afiliado = afiliadoService.findByRfc(rfc);
 
                 // Actualizar saldo al corte a ceros
@@ -89,14 +87,19 @@ public class NotificacionRestController {
             response.put("code", HttpStatus.OK);
 
         }catch(JSONException | IOException je){
-            je.printStackTrace();
-        }catch(NullPointerException ne){
+            LOG.error(je);
             response.put("status", "ERR");
             response.put("code", HttpStatus.INTERNAL_SERVER_ERROR);
 
-            return new ResponseEntity<LinkedHashMap<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }catch(NullPointerException ne){
+            LOG.error(ne);
+            response.put("status", "ERR");
+            response.put("code", HttpStatus.INTERNAL_SERVER_ERROR);
+
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
-        return new ResponseEntity<LinkedHashMap<String, Object>>(response, HttpStatus.OK);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }

@@ -277,7 +277,6 @@ public class PagoController {
                 }
             }
 
-            pago.setRfc(rfc);
             pago.setMonto(amount.doubleValue());
             pago.setFechaPago(new Date());
             pago.setReferenciaBancaria("000000000");
@@ -408,7 +407,6 @@ public class PagoController {
                 }
             }
 
-            pago.setRfc(rfc);
             pago.setMonto(amount.doubleValue());
             pago.setFechaPago(new Date());
             pago.setReferenciaBancaria("000000000");
@@ -570,7 +568,6 @@ public class PagoController {
             if (charge.getStatus().equals("completed")) {
                 pago.setFechaPago(new Date());
                 pago.setMonto(charge.getAmount().doubleValue());
-                pago.setRfc(afiliado.getRfc());
                 pago.setReferenciaBancaria(charge.getAuthorization());
                 pago.setEstatus(charge.getStatus());
                 pago.setTipoTransaccion("Pago con tarjeta");

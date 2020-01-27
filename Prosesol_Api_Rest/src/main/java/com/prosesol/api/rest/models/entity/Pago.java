@@ -19,10 +19,6 @@ public class Pago implements Serializable{
 	@Column(name = "id_pago")
 	private Long id;
 	
-	@Column(name = "rfc")
-	@NotEmpty(message = "El rfc no debe quedar vacío")
-	private String rfc;
-	
 	@Column(name = "referencia_bancaria")
 	@NotEmpty(message = "Debe proporcionar una referencia bancaria")
 	private String referenciaBancaria;
@@ -60,14 +56,6 @@ public class Pago implements Serializable{
 
 	public void setId(Long id) {
 		this.id = id;
-	}
-
-	public String getRfc() {
-		return rfc;
-	}
-
-	public void setRfc(String rfc) {
-		this.rfc = rfc;
 	}
 
 	public Double getMonto() {
