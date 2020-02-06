@@ -33,7 +33,7 @@ public class AfiliadoRequest {
 
     @NotNull(message = "Proporcione la fecha de nacimiento")
     @Temporal(TemporalType.DATE)
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-    dd", locale = "es-MX"
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", locale = "es-MX"
             , timezone = "America/Mexico_City")
     private Date fechaNacimiento;
 
