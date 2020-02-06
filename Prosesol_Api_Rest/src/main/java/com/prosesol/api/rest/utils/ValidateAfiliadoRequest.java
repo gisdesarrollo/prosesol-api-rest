@@ -56,7 +56,8 @@ public class ValidateAfiliadoRequest {
         afiliado.setSexo(afiliadoRequest.getSexo());
         afiliado.setCurp(afiliadoRequest.getCurp());
         afiliado.setNss(afiliadoRequest.getNss());
-        if(afiliadoRequest.getCurp().equals(null) || afiliadoRequest.getCurp().equals("")){
+        if(afiliadoRequest.getRfc().equals(null) || afiliadoRequest.getRfc().equals("") ||
+                afiliadoRequest.getRfc().length() < 13){
             LocalDate fechaNacimiento = afiliadoRequest.getFechaNacimiento().toInstant()
                                                        .atZone(ZoneId.systemDefault())
                                                        .toLocalDate();
@@ -70,6 +71,8 @@ public class ValidateAfiliadoRequest {
                          .build();
 
             afiliado.setRfc(rfc.toString());
+        }else{
+            afiliado.setRfc(afiliadoRequest.getRfc());
         }
 
         afiliado.setTelefonoFijo(afiliadoRequest.getTelefonoFijo());
@@ -131,7 +134,8 @@ public class ValidateAfiliadoRequest {
         if(afiliado.getFechaNacimiento().equals(null) || afiliado.getFechaNacimiento().equals("")){
             throw new AfiliadoException(4000, "El Afiliado o Beneficiario no cuenta con su fecha de nacimiento");
         }
-        if(afiliado.getCurp().equals(null) || afiliado.getCurp().equals("")){
+        if(afiliado.getRfc().equals(null) || afiliado.getRfc().equals("") ||
+            afiliado.getRfc().length() < 13){
             LocalDate fechaNacimiento = afiliado.getFechaNacimiento().toInstant()
                     .atZone(ZoneId.systemDefault())
                     .toLocalDate();
@@ -145,6 +149,8 @@ public class ValidateAfiliadoRequest {
                     .build();
 
             afiliado.setRfc(rfc.toString());
+        }else{
+            afiliado.setRfc(afiliado.getRfc());
         }
         if(afiliado.getEntidadFederativa().length() > 3){
             throw new AfiliadoException(4000, "El código de la entidad es incorrecto (Valor = 3)");
