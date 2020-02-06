@@ -1,11 +1,14 @@
 package com.prosesol.api.rest.models.entity.schemas;
 
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.prosesol.api.rest.models.entity.Afiliado;
 import com.prosesol.api.rest.models.entity.Servicio;
 
 
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 
 
@@ -29,6 +32,9 @@ public class AfiliadoRequest {
     private String apellidoMaterno;
 
     @NotNull(message = "Proporcione la fecha de nacimiento")
+    @Temporal(TemporalType.DATE)
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-    dd", locale = "es-MX"
+            , timezone = "America/Mexico_City")
     private Date fechaNacimiento;
 
     private String lugarNacimiento;

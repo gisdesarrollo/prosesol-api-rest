@@ -58,14 +58,14 @@ public class ValidateAfiliadoRequest {
         afiliado.setNss(afiliadoRequest.getNss());
         if(afiliadoRequest.getCurp().equals(null) || afiliadoRequest.getCurp().equals("")){
             LocalDate fechaNacimiento = afiliadoRequest.getFechaNacimiento().toInstant()
-                                                       .atZone(ZoneId.of("America/Mexico_City"))
+                                                       .atZone(ZoneId.systemDefault())
                                                        .toLocalDate();
 
             rfc = new Rfc.Builder()
                          .name(afiliadoRequest.getNombre())
                          .firstLastName(afiliadoRequest.getApellidoPaterno())
                          .secondLastName(afiliadoRequest.getApellidoMaterno())
-                         .birthday(fechaNacimiento.getDayOfMonth(), fechaNacimiento.getDayOfMonth()
+                         .birthday(fechaNacimiento.getDayOfMonth(), fechaNacimiento.getMonthValue()
                             , fechaNacimiento.getYear())
                          .build();
 
@@ -133,7 +133,7 @@ public class ValidateAfiliadoRequest {
         }
         if(afiliado.getCurp().equals(null) || afiliado.getCurp().equals("")){
             LocalDate fechaNacimiento = afiliado.getFechaNacimiento().toInstant()
-                    .atZone(ZoneId.of("America/Mexico_City"))
+                    .atZone(ZoneId.systemDefault())
                     .toLocalDate();
 
             rfc = new Rfc.Builder()

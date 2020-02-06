@@ -91,13 +91,13 @@ public class NotificacionRestController {
             response.put("status", "ERR");
             response.put("code", HttpStatus.INTERNAL_SERVER_ERROR);
 
-            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(response, HttpStatus.OK);
         }catch(NullPointerException ne){
             LOG.error(ne);
             response.put("status", "ERR");
             response.put("code", HttpStatus.INTERNAL_SERVER_ERROR);
 
-            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(response, HttpStatus.OK);
         }
 
         return new ResponseEntity<>(response, HttpStatus.OK);

@@ -160,7 +160,7 @@ public class AfiliadoRestController {
                 List<AfiliadoResponse> listaBeneficiarios = new ArrayList<AfiliadoResponse>();
 
                 LocalDate fechaNacimiento = afiliadoRequest.getFechaNacimiento().toInstant()
-                        .atZone(ZoneId.of("America/Mexico_City"))
+                        .atZone(ZoneId.systemDefault())
                         .toLocalDate();
 
                 Date fechaCorte = calcularFecha.calcularFechas("MENSUAL", fechaNacimiento.getDayOfMonth());
