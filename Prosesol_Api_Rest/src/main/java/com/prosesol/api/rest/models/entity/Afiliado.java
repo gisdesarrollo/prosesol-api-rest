@@ -134,6 +134,9 @@ public class Afiliado implements Serializable {
 	@Column(name = "is_beneficiario")
 	private Boolean isBeneficiario;
 
+	@Column(name = "is_inscripcion")
+	private Boolean isInscripcion;
+
 	@Column(name = "id_periodicidad")
 	private Long idPeriodicidad;
 
@@ -403,6 +406,10 @@ public class Afiliado implements Serializable {
 	public void setIsBeneficiario(Boolean isBeneficiario) {
 		this.isBeneficiario = isBeneficiario;
 	}
+
+	public Boolean getIsInscripcion(){return isInscripcion;}
+
+	public void setIsInscripcion(Boolean isInscripcion){this.isInscripcion = isInscripcion;}
 
 	public Integer getCorte() {
 		return corte;

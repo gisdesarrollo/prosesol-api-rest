@@ -127,6 +127,7 @@ public class AfiliadoController {
 
             } else {
                 saldoAcumulado = servicio.getCostoTitular() + servicio.getInscripcionTitular();
+                afiliado.setIsInscripcion(true);
                 afiliado.setSaldoAcumulado(saldoAcumulado);
                 afiliado.setSaldoCorte(saldoAcumulado);
                 afiliado.setIsBeneficiario(false);

@@ -147,11 +147,12 @@ public class AfiliadoRestController {
     }
 
     @PostMapping(value = "/afiliados/crear")
-    public ResponseEntity<?> createAfiliado(@RequestBody AfiliadoJsonRequest afiliadoJsonRequestList, BindingResult result) {
+    public ResponseEntity<?> createAfiliado(@RequestBody AfiliadoJsonRequest afiliadoJsonRequestList
+            , BindingResult result)throws AfiliadoException {
 
         Afiliado afiliado = new Afiliado();
         LinkedHashMap<String, Object> response = new LinkedHashMap<String, Object>();
-        System.out.println(afiliadoJsonRequestList.getAfiliado());
+
         try {
             AfiliadoJsonResponse afiliadoJsonResponse = new AfiliadoJsonResponse();
             for (AfiliadoRequest afiliadoRequest : afiliadoJsonRequestList.getAfiliado()) {

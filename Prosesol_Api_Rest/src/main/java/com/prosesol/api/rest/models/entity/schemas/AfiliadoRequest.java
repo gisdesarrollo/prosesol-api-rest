@@ -3,8 +3,10 @@ package com.prosesol.api.rest.models.entity.schemas;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.prosesol.api.rest.models.entity.Afiliado;
 import com.prosesol.api.rest.models.entity.Servicio;
+import com.prosesol.api.rest.utils.JsonDateDeserializer;
 
 
 import javax.persistence.Temporal;
@@ -35,6 +37,7 @@ public class AfiliadoRequest {
     @Temporal(TemporalType.DATE)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", locale = "es-MX"
             , timezone = "America/Mexico_City")
+    @JsonDeserialize(using = JsonDateDeserializer.class)
     private Date fechaNacimiento;
 
     private String lugarNacimiento;
