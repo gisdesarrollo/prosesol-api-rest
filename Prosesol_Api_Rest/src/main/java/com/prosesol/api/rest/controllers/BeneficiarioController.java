@@ -95,15 +95,14 @@ public class BeneficiarioController {
 
 				beneficiario.setRfc(rfc.toString());
 
-				System.out.println(rfc.toString());
-
 			}
 			saldoAcumulado=Afiliado.getSaldoAcumulado();
 			saldoAcumulado += servicio.getCostoBeneficiario() + servicio.getInscripcionBeneficiario();
         	Afiliado.setSaldoAcumulado(saldoAcumulado);
         	Afiliado.setSaldoCorte(saldoAcumulado);
 	
-			beneficiario.setEstatus(1);
+			beneficiario.setEstatus(3);
+			beneficiario.setIsInscripcion(false);
 			beneficiario.setServicio(Afiliado.getServicio());
 			beneficiario.setIsBeneficiario(true);
 			beneficiario.setClave(generarClave.getClaveAfiliado(clave));
@@ -154,17 +153,16 @@ public class BeneficiarioController {
 
 				beneficiario.setRfc(rfc.toString());
 
-				System.out.println(rfc.toString());
-
 			}
 			saldoAcumulado=afiliado.getSaldoAcumulado();
 			saldoAcumulado += servicio.getCostoBeneficiario() + servicio.getInscripcionBeneficiario();
         	afiliado.setSaldoAcumulado(saldoAcumulado);
         	afiliado.setSaldoCorte(saldoAcumulado);
 			
-			beneficiario.setEstatus(1);
+			beneficiario.setEstatus(3);
 			beneficiario.setServicio(afiliado.getServicio());
 			beneficiario.setIsBeneficiario(true);
+			beneficiario.setIsInscripcion(false);
 			beneficiario.setClave(generarClave.getClaveAfiliado(clave));
 			beneficiario.setFechaAlta(fechaAlta);
 			afiliadoService.save(afiliado);

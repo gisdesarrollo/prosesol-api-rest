@@ -566,6 +566,41 @@ public class PagoController {
             Charge charge = apiOpenpay.charges().create(customer.getId(), creditCardcharge);
             LOG.info("Charge: " + charge);
             if (charge.getStatus().equals("completed")) {
+
+                // Se verifica si eel afiliado se ha inscrito por primera vez o es su segundo pago
+                if (afiliado.getIsInscripcion()) {
+                    // Se obtiene la lista de beneficiarios
+                    List<Afiliado> beneficiarios = afiliadoService
+                            .getBeneficiarioByIdByIsBeneficiario(afiliado.getId());
+                    Double restaCostoInscripcion = new Double(0.0);
+
+                    if (beneficiarios.size() > 0) {
+                        for (Afiliado beneficiario : beneficiarios) {
+                            Double inscripcionBeneficiario = beneficiario.getServicio()
+                                    .getInscripcionBeneficiario();
+                            restaCostoInscripcion = restaCostoInscripcion + inscripcionBeneficiario;
+                            if (beneficiario.getEstatus() != 1 &&
+                                    beneficiario.getServicio().getId() != idTotal) {
+                                beneficiario.setEstatus(1);
+                                beneficiario.setFechaAfiliacion(new Date());
+                                afiliadoService.save(beneficiario);
+                            }
+                        }
+                        // Se restan los costos de inscripción tanto de afiliados como beneficiarios
+                        Double saldoAcumulado = afiliado.getSaldoAcumulado() - afiliado.getServicio()
+                                .getInscripcionTitular() - restaCostoInscripcion;
+                        afiliado.setSaldoAcumulado(saldoAcumulado);
+                        afiliado.setIsInscripcion(false);
+
+                    } else {
+                        // Se resta el saldo acumulado obteniendo la inscripción de su servicio
+                        Double saldoAcumulado = afiliado.getSaldoAcumulado() -
+                                afiliado.getServicio().getInscripcionTitular();
+                        afiliado.setSaldoAcumulado(saldoAcumulado);
+                        afiliado.setIsInscripcion(false);
+                    }
+                }
+
                 pago.setFechaPago(new Date());
                 pago.setMonto(charge.getAmount().doubleValue());
                 pago.setReferenciaBancaria(charge.getAuthorization());

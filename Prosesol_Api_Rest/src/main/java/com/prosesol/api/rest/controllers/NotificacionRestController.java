@@ -12,6 +12,7 @@ import org.apache.commons.logging.LogFactory;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,7 +21,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.util.Date;
 import java.util.LinkedHashMap;
+import java.util.List;
 
 /**
  * @author Luis Enrique Morales Soriano
@@ -40,6 +43,9 @@ public class NotificacionRestController {
 
     @Autowired
     private IAfiliadoService afiliadoService;
+
+    @Value("${afiliado.servicio.total.id}")
+    private Long idTotal;
 
     @PostMapping(value = "/notificaciones")
     public ResponseEntity<?> createWebhook(HttpServletRequest request){
@@ -76,8 +82,46 @@ public class NotificacionRestController {
                 String rfc = pagoService.getRfcByIdTransaccion(idTransaccion);
                 Afiliado afiliado = afiliadoService.findByRfc(rfc);
 
+                // Verificar si es pago de inscripción y también si tiene beneficiarios
+                if(afiliado.getIsInscripcion()){
+                    // Se obtiene la lista de beneficiarios
+                    List<Afiliado> beneficiarios = afiliadoService
+                            .getBeneficiarioByIdByIsBeneficiario(afiliado.getId());
+                    Double restaCostoInscripcion = new Double(0.0);
+
+                    if (beneficiarios.size() > 0) {
+                        for (Afiliado beneficiario : beneficiarios) {
+                            Double inscripcionBeneficiario = beneficiario.getServicio()
+                                    .getInscripcionBeneficiario();
+                            restaCostoInscripcion = restaCostoInscripcion + inscripcionBeneficiario;
+                            if (beneficiario.getEstatus() != 1 &&
+                                    beneficiario.getServicio().getId() != idTotal) {
+                                beneficiario.setEstatus(1);
+                                beneficiario.setFechaAfiliacion(new Date());
+                                afiliadoService.save(beneficiario);
+                            }
+                        }
+                        // Se restan los costos de inscripción tanto de afiliados como beneficiarios
+                        Double saldoAcumulado = afiliado.getSaldoAcumulado() - afiliado.getServicio()
+                                .getInscripcionTitular() - restaCostoInscripcion;
+                        afiliado.setSaldoAcumulado(saldoAcumulado);
+                        afiliado.setIsInscripcion(false);
+
+                    } else {
+                        // Se resta el saldo acumulado obteniendo la inscripción de su servicio
+                        Double saldoAcumulado = afiliado.getSaldoAcumulado() -
+                                afiliado.getServicio().getInscripcionTitular();
+                        afiliado.setSaldoAcumulado(saldoAcumulado);
+                        afiliado.setIsInscripcion(false);
+                    }
+                }
+
                 // Actualizar saldo al corte a ceros
                 afiliado.setSaldoCorte(0.0);
+                if (afiliado.getEstatus() != 1 && afiliado.getServicio().getId() != idTotal) {
+                    afiliado.setEstatus(1);
+                    afiliado.setFechaAfiliacion(new Date());
+                }
 
                 afiliadoService.save(afiliado);
 
