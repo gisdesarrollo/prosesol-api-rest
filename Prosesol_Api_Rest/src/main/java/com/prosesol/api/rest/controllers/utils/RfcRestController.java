@@ -32,7 +32,7 @@ public class RfcRestController {
 
             Date date = new SimpleDateFormat("dd/MM/yyyy").parse(fechaNacimiento);
             LocalDate fecha = date.toInstant()
-                              .atZone(ZoneId.of("America/Mexico_City"))
+                              .atZone(ZoneId.systemDefault())
                               .toLocalDate();
 
             rfc = new Rfc.Builder()

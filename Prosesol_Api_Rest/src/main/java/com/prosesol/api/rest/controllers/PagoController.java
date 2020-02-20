@@ -459,8 +459,8 @@ public class PagoController {
     @RequestMapping(value = "/tarjeta/{id}", method = RequestMethod.POST)
     public String realizarCargoTarjeta(@PathVariable("id") Long id,
                                        @ModelAttribute("token_id") String tokenId,
-                                       //@ModelAttribute("deviceIdHiddenFieldName") String deviceSessionId,
-                                       @RequestParam(value = "suscripcion", required = false) boolean suscripcion,
+                                       @ModelAttribute("deviceIdHiddenFieldName") String deviceSessionId,
+//                                       @RequestParam(value = "suscripcion", required = false) boolean suscripcion,
                                        RedirectAttributes redirect, SessionStatus status) {
 
         Afiliado afiliado = afiliadoService.findById(id);
@@ -496,74 +496,81 @@ public class PagoController {
             String idSuscripcion = null;
             String idPlan = null;
 
-            if (suscripcion) {
-
-                Calendar cFechaCorte = new GregorianCalendar();
-                cFechaCorte.setTime(afiliado.getFechaCorte());
-
-                int diFa = cFechaCorte.get(Calendar.YEAR) -
-                        Calendar.getInstance().get(Calendar.YEAR);
-                int difM = (diFa * 12) + cFechaCorte.get(Calendar.MONTH) -
-                        Calendar.getInstance().get(Calendar.MONTH);
-
-                //se crea el plan para la suscripción
-                Plan plan = new Plan();
-                plan.name(afiliado.getServicio().getNombre());
-                plan.amount(amount);
-                plan.repeatEvery(difM, PlanRepeatUnit.MONTH);
-                plan.retryTimes(3);
-                plan.statusAfterRetry(PlanStatusAfterRetry.CANCELLED);
-                plan.trialDays(30);
-                plan = apiOpenpay.plans().create(plan);
-
-                idPlan = plan.getId();
-
-                if (plan.getStatus().equals("active")) {
-
-                    //se crea la tarjeta para la suscripción
-                    Card card = new Card()
-                            .tokenId(tokenId);
-
-                    card = apiOpenpay.cards().create(customer.getId(), card);
-                    LOG.info("ID Card: " + card.getId());
-                    if (!card.getId().equals(null)) {
-                        //se crea la suscripción del afiliado
-                        Subscription suscribir = new Subscription();
-                        suscribir.planId(plan.getId());
-                        suscribir.trialEndDate(afiliado.getFechaCorte());
-                        suscribir.sourceId(card.getId());
-                        suscribir = apiOpenpay.subscriptions().create(customer.getId(), suscribir);
-
-                        idSuscripcion = suscribir.getId();
-
-                        LOG.info("Subscription: " + suscribir);
-                        if (!suscribir.getStatus().equals("trial")) {
-                            redirect.addFlashAttribute("error", "Error al momento de suscribir");
-                            return "redirect:/pagos/tarjeta/buscar";
-                        }
-
-                    } else {
-                        redirect.addFlashAttribute("error", "Error al momento de crear la tarjeta");
-                        return "redirect:/pagos/tarjeta/buscar";
-                    }
-                } else {
-                    redirect.addFlashAttribute("error", "Error al momento de crear el plan");
-                    return "redirect:/pagos/tarjeta/buscar";
-                }
-            }
+//            if (suscripcion) {
+//
+//                Calendar cFechaCorte = new GregorianCalendar();
+//                cFechaCorte.setTime(afiliado.getFechaCorte());
+//
+//                int diFa = cFechaCorte.get(Calendar.YEAR) -
+//                        Calendar.getInstance().get(Calendar.YEAR);
+//                int difM = (diFa * 12) + cFechaCorte.get(Calendar.MONTH) -
+//                        Calendar.getInstance().get(Calendar.MONTH);
+//
+//                //se crea el plan para la suscripción
+//                Plan plan = new Plan();
+//                plan.name(afiliado.getServicio().getNombre());
+//                plan.amount(amount);
+//                plan.repeatEvery(difM, PlanRepeatUnit.MONTH);
+//                plan.retryTimes(3);
+//                plan.statusAfterRetry(PlanStatusAfterRetry.CANCELLED);
+//                plan.trialDays(30);
+//                plan = apiOpenpay.plans().create(plan);
+//
+//                idPlan = plan.getId();
+//
+//                if (plan.getStatus().equals("active")) {
+//
+//                    //se crea la tarjeta para la suscripción
+//                    Card card = new Card()
+//                            .tokenId(tokenId);
+//
+//                    card = apiOpenpay.cards().create(customer.getId(), card);
+//                    LOG.info("ID Card: " + card.getId());
+//                    if (!card.getId().equals(null)) {
+//                        //se crea la suscripción del afiliado
+//                        Subscription suscribir = new Subscription();
+//                        suscribir.planId(plan.getId());
+//                        suscribir.trialEndDate(afiliado.getFechaCorte());
+//                        suscribir.sourceId(card.getId());
+//                        suscribir = apiOpenpay.subscriptions().create(customer.getId(), suscribir);
+//
+//                        idSuscripcion = suscribir.getId();
+//
+//                        LOG.info("Subscription: " + suscribir);
+//                        if (!suscribir.getStatus().equals("trial")) {
+//                            redirect.addFlashAttribute("error", "Error al momento de suscribir");
+//                            return "redirect:/pagos/tarjeta/buscar";
+//                        }
+//
+//                    } else {
+//                        redirect.addFlashAttribute("error", "Error al momento de crear la tarjeta");
+//                        return "redirect:/pagos/tarjeta/buscar";
+//                    }
+//                } else {
+//                    redirect.addFlashAttribute("error", "Error al momento de crear el plan");
+//                    return "redirect:/pagos/tarjeta/buscar";
+//                }
+//            }
 
             //se crea el cargo a la tarjeta
+
+//            CreateCardChargeParams creditCardcharge = new CreateCardChargeParams()
+//                    .cardId(tokenId)
+//                    .amount(amount)
+//                    .description("Cargo a nombre de: " + afiliado.getNombre())
+////                    .deviceSessionId(deviceSessionId)
+////                    .customer(customer);
 
             CreateCardChargeParams creditCardcharge = new CreateCardChargeParams()
                     .cardId(tokenId)
                     .amount(amount)
                     .description("Cargo a nombre de: " + afiliado.getNombre())
-                    //.deviceSessionId(deviceSessionId)
-                    //.customer(customer)
-                    ;
+                    .deviceSessionId(deviceSessionId)
+                    .customer(customer);
 
             @SuppressWarnings("deprecation")
-            Charge charge = apiOpenpay.charges().create(customer.getId(), creditCardcharge);
+//            Charge charge = apiOpenpay.charges().create(customer.getId(), creditCardcharge);
+            Charge charge = apiOpenpay.charges().create(creditCardcharge);
             LOG.info("Charge: " + charge);
             if (charge.getStatus().equals("completed")) {
 

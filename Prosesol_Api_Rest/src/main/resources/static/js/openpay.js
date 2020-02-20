@@ -4,7 +4,7 @@ $(document).ready(function() {
     OpenPay.setApiKey('pk_3ff10b69ab4e491fb4b46ef8654a1f98');
     OpenPay.setSandboxMode(true);
     //Se genera el id de dispositivo
-    //var deviceSessionId = OpenPay.deviceData.setup("payment-form", "deviceIdHiddenFieldName");
+    var deviceSessionId = OpenPay.deviceData.setup("payment-form", "deviceIdHiddenFieldName");
 
     $('#pay-button').on('click', function(event) {
         event.preventDefault();
