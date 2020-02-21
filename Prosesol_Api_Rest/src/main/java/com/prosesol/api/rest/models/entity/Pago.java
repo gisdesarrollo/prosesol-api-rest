@@ -40,15 +40,6 @@ public class Pago implements Serializable{
 
 	@Column(name = "id_transaccion")
 	private String idTransaccion;
-
-	@Column(name = "id_suscripcion")
-	private String idSuscripcion;
-
-	@Column(name = "id_cliente")
-	private String idCliente;
-
-	@Column(name = "id_plan")
-	private String idPlan;
 		
 	public Long getId() {
 		return id;
@@ -104,29 +95,5 @@ public class Pago implements Serializable{
 
 	public void setIdTransaccion(String idTransaccion) {
 		this.idTransaccion = idTransaccion;
-	}
-
-	public String getIdSuscripcion() {
-		return idSuscripcion;
-	}
-
-	public void setIdSuscripcion(String idSuscripcion) {
-		this.idSuscripcion = idSuscripcion;
-	}
-
-	public String getIdCliente() {
-		return idCliente;
-	}
-
-	public void setIdCliente(String idCliente) {
-		this.idCliente = idCliente;
-	}
-
-	public String getIdPlan() {
-		return idPlan;
-	}
-
-	public void setIdPlan(String idPlan) {
-		this.idPlan = idPlan;
 	}
 }
