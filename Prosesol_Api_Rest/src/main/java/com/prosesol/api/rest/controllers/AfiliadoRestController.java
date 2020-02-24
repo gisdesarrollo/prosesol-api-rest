@@ -160,15 +160,15 @@ public class AfiliadoRestController {
                 AfiliadoResponse afiliadoResponse = new AfiliadoResponse();
                 List<AfiliadoResponse> listaBeneficiarios = new ArrayList<AfiliadoResponse>();
 
-                LocalDate fechaNacimiento = afiliadoRequest.getFechaNacimiento().toInstant()
-                        .atZone(ZoneId.systemDefault())
-                        .toLocalDate();
+//                LocalDate fechaNacimiento = afiliadoRequest.getFechaNacimiento().toInstant()
+//                        .atZone(ZoneId.systemDefault())
+//                        .toLocalDate();
 
-                Date fechaCorte = calcularFecha.calcularFechas("MENSUAL", fechaNacimiento.getDayOfMonth());
+//                Date fechaCorte = calcularFecha.calcularFechas("MENSUAL", fechaNacimiento.getDayOfMonth());
 
                 afiliado = validateAfiliadoRequest.validateAfiliadoFromJson(afiliadoRequest);
                 afiliado.setClave(generarClave.getClaveAfiliado(clave));
-                afiliado.setFechaCorte(fechaCorte);
+                afiliado.setFechaCorte(null);
                 afiliadoService.save(afiliado);
 
                 if (afiliadoRequest.getBeneficiario() != null) {
