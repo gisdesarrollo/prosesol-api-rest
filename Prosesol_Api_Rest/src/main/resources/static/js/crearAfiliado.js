@@ -92,7 +92,6 @@ function validaDatosAfiliado() {
 
 	}
 	if (validation == true) {
-		 $("#disabledButton").prop( "disabled", true);
 		frm.action = "/afiliados/crear";
 		frm.submit();
 	}
