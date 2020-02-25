@@ -199,6 +199,7 @@ $('#pay-button').on('click', function(event) {
     	
     	if(valida){
     		$("#pay-button").prop( "disabled", true);
+    		 $("#pay-button").css("background","#D5D4D4");
     	}
     
 });
