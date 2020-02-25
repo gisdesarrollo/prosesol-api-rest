@@ -164,7 +164,7 @@ public class AfiliadoController {
         mensajeFlash = "id del afiliado creado es: " + afiliado.getId();
         logger.info(mensajeFlash);
         redirect.addFlashAttribute("success", "Afiliado creado con éxito");
-        return "redirect:/beneficiarios/crear/" + afiliado.getId();
+        return "redirect:/afiliados/bienvenido/" + afiliado.getId();
     }
 
     @RequestMapping(value = "/bienvenido/{id}")
