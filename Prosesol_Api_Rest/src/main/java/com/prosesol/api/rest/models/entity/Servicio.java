@@ -66,7 +66,8 @@ public class Servicio implements Serializable {
 	@Column(name = "tipo_privacidad")
 	private Boolean tipoPrivacidad;
 
-	@OneToMany(mappedBy = "servicio", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToMany(mappedBy = "servicio", fetch = FetchType.LAZY, cascade = CascadeType.ALL,
+			orphanRemoval = true)
 	private List<Afiliado> afiliado;
 
 	

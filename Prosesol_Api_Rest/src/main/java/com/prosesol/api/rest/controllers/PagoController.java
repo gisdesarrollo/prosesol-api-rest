@@ -1,10 +1,9 @@
 package com.prosesol.api.rest.controllers;
 
-import com.prosesol.api.rest.models.entity.Afiliado;
-import com.prosesol.api.rest.models.entity.Pago;
+import com.prosesol.api.rest.models.entity.*;
+import com.prosesol.api.rest.models.entity.Plan;
 import com.prosesol.api.rest.repository.AfiliadoRepository;
-import com.prosesol.api.rest.services.IAfiliadoService;
-import com.prosesol.api.rest.services.IPagoService;
+import com.prosesol.api.rest.services.*;
 import com.prosesol.api.rest.utils.CalcularFecha;
 import mx.openpay.client.*;
 import mx.openpay.client.core.OpenpayAPI;
@@ -81,6 +80,15 @@ public class PagoController {
 
     @Autowired
     private IPagoService pagoService;
+
+    @Autowired
+    private IPlanService planService;
+
+    @Autowired
+    private ISuscripcionService suscripcionService;
+
+    @Autowired
+    private IClienteService clienteService;
 
     @Autowired
     private AfiliadoRepository afiliadoRepository;
@@ -460,7 +468,7 @@ public class PagoController {
     public String realizarCargoTarjeta(@PathVariable("id") Long id,
                                        @ModelAttribute("token_id") String tokenId,
                                        @ModelAttribute("deviceIdHiddenFieldName") String deviceSessionId,
-//                                       @RequestParam(value = "suscripcion", required = false) boolean suscripcion,
+                                       @RequestParam(value = "suscripcion", required = false) boolean suscripcion,
                                        RedirectAttributes redirect, SessionStatus status) {
 
         Afiliado afiliado = afiliadoService.findById(id);
@@ -493,16 +501,49 @@ public class PagoController {
                 return "redirect:/pagos/tarjeta/buscar";
             }
 
+            if(suscripcion){
+                Plan plan = planService.getPlanByIdServicio(afiliado.getServicio());
+                if(plan != null){
+                    Card card = new Card().tokenId(tokenId);
+
+                    card = apiOpenpay.cards().create(customer.getId(), card);
+                    if(card != null){
+                        // Se crea la suscripción del afiliado al plan
+                        Subscription subscription = new Subscription();
+                        subscription.planId(plan.getPlanOpenpay());
+                        subscription.trialEndDate(afiliado.getFechaCorte());
+                        subscription.sourceId(card.getId());
+                        subscription = apiOpenpay.subscriptions().create(customer.getId(),
+                                subscription);
+
+                        LOG.info("Subscription: " + subscription);
+
+                        if(!subscription.getStatus().equals("trial")){
+                            redirect.addFlashAttribute("error", "Error al momento de suscribir");
+                            return "redirect:/pagos/tarjeta/buscar";
+                        }else{ // Se crea la suscripcion y el cliente en la base de datos
+                            Suscripcion sus = new Suscripcion(plan, subscription.getId(), true);
+                            suscripcionService.save(sus);
+                            Cliente cliente = new Cliente(sus, customer.getId(), true);
+                            clienteService.save(cliente);
+                        }
+                    }
+                }else{
+                    redirect.addFlashAttribute("error", "No se ha podido procesar " +
+                            "su pago, su servicio no puede ser domiciliado");
+                    return "redirect:/pagos/tarjeta/buscar";
+                }
+            }
+
             CreateCardChargeParams creditCardcharge = new CreateCardChargeParams()
                     .cardId(tokenId)
                     .amount(amount)
-                    .description("Cargo a nombre de: " + afiliado.getNombre())
-                    .deviceSessionId(deviceSessionId)
-                    .customer(customer);
+                    .description("Cargo a nombre de: " + afiliado.getNombre());
+//                    .deviceSessionId(deviceSessionId)
+//                    .customer(customer);
 
             @SuppressWarnings("deprecation")
-//            Charge charge = apiOpenpay.charges().create(customer.getId(), creditCardcharge);
-            Charge charge = apiOpenpay.charges().create(creditCardcharge);
+            Charge charge = apiOpenpay.charges().create(customer.getId(), creditCardcharge);
             LOG.info("Charge: " + charge);
             if (charge.getStatus().equals("completed")) {
 
