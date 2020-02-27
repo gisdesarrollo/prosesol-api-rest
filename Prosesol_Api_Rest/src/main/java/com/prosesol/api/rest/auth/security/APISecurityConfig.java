@@ -38,7 +38,8 @@ public class APISecurityConfig extends WebSecurityConfigurerAdapter{
 		    .addFilter(new JWTAuthorizationFilter(authenticationManager(), jwtService))
 		    .addFilter(new JWTAuthenticationFilter(authenticationManager(), jwtService))
 		    .csrf().disable()
-		    .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+		    //.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+		    .sessionManagement().enableSessionUrlRewriting(false);
 	}
 
 	@Autowired
