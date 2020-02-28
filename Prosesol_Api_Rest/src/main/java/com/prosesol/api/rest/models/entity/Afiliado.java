@@ -137,8 +137,9 @@ public class Afiliado implements Serializable {
 	@Column(name = "is_inscripcion")
 	private Boolean isInscripcion;
 
-	@Column(name = "id_periodicidad")
-	private Long idPeriodicidad;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "id_periodicidad")
+	private Periodicidad periodicidad;
 
 	@Transient
 	private Integer corte;
@@ -427,12 +428,12 @@ public class Afiliado implements Serializable {
 		isBeneficiario = beneficiario;
 	}
 
-	public Long getIdPeriodicidad() {
-		return idPeriodicidad;
+	public Periodicidad getPeriodicidad() {
+		return periodicidad;
 	}
 
-	public void setIdPeriodicidad(Long idPeriodicidad) {
-		this.idPeriodicidad = idPeriodicidad;
+	public void setPeriodicidad(Periodicidad periodicidad) {
+		this.periodicidad = periodicidad;
 	}
 
 	@Override

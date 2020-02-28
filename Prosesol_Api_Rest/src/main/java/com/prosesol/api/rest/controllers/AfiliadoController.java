@@ -1,8 +1,10 @@
 package com.prosesol.api.rest.controllers;
 
 import com.prosesol.api.rest.models.entity.Afiliado;
+import com.prosesol.api.rest.models.entity.Periodicidad;
 import com.prosesol.api.rest.models.entity.Servicio;
 import com.prosesol.api.rest.services.IAfiliadoService;
+import com.prosesol.api.rest.services.IPeriodicidadService;
 import com.prosesol.api.rest.services.IServicioService;
 import com.prosesol.api.rest.utils.CalcularFecha;
 import com.prosesol.api.rest.utils.GenerarClave;
@@ -53,6 +55,9 @@ public class AfiliadoController {
     @Autowired
     private GenerarClave generarClave;
 
+    @Autowired
+    private IPeriodicidadService periodicidadService;
+
     @RequestMapping(value = "/servicio")
     public String seleccionarServicio(Model model) {
         List<Servicio> servicios = servicioService.findAll();
@@ -97,6 +102,8 @@ public class AfiliadoController {
             Afiliado buscarAfiliadoExistente = afiliadoService.findByRfc(afiliado.getRfc());
             Servicio servicio = servicioService.findById(afiliado.getServicio().getId());
 
+            Periodicidad periodicidad = periodicidadService.getPeriodicidadByNombrePeriodo(periodo);
+
             if (buscarAfiliadoExistente != null) {
                 logger.error("Error afiliado ya se encuentra registrado");
                 redirect.addFlashAttribute("error", "El Afiliado ya se encuentra registrado");
@@ -139,7 +146,7 @@ public class AfiliadoController {
                 corte = Integer.parseInt(dia);
                 Date fechaCorte = calcularFechas.calcularFechas(periodo, corte);
                 afiliado.setFechaCorte(fechaCorte);
-                afiliado.setIdPeriodicidad(1L);
+                afiliado.setPeriodicidad(periodicidad);
                 mensajeFlash = "Registro creado con éxito";
             }
             afiliado.setEstatus(3);

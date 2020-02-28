@@ -10,7 +10,7 @@ const output = document.getElementById('output');
 const ccicon = document.getElementById('ccicon');
 const ccsingle = document.getElementById('ccsingle');
 const generatecard = document.getElementById('generatecard');
-
+const montoPagar = document.getElementById('montoPagar');
 
 let cctype = null;
 
@@ -120,6 +120,12 @@ var expirationyear_mask = new IMask(expirationyear, {
 //Mask the security code
 var securitycode_mask = new IMask(securitycode, {
     mask: '0000',
+});
+
+$(montoPagar).keypress(function (e){
+    if(e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57)){
+        return false;
+    }
 });
 
 //boton valida
