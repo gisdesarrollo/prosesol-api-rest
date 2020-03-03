@@ -1,5 +1,6 @@
 package com.prosesol.api.rest.services;
 
+import com.prosesol.api.rest.models.entity.Afiliado;
 import com.prosesol.api.rest.models.entity.Cliente;
 
 import java.util.List;
@@ -17,4 +18,5 @@ public interface IClienteService {
 
     public void deleteById(Long id);
 
+    public Cliente getClienteByIdAfiliado(Afiliado afiliado);
 }

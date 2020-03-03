@@ -1,6 +1,7 @@
 package com.prosesol.api.rest.services;
 
 import com.prosesol.api.rest.models.dao.IClienteDao;
+import com.prosesol.api.rest.models.entity.Afiliado;
 import com.prosesol.api.rest.models.entity.Cliente;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -39,5 +40,11 @@ public class ClienteServiceImpl implements IClienteService {
     @Transactional
     public void deleteById(Long id) {
         clienteDao.deleteById(id);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Cliente getClienteByIdAfiliado(Afiliado afiliado) {
+        return clienteDao.getClienteByIdAfiliado(afiliado);
     }
 }

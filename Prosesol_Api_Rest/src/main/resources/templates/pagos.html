@@ -133,6 +133,7 @@
 </div>
 <form th:action="@{/pagos/tarjeta/} + ${afiliado.id}" method="post" id="payment-form" th:object="${afiliado}">
 	<input type="hidden" name="token_id" id="token_id">
+	<input type="hidden" name="idAfiliado" id="idAfiliado" th:value="*{id}">
 	<div class="sctn-col l">
 		<label>Nombre del titular del servicio</label>
 		<label th:text="*{nombre} + ' '  + *{apellidoPaterno} + ' ' + *{apellidoMaterno}"></label>
@@ -195,10 +196,9 @@
 			<div id="validaCodigo" style="display: none; color: red;">Campo
 				obligatorio</div>
 		</div>
-		<div class="field-container">
+		<div class="field-container" th:if="${cliente} == null">
 			<label for="montoPagar">¿Monto a Pagar?</label>
-			<input id="montoPagar" type="text" pattern="[0-9]*" inputmode="numeric"
-				   data-openpay-card="cvv2">
+			<input id="montoPagar" name="montoPagar" type="text" pattern="[0-9]*" inputmode="numeric">
 		</div>
 		<div class="field-container">
 			<label for="suscripcion">Domiciliar Pago</label>

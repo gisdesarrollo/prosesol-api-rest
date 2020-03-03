@@ -27,12 +27,17 @@ public class Cliente implements Serializable {
     @Column(name = "estatus")
     private Boolean estatus;
 
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "id_afiliado")
+    private Afiliado afiliado;
+
     public Cliente(){}
 
-    public Cliente(Suscripcion suscripcion, String clienteOpenpay, Boolean estatus) {
+    public Cliente(Suscripcion suscripcion, String clienteOpenpay, Boolean estatus, Afiliado afiliado) {
         this.suscripcion = suscripcion;
         this.clienteOpenpay = clienteOpenpay;
         this.estatus = estatus;
+        this.afiliado = afiliado;
     }
 
     public Long getId() {
@@ -65,5 +70,13 @@ public class Cliente implements Serializable {
 
     public void setEstatus(Boolean estatus) {
         this.estatus = estatus;
+    }
+
+    public Afiliado getAfiliado() {
+        return afiliado;
+    }
+
+    public void setAfiliado(Afiliado afiliado) {
+        this.afiliado = afiliado;
     }
 }

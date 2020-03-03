@@ -142,6 +142,7 @@ public class PagoController {
                                               RedirectAttributes redirect) {
 
         Afiliado afiliado = afiliadoService.findByRfc(rfc);
+        Cliente cliente = clienteService.getClienteByIdAfiliado(afiliado);
 
         if (rfc.length() < 13) {
 
@@ -164,11 +165,11 @@ public class PagoController {
             if (afiliado.getIsBeneficiario() == false) {
 
                 if (afiliado.getSaldoCorte() == null) {
-                    LOG.info("El afiliado va al corriente de sus pagos");
+                    LOG.info("El afiliado no cuenta con un saldo");
                     redirect.addFlashAttribute("info", "Usted no cuenta con un saldo al cual " +
-                            "se le puede hacer el cargo, consulte a contacto@prosesol.org para dudas o aclaraciones");
+                            "se le puede hacer el cargo, póngase en contacto a contacto@prosesol.org para dudas o aclaraciones");
                     return "redirect:/pagos/tarjeta/buscar";
-                } else if (afiliado.getSaldoCorte().equals(0.0)) {
+                } else if (afiliado.getSaldoCorte().equals(0.0) || afiliado.getSaldoCorte() < 0.0) {
                     LOG.info("El afiliado va al corriente de sus pagos");
                     redirect.addFlashAttribute("info", "Usted va al corriente con su pago, " +
                             "no es necesario que realice su pago");
@@ -183,6 +184,7 @@ public class PagoController {
             }
         }
 
+        model.addAttribute("cliente", cliente);
         return "/pagos";
 
     }
@@ -469,13 +471,14 @@ public class PagoController {
                                        @ModelAttribute("token_id") String tokenId,
                                        @ModelAttribute("deviceIdHiddenFieldName") String deviceSessionId,
                                        @RequestParam(value = "suscripcion", required = false) boolean suscripcion,
+                                       @RequestParam(value = "montoPagar", required = false)Double montoPagar,
                                        RedirectAttributes redirect, SessionStatus status) {
 
         Afiliado afiliado = afiliadoService.findById(id);
         Customer customer = new Customer();
 
         apiOpenpay = new OpenpayAPI(openpayURL, privateKey, merchantId);
-        BigDecimal amount = BigDecimal.valueOf(afiliado.getSaldoCorte());
+        BigDecimal amount = BigDecimal.valueOf(montoPagar);
 
         amount = amount.setScale(2, BigDecimal.ROUND_HALF_EVEN);
 
@@ -524,7 +527,7 @@ public class PagoController {
                         }else{ // Se crea la suscripcion y el cliente en la base de datos
                             Suscripcion sus = new Suscripcion(plan, subscription.getId(), true);
                             suscripcionService.save(sus);
-                            Cliente cliente = new Cliente(sus, customer.getId(), true);
+                            Cliente cliente = new Cliente(sus, customer.getId(), true, afiliado);
                             clienteService.save(cliente);
                         }
                     }
@@ -588,7 +591,10 @@ public class PagoController {
                 pago.setTipoTransaccion("Pago con tarjeta");
                 pago.setIdTransaccion(charge.getId());
 
-                afiliado.setSaldoCorte(0.00);
+                Double restaSaldoCorte = 0.0;
+
+                restaSaldoCorte = afiliado.getSaldoCorte() - montoPagar;
+                afiliado.setSaldoCorte(restaSaldoCorte);
 
                 // Envío email bienvenida
                 boolean isnotEmptyEmail = isNullOrEmpty(afiliado.getEmail());

@@ -13,6 +13,6 @@ public interface IPagoService {
 													 String idTransaccion);
 
 	public String getRfcByIdTransaccion(String idTransaccion);
-	
-	
+
+
 }
