@@ -122,31 +122,52 @@ var securitycode_mask = new IMask(securitycode, {
     mask: '0000',
 });
 
-$(montoPagar).keypress(function (e){
-    if(e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57)){
-        return false;
+$(montoPagar).on("input", function(e){
+
+    var costoServicio = parseFloat($('#costoServicio').val());
+    var montoPagar1 = parseFloat(this.value);
+    var isInscripcion = $('#isInscripcion').val().toLowerCase();
+    var saldoCorte = parseFloat($('#saldoCorte').val());
+
+    if(isInscripcion === "true" && montoPagar1 == saldoCorte){
+        $("#suscripcion").removeAttr("disabled");
+    }else if(saldoCorte < montoPagar1){
+        $("#suscripcion").attr("disabled", true);
+    }else if(montoPagar1 > costoServicio || montoPagar1 < costoServicio){
+        $("#suscripcion").attr("disabled", true);
+    }else{
+        $("#suscripcion").removeAttr("disabled");
     }
 });
 
+$(montoPagar).keypress(function(e){
+
+    if(e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57)){
+        return false;
+    }
+
+});
+
 //boton valida
-$('#pay-button').on('click', function(event) {
+document.getElementById('pay-button').addEventListener('click', function(event) {
     event.preventDefault();
     var valida=true;
+
     //valida longitud codigo seguridad
     if(cardnumber_mask.masked.currentMask.cardtype =='american express'){
 		if(securitycode_mask.value.length == 4){
 			document.getElementById('valida_longitud').innerHTML = '';
-			
+
 		}else if(securitycode_mask.value.length == 0){
 			document.getElementById('valida_longitud').innerHTML = '';
 			valida=false;
 		}else if(securitycode_mask.value.length < 4){
 			 document.getElementById('valida_longitud').innerHTML = 'Código de seguridad invalido';
 			 valida=false;
-			} 
+			}
 	}
-    
-	
+
+
 	else{
 		if(securitycode_mask.value.length == 3){
 			document.getElementById('valida_longitud').innerHTML = '';
@@ -178,9 +199,9 @@ $('#pay-button').on('click', function(event) {
 		}else if(cardnumber_mask.value.length == 16 ){
 			document.getElementById('valida_longitud_card').innerHTML = '';
 		}
-			
+
 	}
-    
+
     //valida longitud mes
     	if(expirationmonth_mask.value.length == 0){
     		document.getElementById('valida_longitud_month').innerHTML = '';
@@ -191,7 +212,7 @@ $('#pay-button').on('click', function(event) {
     	}else if(expirationmonth_mask.value.length == 2){
     		document.getElementById('valida_longitud_month').innerHTML = '';
     	}
-    
+
     //valida longitud de year
     	if(expirationyear_mask.value.length == 0){
     		document.getElementById('valida_longitud_year').innerHTML = '';
@@ -202,12 +223,16 @@ $('#pay-button').on('click', function(event) {
     	}else if(expirationyear_mask.value.length == 2){
     		document.getElementById('valida_longitud_year').innerHTML = '';
     	}
-    	
+
+        if(montoPagar.value.length == 0){
+            document.getElementById('valida_monto').innerHTML = '';
+            valida=false;
+        }
+
     	if(valida){
     		$("#pay-button").prop( "disabled", true);
     		 $("#pay-button").css("background","#D5D4D4");
     	}
-    
 });
 
 // SVGICONS

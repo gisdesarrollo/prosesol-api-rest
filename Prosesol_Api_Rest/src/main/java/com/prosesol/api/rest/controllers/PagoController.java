@@ -150,7 +150,13 @@ public class PagoController {
             redirect.addFlashAttribute("error", "El RFC No cumple con los campos necesarios");
             return "redirect:/pagos/tarjeta/buscar";
 
+        }else if(cliente != null){
+            LOG.info("INFO: ", "No puede realizar su pago ya que su servicio está domiciliado");
+            redirect.addFlashAttribute("warning",
+                    "No puede realizar su pago ya que su servicio está domiciliado");
+            return "redirect:/pagos/tarjeta/buscar";
         }
+
 
         if (afiliado == null) {
 
@@ -160,8 +166,6 @@ public class PagoController {
 
         } else {
 
-            System.out.println(afiliado.toString());
-
             if (afiliado.getIsBeneficiario() == false) {
 
                 if (afiliado.getSaldoCorte() == null) {
@@ -169,12 +173,14 @@ public class PagoController {
                     redirect.addFlashAttribute("info", "Usted no cuenta con un saldo al cual " +
                             "se le puede hacer el cargo, póngase en contacto a contacto@prosesol.org para dudas o aclaraciones");
                     return "redirect:/pagos/tarjeta/buscar";
-                } else if (afiliado.getSaldoCorte().equals(0.0) || afiliado.getSaldoCorte() < 0.0) {
-                    LOG.info("El afiliado va al corriente de sus pagos");
-                    redirect.addFlashAttribute("info", "Usted va al corriente con su pago, " +
-                            "no es necesario que realice su pago");
-                    return "redirect:/pagos/tarjeta/buscar";
-                } else {
+                }
+//                } else if (afiliado.getSaldoCorte().equals(0.0) || afiliado.getSaldoCorte() < 0.0) {
+//                    LOG.info("El afiliado va al corriente de sus pagos");
+//                    redirect.addFlashAttribute("info", "Usted va al corriente con su pago, " +
+//                            "no es necesario que realice su pago");
+//                    return "redirect:/pagos/tarjeta/buscar";
+//                }
+                else {
                     model.addAttribute("afiliado", afiliado);
                 }
             } else {
@@ -184,7 +190,6 @@ public class PagoController {
             }
         }
 
-        model.addAttribute("cliente", cliente);
         return "/pagos";
 
     }
@@ -478,8 +483,8 @@ public class PagoController {
         Customer customer = new Customer();
 
         apiOpenpay = new OpenpayAPI(openpayURL, privateKey, merchantId);
-        BigDecimal amount = BigDecimal.valueOf(montoPagar);
 
+        BigDecimal amount = BigDecimal.valueOf(montoPagar);
         amount = amount.setScale(2, BigDecimal.ROUND_HALF_EVEN);
 
         try {

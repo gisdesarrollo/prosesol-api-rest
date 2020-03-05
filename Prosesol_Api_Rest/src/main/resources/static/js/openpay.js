@@ -19,6 +19,7 @@ $(document).ready(function() {
         }else{
                 //$("#nombre").parent().next(".validation").remove();
             	 $("#validaNombreTarjeta").fadeOut("slow");
+            	 validation = true;
 
         }
         if(!$('#cardnumber').val()){
@@ -32,6 +33,7 @@ $(document).ready(function() {
         }else{
                 //$("#nombre").parent().next(".validation").remove();
                  $("#validaNumeroTarjeta").fadeOut("slow");
+                 validation = true;
 
         }
         if(!$('#expirationmonth').val()){
@@ -45,6 +47,7 @@ $(document).ready(function() {
         }else{
                 //$("#nombre").parent().next(".validation").remove();
                  $("#validaMesTarjeta").fadeOut("slow");
+                 validation = true;
 
         }
         if(!$('#expirationyear').val()){
@@ -58,6 +61,7 @@ $(document).ready(function() {
         }else{
                 //$("#nombre").parent().next(".validation").remove();
                  $("#validaAnioTarjeta").fadeOut("slow");
+                 validation = true;
 
         }
         if(!$('#securitycode').val()){
@@ -71,10 +75,26 @@ $(document).ready(function() {
         }else{
                 //$("#nombre").parent().next(".validation").remove();
                  $("#validaCodigo").fadeOut("slow");
+                 validation = true;
 
         }
-        $("#pay-button").prop( "disabled", true);
-        OpenPay.token.extractFormAndCreate('payment-form', sucess_callbak, error_callbak);                
+        if(!$('#montoPagar').val()){
+            if($('#montoPagar').parent().next(".validation").length == 0){
+                $("#validaMontoPagar").delay(100).fadeIn("slow");
+            }
+            $("#montoPagar").focus();
+            focusSet = true;
+            validation = false;
+        }else{
+             $("#validaMontoPagar").fadeOut("slow");
+             validation = true;
+        }
+
+        if(validation){
+            $("#pay-button").prop( "disabled", true);
+            OpenPay.token.extractFormAndCreate('payment-form', sucess_callbak, error_callbak);
+        }
+
     });
 
     var sucess_callbak = function(response) {
