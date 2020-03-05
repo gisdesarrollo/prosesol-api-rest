@@ -1,0 +1,31 @@
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title th:text="'Error '+ ${errorCode}"></title>
+
+	<!-- Google font -->
+	<link href="https://fonts.googleapis.com/css?family=Roboto:400,700" rel="stylesheet">
+
+	<!-- Custom stlylesheet -->
+	<link type="text/css" rel="stylesheet" th:href="@{/css/styleError.css}" />
+</head>
+
+<body>
+	<div id="notfound">
+		<div class="notfound">
+		<div class="col-md-8" >
+      <img src="https://prosesol.org/wp-content/uploads/2019/06/logo_prosesol-1.png" alt="Prosesol.org" style="position:relative;left:5px;" >
+    </div>
+			<div class="notfound-404">
+				<h1><span th:text="${errorCode}"></span></h1>
+			</div>
+			<h2 th:text="${error}"></h2>
+		</div>
+	</div>
+
+</body>
+
+</html>
