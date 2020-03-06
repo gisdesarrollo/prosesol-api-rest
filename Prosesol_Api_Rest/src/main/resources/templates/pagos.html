@@ -148,6 +148,7 @@
 	<div class="sctn-col l">
 		<label th:if="*{saldoCorte} > 0">Monto a pagar</label>
 		<label th:if="*{saldoCorte} < 0">Saldo a favor</label>
+		<label th:if="*{saldoCorte} == 0">Saldo a favor</label>
 		<label th:text="*{saldoCorte}"></label>
 		<input type="hidden" id="saldoCorte" th:value="*{saldoCorte}">
 	</div>

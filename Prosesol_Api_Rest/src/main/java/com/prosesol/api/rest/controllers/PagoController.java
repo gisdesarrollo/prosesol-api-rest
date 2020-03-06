@@ -477,7 +477,7 @@ public class PagoController {
                                        @ModelAttribute("deviceIdHiddenFieldName") String deviceSessionId,
                                        @RequestParam(value = "suscripcion", required = false) boolean suscripcion,
                                        @RequestParam(value = "montoPagar", required = false)Double montoPagar,
-                                       RedirectAttributes redirect, SessionStatus status) {
+                                       RedirectAttributes redirect, SessionStatus status, Model vista) {
 
         Afiliado afiliado = afiliadoService.findById(id);
         Customer customer = new Customer();
@@ -495,6 +495,12 @@ public class PagoController {
             customer.setLastName(afiliado.getApellidoPaterno() + ' ' + afiliado.getApellidoMaterno());
 
             boolean isNotValid = isNullOrEmpty(afiliado.getEmail());
+
+            if(!montoPagar.equals(afiliado.getSaldoCorte()) && afiliado.getIsInscripcion()){
+                vista.addAttribute("error", "Para poder inscribirse al programa, " +
+                        "deberá de realizar el pago total de su servicio (Costo + Inscripción)");
+                return "pagos/tarjeta";
+            }
 
             if (isNotValid) {
                 customer.setEmail("mail@mail.com");
