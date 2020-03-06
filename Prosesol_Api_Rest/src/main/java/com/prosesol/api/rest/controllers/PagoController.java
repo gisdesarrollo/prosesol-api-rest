@@ -493,6 +493,7 @@ public class PagoController {
 
             customer.setName(afiliado.getNombre());
             customer.setLastName(afiliado.getApellidoPaterno() + ' ' + afiliado.getApellidoMaterno());
+            customer.requiresAccount(false);
 
             boolean isNotValid = isNullOrEmpty(afiliado.getEmail());
 
@@ -510,7 +511,7 @@ public class PagoController {
             //se crea cliente para crear la tarjeta
             customer = apiOpenpay.customers().create(customer);
             LOG.info("Customer: " + customer);
-            if (!customer.getStatus().equals("active")) {
+            if (customer.getId() == null) {
                 redirect.addFlashAttribute("error", "Error al momento de crear el cliente");
                 return "redirect:/pagos/tarjeta/buscar";
             }
