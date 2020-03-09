@@ -100,13 +100,21 @@ $(document).ready(function() {
     var sucess_callbak = function(response) {
       var token_id = response.data.id;
       $('#token_id').val(token_id);
+      $("#AnioTarjeta").fadeOut("slow");
       $('#payment-form').submit();
     };
 
     var error_callbak = function(response) {
         var desc = response.data.description != undefined ? response.data.description : response.message;
-//        alert("ERROR [" + response.status + "] " + desc);
+        //alert("ERROR [" + response.status + "] " + desc);
         $("#pay-button").prop("disabled", false);
+        $("#pay-button").css("background","#000000");
+        
+        if(desc=="The expiration date has already passed"){
+        	$("#AnioTarjeta").delay(100).fadeIn("slow");
+        }else{
+        	$("#AnioTarjeta").fadeOut("slow");
+        }
     };
 
 });
