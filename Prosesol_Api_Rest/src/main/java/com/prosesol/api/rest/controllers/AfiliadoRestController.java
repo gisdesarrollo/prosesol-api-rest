@@ -147,8 +147,8 @@ public class AfiliadoRestController {
     }
 
     @PostMapping(value = "/afiliados/crear")
-    public ResponseEntity<?> createAfiliado(@RequestBody AfiliadoJsonRequest afiliadoJsonRequestList
-            , BindingResult result)throws AfiliadoException {
+    public ResponseEntity<?> createAfiliado(@RequestBody AfiliadoJsonRequest afiliadoJsonRequestList)
+            throws AfiliadoException {
 
         Afiliado afiliado = new Afiliado();
         LinkedHashMap<String, Object> response = new LinkedHashMap<String, Object>();
@@ -158,13 +158,7 @@ public class AfiliadoRestController {
             for (AfiliadoRequest afiliadoRequest : afiliadoJsonRequestList.getAfiliado()) {
 
                 AfiliadoResponse afiliadoResponse = new AfiliadoResponse();
-                List<AfiliadoResponse> listaBeneficiarios = new ArrayList<AfiliadoResponse>();
-
-//                LocalDate fechaNacimiento = afiliadoRequest.getFechaNacimiento().toInstant()
-//                        .atZone(ZoneId.systemDefault())
-//                        .toLocalDate();
-
-//                Date fechaCorte = calcularFecha.calcularFechas("MENSUAL", fechaNacimiento.getDayOfMonth());
+                List<AfiliadoResponse> listaBeneficiarios = new ArrayList<>();
 
                 afiliado = validateAfiliadoRequest.validateAfiliadoFromJson(afiliadoRequest);
                 afiliado.setClave(generarClave.getClaveAfiliado(clave));
@@ -222,11 +216,6 @@ public class AfiliadoRestController {
             response.put("code", e.getCode());
             response.put("message", e.getMessage());
 
-
-            if (afiliado.getId() != null && afiliado.getId() > 0) {
-                afiliadoService.deleteById(afiliado.getId());
-            }
-
             return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         } catch (NullPointerException npe) {
             LOG.error("Error en el proceso de creación", npe);
@@ -235,16 +224,9 @@ public class AfiliadoRestController {
             response.put("message", "Hubo un error inesperado en el servicio");
 
             return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-        } catch (DataIntegrityViolationException dae) {
-            response.put("estatus",
-                    "ERR");
-            response.put("code", HttpStatus.INTERNAL_SERVER_ERROR.value());
-            response.put("mensaje",
-                    "El afiliado ya se encuentra registrado en la base de datos");
-            return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
-        return new ResponseEntity<LinkedHashMap<String, Object>>(response, HttpStatus.OK);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
 }

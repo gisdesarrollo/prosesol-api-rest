@@ -5,6 +5,7 @@ import com.prosesol.api.rest.controllers.exception.AfiliadoException;
 import com.prosesol.api.rest.models.entity.Afiliado;
 import com.prosesol.api.rest.models.entity.Servicio;
 import com.prosesol.api.rest.models.entity.schemas.AfiliadoRequest;
+import com.prosesol.api.rest.services.IAfiliadoService;
 import com.prosesol.api.rest.services.IServicioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,6 +19,9 @@ public class ValidateAfiliadoRequest {
 
     @Autowired
     private IServicioService servicioService;
+
+    @Autowired
+    private IAfiliadoService afiliadoService;
 
     public Afiliado validateAfiliadoFromJson(AfiliadoRequest afiliadoRequest)throws AfiliadoException{
 
@@ -73,6 +77,14 @@ public class ValidateAfiliadoRequest {
             afiliado.setRfc(rfc.toString());
         }else{
             afiliado.setRfc(afiliadoRequest.getRfc());
+        }
+
+        boolean isAfiliado = validaAfiliado(afiliado);
+
+        if(!isAfiliado){
+            throw new AfiliadoException(4000, "El afiliado " + afiliado.getNombre() + " " +
+                    afiliado.getApellidoPaterno() + " " + afiliado.getApellidoMaterno() +
+                    " con RFC " + afiliado.getRfc() + " ya se encuentra registrado");
         }
 
         afiliado.setTelefonoFijo(afiliadoRequest.getTelefonoFijo());
@@ -152,6 +164,15 @@ public class ValidateAfiliadoRequest {
         }else{
             afiliado.setRfc(afiliado.getRfc());
         }
+
+        boolean isAfiliado = validaAfiliado(afiliado);
+
+        if(!isAfiliado){
+            throw new AfiliadoException(4000, "El beneficiario " + afiliado.getNombre() + " " +
+                    afiliado.getApellidoPaterno() + " " + afiliado.getApellidoMaterno() +
+                    " con RFC " + afiliado.getRfc() + " ya se encuentra registrado");
+        }
+
         if(afiliado.getEntidadFederativa().length() > 3){
             throw new AfiliadoException(4000, "El código de la entidad es incorrecto (Valor = 3)");
         }else{
@@ -166,5 +187,21 @@ public class ValidateAfiliadoRequest {
         }else {
             throw new AfiliadoException(4000, "El campo 'isBeneficiario' no debe quedar vacío");
         }
+    }
+
+    /**
+     * Valida si el afiliado ya se encuentra en la BBDD
+     * @param afiliado
+     * @return
+     */
+    private boolean validaAfiliado(Afiliado afiliado) {
+
+        afiliado = afiliadoService.findByRfc(afiliado.getRfc());
+
+        if(afiliado != null){
+            return false;
+        }
+
+        return true;
     }
 }
