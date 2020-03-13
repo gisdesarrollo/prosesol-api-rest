@@ -117,6 +117,7 @@ public class ValidateAfiliadoRequest {
         }
 
         afiliado.setIsBeneficiario(afiliadoRequest.getIsBeneficiario());
+        afiliado.setFechaAfiliacion(new Date());
         afiliado.setFechaAlta(new Date());
         afiliado.setEstatus(1);
 
