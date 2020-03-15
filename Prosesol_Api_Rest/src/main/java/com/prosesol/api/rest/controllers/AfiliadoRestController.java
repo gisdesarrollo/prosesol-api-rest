@@ -11,6 +11,7 @@ import com.prosesol.api.rest.repository.BeneficiarioRepository;
 import com.prosesol.api.rest.services.IAfiliadoService;
 import com.prosesol.api.rest.services.ICustomerKeyService;
 import com.prosesol.api.rest.utils.CalcularFecha;
+import com.prosesol.api.rest.utils.GeneraArchivoLog;
 import com.prosesol.api.rest.utils.GenerarClave;
 import com.prosesol.api.rest.utils.ValidateAfiliadoRequest;
 import org.apache.commons.logging.Log;
@@ -18,15 +19,11 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataAccessException;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.text.DecimalFormat;
-import java.time.LocalDate;
-import java.time.ZoneId;
 import java.util.*;
 
 
@@ -35,8 +32,15 @@ import java.util.*;
 public class AfiliadoRestController {
 
     protected static final Log LOG = LogFactory.getLog(AfiliadoRestController.class);
+    private final static String NOMBRE_ARCHIVO = "CARGA_MASIVA_";
 
     private static DecimalFormat decimalFormat = new DecimalFormat("#.##");
+
+    @Value("${masBienestar.servicio.basico}")
+    private Long mBBasico;
+
+    @Value("${masBienestar.servicio.ampliado}")
+    private Long mBAmpliado;
 
     @Value("${app.clave}")
     private String clave;
@@ -58,6 +62,9 @@ public class AfiliadoRestController {
 
     @Autowired
     private CalcularFecha calcularFecha;
+
+    @Autowired
+    private GeneraArchivoLog generaArchivoLog;
 
     @GetMapping("/afiliados")
     public ResponseEntity<?> getAllAfiliados() {
@@ -153,9 +160,14 @@ public class AfiliadoRestController {
         Afiliado afiliado = new Afiliado();
         LinkedHashMap<String, Object> response = new LinkedHashMap<String, Object>();
 
+        List<String> log = new ArrayList<>();
+        Integer numRegistros = 0;
+
         try {
             AfiliadoJsonResponse afiliadoJsonResponse = new AfiliadoJsonResponse();
             for (AfiliadoRequest afiliadoRequest : afiliadoJsonRequestList.getAfiliado()) {
+
+                numRegistros++;
 
                 AfiliadoResponse afiliadoResponse = new AfiliadoResponse();
                 List<AfiliadoResponse> listaBeneficiarios = new ArrayList<>();
@@ -202,8 +214,18 @@ public class AfiliadoRestController {
 
                 afiliadoJsonResponse.getAfiliado().add(afiliadoResponse);
 
-
+                if(afiliado.getServicio().getId().equals(mBBasico) ||
+                        afiliado.getServicio().getId().equals(mBAmpliado)){
+                    log.add("Se ha registrado el afiliado: " +
+                            afiliado.getNombre() + " " +
+                            afiliado.getApellidoPaterno() + " " +
+                            afiliado.getApellidoMaterno() +
+                            " con RFC: " + afiliado.getRfc() + "\n");
+                }
             }
+
+            generaArchivoLog.generarArchivo(NOMBRE_ARCHIVO + "_MAS_BIENESTAR",
+                    numRegistros, log);
 
             response.put("afiliados", afiliadoJsonResponse);
             response.put("estatus", "OK");
@@ -211,6 +233,12 @@ public class AfiliadoRestController {
             response.put("mensaje", "Se han insertado correctamente los registros");
 
         } catch (AfiliadoException e) {
+
+            if(log.size() > 0){
+                generaArchivoLog.generarArchivo(NOMBRE_ARCHIVO + "_MAS_BIENESTAR",
+                        numRegistros, log);
+            }
+
             LOG.error("Error en el proceso de creación", e);
             response.put("estatus", "ERR");
             response.put("code", e.getCode());
@@ -218,6 +246,12 @@ public class AfiliadoRestController {
 
             return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         } catch (NullPointerException npe) {
+
+            if(log.size() > 0){
+                generaArchivoLog.generarArchivo(NOMBRE_ARCHIVO + "_MAS_BIENESTAR",
+                        numRegistros, log);
+            }
+
             LOG.error("Error en el proceso de creación", npe);
             response.put("estatus", "ERR");
             response.put("code", HttpStatus.INTERNAL_SERVER_ERROR);
