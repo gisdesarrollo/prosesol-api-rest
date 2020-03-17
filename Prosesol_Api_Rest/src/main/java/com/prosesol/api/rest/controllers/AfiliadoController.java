@@ -91,9 +91,7 @@ public class AfiliadoController {
 
         String mensajeFlash = null;
         Date date = new Date();
-
         Double saldoAcumulado = 0.0;
-
         Integer corte = 0;
         String periodo = "MENSUAL";
 

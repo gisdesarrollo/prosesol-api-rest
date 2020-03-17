@@ -10,8 +10,6 @@ import mx.openpay.client.core.OpenpayAPI;
 import mx.openpay.client.core.requests.transactions.CreateBankChargeParams;
 import mx.openpay.client.core.requests.transactions.CreateCardChargeParams;
 import mx.openpay.client.core.requests.transactions.CreateStoreChargeParams;
-import mx.openpay.client.enums.PlanRepeatUnit;
-import mx.openpay.client.enums.PlanStatusAfterRetry;
 import mx.openpay.client.exceptions.OpenpayServiceException;
 import mx.openpay.client.exceptions.ServiceUnavailableException;
 import org.slf4j.Logger;
@@ -174,12 +172,6 @@ public class PagoController {
                             "se le puede hacer el cargo, póngase en contacto a contacto@prosesol.org para dudas o aclaraciones");
                     return "redirect:/pagos/tarjeta/buscar";
                 }
-//                } else if (afiliado.getSaldoCorte().equals(0.0) || afiliado.getSaldoCorte() < 0.0) {
-//                    LOG.info("El afiliado va al corriente de sus pagos");
-//                    redirect.addFlashAttribute("info", "Usted va al corriente con su pago, " +
-//                            "no es necesario que realice su pago");
-//                    return "redirect:/pagos/tarjeta/buscar";
-//                }
                 else {
                     model.addAttribute("afiliado", afiliado);
                 }
@@ -554,8 +546,7 @@ public class PagoController {
                     .cardId(tokenId)
                     .amount(amount)
                     .description("Cargo a nombre de: " + afiliado.getNombre());
-//                    .deviceSessionId(deviceSessionId)
-//                    .customer(customer);
+
 
             @SuppressWarnings("deprecation")
             Charge charge = apiOpenpay.charges().create(customer.getId(), creditCardcharge);

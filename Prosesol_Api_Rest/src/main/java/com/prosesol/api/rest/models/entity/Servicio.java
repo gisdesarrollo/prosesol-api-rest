@@ -175,19 +175,5 @@ public class Servicio implements Serializable {
 		this.tipoPrivacidad = tipoPrivacidad;
 	}
 
-/*	@Override
-	public String toString() {
-
-		StringBuffer buffer = new StringBuffer();
-
-		buffer.append("Nombre: [").append(nombre).append("]").append("Nota: [").append(nota).append("]")
-		.append("Inscripción Titular: [").append(inscripcionTitular).append("]").append("Costo Titular: [")
-		.append(costoTitular).append("]").append("Inscripción Beneficiario: [").append(inscripcionBeneficiario)
-		.append("]").append("Costo Beneficiario: [").append(costoBeneficiario).append("]")
-		.append("Tipo Privacidad: [").append(tipoPrivacidad).append("]"); 
-
-		return buffer.toString();
-
-	}*/
 
 }

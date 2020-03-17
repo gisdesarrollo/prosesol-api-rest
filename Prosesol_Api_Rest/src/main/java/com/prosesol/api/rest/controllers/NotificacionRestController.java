@@ -1,7 +1,6 @@
 package com.prosesol.api.rest.controllers;
 
 import com.prosesol.api.rest.models.entity.Afiliado;
-import com.prosesol.api.rest.models.entity.Pago;
 import com.prosesol.api.rest.models.entity.Webhook;
 import com.prosesol.api.rest.services.IAfiliadoService;
 import com.prosesol.api.rest.services.IPagoService;

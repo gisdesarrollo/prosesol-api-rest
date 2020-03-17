@@ -57,16 +57,6 @@ public class LogAR implements Serializable {
         this.isConciliacion = isConciliacion;
     }
 
-
-
-/* public LogCM(String nombre, Date fecha, Integer numeroRegistros, byte[] archivo, boolean isVigor) {
-        this.nombre = nombre;
-        this.fecha = fecha;
-        this.numeroRegistros = numeroRegistros;
-        this.archivo = archivo;
-        this.isVigor = isVigor;
-    }*/
-
     public Long getId() {
         return id;
     }

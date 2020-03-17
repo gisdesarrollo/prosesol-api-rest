@@ -4,7 +4,6 @@ import com.prosesol.api.rest.models.dao.IAfiliadoDao;
 import com.prosesol.api.rest.models.entity.Afiliado;
 import com.prosesol.api.rest.repository.BeneficiarioRepository;
 import com.prosesol.api.rest.utils.Estados;
-import com.prosesol.api.rest.utils.GenerarClave;
 import com.prosesol.api.rest.utils.Paises;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

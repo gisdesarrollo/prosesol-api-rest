@@ -1,5 +1,7 @@
 package com.prosesol.api.rest.controllers;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.ResourceUtils;
@@ -15,6 +17,8 @@ import java.io.FileInputStream;
 @Controller
 @RequestMapping("/obtener")
 public class AvisoTerminoController {
+
+    protected static final Log logger = LogFactory.getLog(AvisoTerminoController.class);
 
     @Value("${archivo.aviso}")
     private String avisoPrivacidad;
@@ -44,7 +48,7 @@ public class AvisoTerminoController {
                 bufferedOutputStream.flush();
                 bufferedInputStream.close();
             }else{
-                System.out.println("Archivo no encontrado");
+                logger.error("Archivo no encontrado");
             }
 
         }catch(Exception e){
@@ -74,7 +78,7 @@ public class AvisoTerminoController {
                 bufferedOutputStream.flush();
                 bufferedInputStream.close();
             }else{
-                System.out.println("Archivo no encontrado");
+                logger.error("Archivo no encontrado");
             }
 
         }catch(Exception e){

@@ -24,9 +24,7 @@ public class ErrorPagesHtml {
         model.addAttribute("errorCode", httpErrorCode);
         model.addAttribute("error","Http Error Code: "+httpErrorCode+" "+httpErrorMessage);
         model.addAttribute("message", ex.getMessage());
-       
-  
-      
+     
         return "error/errorPage";
     }
 }
