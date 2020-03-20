@@ -16,10 +16,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -82,7 +79,8 @@ public class AfiliadoController {
 
         Servicio servicio = servicioService.findById(id);
         Afiliado afiliado = new Afiliado();
-        afiliado.setServicio(servicio);      
+
+        afiliado.setServicio(servicio);
         if (servicio == null) {
 
             redirect.addFlashAttribute("error", "Debes seleccionar un servicio");
@@ -90,29 +88,28 @@ public class AfiliadoController {
         }
         urlP=null;
         urlA=null;
-        int idServicio=afiliado.getServicio().getId().intValue();  
-		switch (idServicio) {
+
+		switch (id.intValue()) {
 		case 64:
-			model.addAttribute("urlProsesol", urlProsesol);
+            case 65:
+                model.addAttribute("urlProsesol", urlProsesol);
 			urlP=urlProsesol;
 			break;
-		case 65:
-			model.addAttribute("urlProsesol", urlProsesol);
-			urlP=urlProsesol;
-			break;
-		default:
+            default:
 			model.addAttribute("urlAssismex", urlAssismex);
 			urlA=urlAssismex;
 		}
 
         model.addAttribute("afiliado", afiliado);
-        model.addAttribute("servicio", afiliado.getServicio());
+        model.addAttribute("servicio", servicio);
 
         return "afiliados/crear";
     }
 
     @RequestMapping(value = "/crear", method = RequestMethod.POST)
-    public String guardar(Afiliado afiliado, RedirectAttributes redirect, SessionStatus status) {
+    public String guardar(Afiliado afiliado,
+                          RedirectAttributes redirect,
+                          SessionStatus status) {
 
         String mensajeFlash = null;
         Date date = new Date();
@@ -198,7 +195,8 @@ public class AfiliadoController {
     }
 
     @RequestMapping(value = "/bienvenido/{id}")
-    public String mostrar(@PathVariable("id") Long id, Model model, RedirectAttributes redirect) {
+    public String mostrar(@PathVariable("id") Long id,
+                          Model model, RedirectAttributes redirect) {
     	
         try {
             Afiliado afiliado = afiliadoService.findById(id);

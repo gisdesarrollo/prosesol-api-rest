@@ -10,7 +10,7 @@ import org.springframework.data.repository.query.Param;
  */
 public interface IPeriodicidadDao extends CrudRepository<Periodicidad, Long> {
 
-    @Query("select p from Periodicidad p where p.periodo like :periodo")
+    @Query("select p from Periodicidad p where p.nombre like :periodo")
     public Periodicidad getPeriodicidadByNombrePeriodo(@Param("periodo") String periodo);
 
 }
