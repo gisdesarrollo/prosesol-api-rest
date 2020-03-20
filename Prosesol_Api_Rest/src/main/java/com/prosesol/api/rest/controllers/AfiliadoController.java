@@ -36,7 +36,13 @@ import java.util.List;
 public class AfiliadoController {
 
     protected static final Log logger = LogFactory.getLog(AfiliadoController.class);
-
+    
+    @Value("${url.img.prosesol}")
+    private String urlProsesol;
+    
+    @Value("${url.img.assismex}")
+    private String urlAssismex;
+    
     @Value("${app.clave}")
     private String clave;
 
@@ -57,6 +63,10 @@ public class AfiliadoController {
 
     @Autowired
     private IPeriodicidadService periodicidadService;
+    
+    private String urlP;
+    
+    private String urlA;
 
     @RequestMapping(value = "/servicio")
     public String seleccionarServicio(Model model) {
@@ -72,13 +82,28 @@ public class AfiliadoController {
 
         Servicio servicio = servicioService.findById(id);
         Afiliado afiliado = new Afiliado();
-        afiliado.setServicio(servicio);
-
+        afiliado.setServicio(servicio);      
         if (servicio == null) {
 
             redirect.addFlashAttribute("error", "Debes seleccionar un servicio");
             return "redirect:/afiliados/servicio";
         }
+        urlP=null;
+        urlA=null;
+        int idServicio=afiliado.getServicio().getId().intValue();  
+		switch (idServicio) {
+		case 64:
+			model.addAttribute("urlProsesol", urlProsesol);
+			urlP=urlProsesol;
+			break;
+		case 65:
+			model.addAttribute("urlProsesol", urlProsesol);
+			urlP=urlProsesol;
+			break;
+		default:
+			model.addAttribute("urlAssismex", urlAssismex);
+			urlA=urlAssismex;
+		}
 
         model.addAttribute("afiliado", afiliado);
         model.addAttribute("servicio", afiliado.getServicio());
@@ -174,11 +199,11 @@ public class AfiliadoController {
 
     @RequestMapping(value = "/bienvenido/{id}")
     public String mostrar(@PathVariable("id") Long id, Model model, RedirectAttributes redirect) {
-
+    	
         try {
             Afiliado afiliado = afiliadoService.findById(id);
             Servicio servicio = servicioService.findById(afiliado.getServicio().getId());
-
+            
             Double saldoAcumulado = 0.0;
             List<Afiliado> beneficiarios = afiliadoService.getBeneficiarioByIdByIsBeneficiario(id);
             if (beneficiarios != null) {
@@ -188,7 +213,15 @@ public class AfiliadoController {
                 model.addAttribute("beneficiarios", beneficiarios);
 
             }
-
+            if(urlP!=null) {
+            	 model.addAttribute("urlProsesol", urlP);
+            	 
+            }
+            if(urlA!=null){
+            	 model.addAttribute("urlAssismex", urlA);
+            	 
+            }
+           
             model.addAttribute("id", id);
             model.addAttribute("afiliado", afiliado);
 

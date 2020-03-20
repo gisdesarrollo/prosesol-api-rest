@@ -28,7 +28,13 @@
 <nav class="navbar navbar-light static-top">
 	<div class="container">
 		<div class="col-md-8" style="position:relative; bottom:0px; right:13px;">
-			<img src="https://prosesol.org/wp-content/uploads/2019/06/logo_prosesol-1.png" alt="Prosesol.org">
+			<div th:if="${urlProsesol}!=null">
+        	 <img th:src="@{${urlProsesol}}" alt="Prosesol.org">
+        </div>
+        <div th:if="${urlAssismex}!=null">
+        	 <img th:src="@{${urlAssismex}}" alt="Prosesol.org" style="width:304px;height:70px;background-color:#2271b3;" >
+        </div>
+			
 		</div>
 	</div>
 </nav>
