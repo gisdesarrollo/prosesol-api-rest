@@ -32,11 +32,11 @@
 <nav class="navbar navbar-light static-top">
     <div class="container">
         <div class="col-md-8" style="position:relative; bottom:0px; right:13px;">
-        <div th:if="${urlProsesol}!=null">
-        	 <img th:src="@{${urlProsesol}}" alt="Prosesol.org">
+        <div id="hostP" style="display:none">
+           	<img src="https://prosesol.org/wp-content/uploads/2019/06/logo_prosesol-1.png" alt="Prosesol.org">
         </div>
-        <div th:if="${urlAssismex}!=null">
-        	 <img th:src="@{${urlAssismex}}" alt="Prosesol.org" style="width:304px;height:70px;background-color:#2271b3;" >
+        <div id="hostA" style="display:none">
+        	<img src="https://assismex.com/images/logo-assismex-white.svg" alt="Prosesol.org" style="width:304px;height:70px;background-color:#2271b3;">
         </div>
            
             
@@ -312,6 +312,7 @@
 <script th:src="@{/js/rfc.js}"></script>
 <script th:src="@{/js/datepicker.js}"></script>
 <script th:src="@{/js/datepicker.es-ES.js}"></script>
+<script th:src="@{/js/hostUrl.js}"></script>
 </body>
 
 </html>

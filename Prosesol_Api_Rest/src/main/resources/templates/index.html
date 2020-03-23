@@ -17,6 +17,7 @@
   <link th:href="@{/css/cssIndex/landing-page.min.css}" rel="stylesheet">
 
   <!-- Bootstrap core JavaScript -->
+   <script th:src="@{/js/hostUrl.js}"></script>
   <script th:src="@{/js/jsIndex/jquery.min.js}"></script>
   <script th:src="@{/js/jsIndex/bootstrap.bundle.min.js}"></script>
 
@@ -26,7 +27,12 @@
 <nav class="navbar navbar-light bg-light static-top">
   <div class="container">
     <div class="col-md-8" style="position:relative; bottom:0px; right:13px;">
-      <img src="https://prosesol.org/wp-content/uploads/2019/06/logo_prosesol-1.png" alt="Prosesol.org">
+    	<div id="hostP" style="display:none">
+           	<img src="https://prosesol.org/wp-content/uploads/2019/06/logo_prosesol-1.png" alt="Prosesol.org">
+        </div>
+        <div id="hostA" style="display:none">
+        	<img src="https://assismex.com/images/logo-assismex-white.svg" alt="Prosesol.org" style="width:304px;height:70px;background-color:#2271b3;">
+        </div>
       <br>
       <a th:href="@{/obtener/aviso}">Aviso de privacidad /</a>
       <a th:href="@{/obtener/termino}">Términos y condiciones</a>
@@ -40,7 +46,8 @@
   <div class="container">
     <div class="row">
       <div class="col-xl-9 mx-auto">
-        <h1 class="mb-5" style="color:black;">¡Bienvenido a la plataforma de pagos de prosesol!</h1>
+        <h1 class="mb-5" style="color:black;">¡Bienvenido a la plataforma de pagos!</h1>
+        <p id="host"></p>
       </div>
       <div class="col-md-10 col-lg-8 col-xl-7 mx-auto">
         <form>

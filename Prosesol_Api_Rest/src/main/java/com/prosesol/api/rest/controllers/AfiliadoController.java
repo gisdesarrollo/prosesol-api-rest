@@ -34,11 +34,6 @@ public class AfiliadoController {
 
     protected static final Log logger = LogFactory.getLog(AfiliadoController.class);
     
-    @Value("${url.img.prosesol}")
-    private String urlProsesol;
-    
-    @Value("${url.img.assismex}")
-    private String urlAssismex;
     
     @Value("${app.clave}")
     private String clave;
@@ -61,9 +56,6 @@ public class AfiliadoController {
     @Autowired
     private IPeriodicidadService periodicidadService;
     
-    private String urlP;
-    
-    private String urlA;
 
     @RequestMapping(value = "/servicio")
     public String seleccionarServicio(Model model) {
@@ -86,20 +78,7 @@ public class AfiliadoController {
             redirect.addFlashAttribute("error", "Debes seleccionar un servicio");
             return "redirect:/afiliados/servicio";
         }
-        urlP=null;
-        urlA=null;
-
-		switch (id.intValue()) {
-		case 64:
-            case 65:
-                model.addAttribute("urlProsesol", urlProsesol);
-			urlP=urlProsesol;
-			break;
-            default:
-			model.addAttribute("urlAssismex", urlAssismex);
-			urlA=urlAssismex;
-		}
-
+        
         model.addAttribute("afiliado", afiliado);
         model.addAttribute("servicio", servicio);
 
@@ -210,14 +189,6 @@ public class AfiliadoController {
                 model.addAttribute("saldoAcumulado", saldoAcumulado);
                 model.addAttribute("beneficiarios", beneficiarios);
 
-            }
-            if(urlP!=null) {
-            	 model.addAttribute("urlProsesol", urlP);
-            	 
-            }
-            if(urlA!=null){
-            	 model.addAttribute("urlAssismex", urlA);
-            	 
             }
            
             model.addAttribute("id", id);
