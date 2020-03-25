@@ -2,12 +2,12 @@ window.onload = function() {
 	var host = location.host;
 	var hostProsesol = "www.api.prosesol.org";
 	var hostAssismex = "www.api.assismex.org";
-	//var hostLocal = "localhost:8080";
+	var hostLocal = "localhost:8080";
 	
 	if (host == hostProsesol) {
 		document.getElementById('hostP').style.display = 'block';
 	} 
-	if (host == hostAssismex) {
+	if (host == hostLocal) {
 		document.getElementById('hostA').style.display = 'block';
 	} 
 }
