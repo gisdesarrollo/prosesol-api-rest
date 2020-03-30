@@ -60,9 +60,9 @@ public class AvisoTerminoController {
 
         try {
 
-            if(url.equals(hostnameProsesol)){
+            if(url.equals(hostnameProsesol.concat("/obtener/aviso"))){
                 getArchivoPDF(response, avisoPrivacidadProsesol);
-            }else if(url.equals(hostnameAssismex)){
+            }else if(url.equals(hostnameAssismex.concat("/obtener/aviso"))){
                 getArchivoPDF(response, avisoPrivacidadAssismex);
             }else{
                 LOG.error(errorDescargaArchivo);
@@ -84,9 +84,9 @@ public class AvisoTerminoController {
 
         try {
 
-            if(url.equals(hostnameProsesol)){
+            if(url.equals(hostnameProsesol.concat("/obtener/termino"))){
                 getArchivoPDF(response, terminosCondicionesProsesol);
-            }else if(url.equals(hostnameAssismex)){
+            }else if(url.equals(hostnameAssismex.concat("/obtener/termino"))){
                 getArchivoPDF(response, terminosCondicionesAssismex);
             }else {
                 LOG.error(errorDescargaArchivo);
