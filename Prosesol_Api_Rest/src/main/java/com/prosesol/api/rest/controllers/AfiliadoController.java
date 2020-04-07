@@ -1,9 +1,11 @@
 package com.prosesol.api.rest.controllers;
 
 import com.prosesol.api.rest.models.entity.Afiliado;
+import com.prosesol.api.rest.models.entity.Candidato;
 import com.prosesol.api.rest.models.entity.Periodicidad;
 import com.prosesol.api.rest.models.entity.Servicio;
 import com.prosesol.api.rest.services.IAfiliadoService;
+import com.prosesol.api.rest.services.ICandidatoService;
 import com.prosesol.api.rest.services.IPeriodicidadService;
 import com.prosesol.api.rest.services.IServicioService;
 import com.prosesol.api.rest.utils.CalcularFecha;
@@ -56,7 +58,9 @@ public class AfiliadoController {
     @Autowired
     private IPeriodicidadService periodicidadService;
     
-
+    @Autowired
+    private ICandidatoService candidatoService;
+    
     @RequestMapping(value = "/servicio")
     public String seleccionarServicio(Model model) {
         List<Servicio> servicios = servicioService.findAll();
@@ -70,8 +74,8 @@ public class AfiliadoController {
                                 RedirectAttributes redirect) {
 
         Servicio servicio = servicioService.findById(id);
-        Afiliado afiliado = new Afiliado();
-
+       // Afiliado afiliado = new Afiliado();
+        Candidato afiliado = new Candidato();
         afiliado.setServicio(servicio);
         if (servicio == null) {
 
@@ -86,7 +90,7 @@ public class AfiliadoController {
     }
 
     @RequestMapping(value = "/crear", method = RequestMethod.POST)
-    public String guardar(Afiliado afiliado,
+    public String guardar(Candidato candidato,
                           RedirectAttributes redirect,
                           SessionStatus status) {
 
@@ -95,82 +99,77 @@ public class AfiliadoController {
         Double saldoAcumulado = 0.0;
         Integer corte = 0;
         String periodo = "MENSUAL";
-
         try {
 
-            Afiliado buscarAfiliadoExistente = afiliadoService.findByRfc(afiliado.getRfc());
-            Servicio servicio = servicioService.findById(afiliado.getServicio().getId());
+            Afiliado buscarAfiliadoExistente = afiliadoService.findByRfc(candidato.getRfc());
+        	Candidato buscarCandidatoExistente=candidatoService.findByRfc(candidato.getRfc());
+        	Servicio servicio = servicioService.findById(candidato.getServicio().getId());
 
             Periodicidad periodicidad = periodicidadService.getPeriodicidadByNombrePeriodo(periodo);
 
-            if (buscarAfiliadoExistente != null) {
+            if (buscarAfiliadoExistente != null || buscarCandidatoExistente!=null) {
                 logger.error("Error afiliado ya se encuentra registrado");
                 redirect.addFlashAttribute("error", "El Afiliado ya se encuentra registrado");
 
-                return "redirect:/afiliados/servicio/" + afiliado.getServicio().getId();
+                return "redirect:/afiliados/servicio/" + candidato.getServicio().getId();
             }
 
             int currentYear = Calendar.getInstance().get(Calendar.YEAR);
-            LocalDate fechaNacimiento = afiliado.getFechaNacimiento().toInstant()
+            LocalDate fechaNacimiento = candidato.getFechaNacimiento().toInstant()
                     .atZone(ZoneId.systemDefault()).toLocalDate();
             int fNacimiento = fechaNacimiento.getYear();
 
             int rangoEdad = currentYear - fNacimiento;
             if (rangoEdad >= 55 && servicio.getId() == idTotal) {
                 redirect.addFlashAttribute("error", "A partir de los 55 años, no puede contratar este servicio");
-                return "redirect:/afiliados/servicio/" + afiliado.getServicio().getId();
+                return "redirect:/afiliados/servicio/" + candidato.getServicio().getId();
             }
-
-            if (afiliado.getId() != null) {
-
-                if (afiliado.getIsBeneficiario().equals(true)) {
-                    afiliado.setIsBeneficiario(true);
-                } else {
-                    afiliado.setIsBeneficiario(false);
-                }
-
-                mensajeFlash = "Registro editado con éxito";
-
+            
+            
+            if (candidato.getId() != null) {
+				
             } else {
                 saldoAcumulado = servicio.getCostoTitular() + servicio.getInscripcionTitular();
-                afiliado.setIsInscripcion(true);
-                afiliado.setSaldoAcumulado(saldoAcumulado);
-                afiliado.setSaldoCorte(saldoAcumulado);
-                afiliado.setIsBeneficiario(false);
-                afiliado.setFechaAlta(date);
-                afiliado.setClave(generarClave.getClaveAfiliado(clave));
-
+                candidato.setIsInscripcion(true);
+                
+                candidato.setSaldoAcumulado(saldoAcumulado);
+                candidato.setSaldoCorte(saldoAcumulado);
+                candidato.setIsBeneficiario(false);
+                candidato.setFechaAlta(date);
+                candidato.setClave(generarClave.getClaveAfiliado(clave));
+                
                 DateFormat formatoFecha = new SimpleDateFormat("dd");
-                String dia = formatoFecha.format(afiliado.getFechaAlta());
+                String dia = formatoFecha.format(candidato.getFechaAlta());
                 corte = Integer.parseInt(dia);
                 Date fechaCorte = calcularFechas.calcularFechas(periodo, corte);
-                afiliado.setFechaCorte(fechaCorte);
-                afiliado.setPeriodicidad(periodicidad);
+                candidato.setFechaCorte(fechaCorte);
+                candidato.setPeriodicidad(periodicidad);
+                
                 mensajeFlash = "Registro creado con éxito";
+                 
             }
-            afiliado.setEstatus(3);
+            candidato.setEstatus(3);
             logger.info(mensajeFlash);
-            afiliadoService.save(afiliado);
-
+            candidatoService.save(candidato);	
             status.setComplete();
-
+            
         } catch (DataIntegrityViolationException e) {
             logger.error("Error al momento de ejecutar el proceso: " + e);
             redirect.addFlashAttribute("error", "El RFC ya existe en la base de datos ");
 
-            return "redirect:/afiliados/servicio/" + afiliado.getServicio().getId();
+            return "redirect:/afiliados/servicio/" + candidato.getServicio().getId();
         } catch (Exception e) {
             logger.error("Error al momento de ejecutar el proceso: " + e);
 
             redirect.addFlashAttribute("error", "Ocurrió un error al momento de insertar el Afiliado");
 
-            return "redirect:/afiliados/servicio/" + afiliado.getServicio().getId();
+            return "redirect:/afiliados/servicio/" + candidato.getServicio().getId();
         }
-
-        mensajeFlash = "id del afiliado creado es: " + afiliado.getId();
+      
+        mensajeFlash = "id del afiliado creado es: " + candidato.getId();
         logger.info(mensajeFlash);
         redirect.addFlashAttribute("success", "Afiliado creado con éxito");
-        return "redirect:/afiliados/bienvenido/" + afiliado.getId();
+        return "redirect:/afiliados/bienvenido/" +candidato.getId() ;
     }
 
     @RequestMapping(value = "/bienvenido/{id}")
@@ -178,21 +177,10 @@ public class AfiliadoController {
                           Model model, RedirectAttributes redirect) {
     	
         try {
-            Afiliado afiliado = afiliadoService.findById(id);
-            Servicio servicio = servicioService.findById(afiliado.getServicio().getId());
-            
-            Double saldoAcumulado = 0.0;
-            List<Afiliado> beneficiarios = afiliadoService.getBeneficiarioByIdByIsBeneficiario(id);
-            if (beneficiarios != null) {
-                saldoAcumulado = servicio.getCostoBeneficiario() + servicio.getInscripcionBeneficiario();
-
-                model.addAttribute("saldoAcumulado", saldoAcumulado);
-                model.addAttribute("beneficiarios", beneficiarios);
-
-            }
+        	Candidato candidato=candidatoService.finById(id);
            
             model.addAttribute("id", id);
-            model.addAttribute("afiliado", afiliado);
+            model.addAttribute("afiliado", candidato);
 
         } catch (Exception e) {
             e.printStackTrace();

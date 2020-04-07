@@ -21,4 +21,11 @@ public interface IPagoDao extends CrudRepository<Pago, Long>{
 			"and p.id_transaccion like %?1%")
 	public String getRfcByIdTransaccion(@Param("idTransaccion")String idTransaccion);
 	
+	@Query(nativeQuery = true, value = "select c.rfc from candidatos c, rel_candidatos_pagos rcp, " +
+			"pagos p where c.id_candidato = rcp.id_candidato and rcp.id_pago = p.id_pago " +
+			"and p.id_transaccion like %?1%")
+	public String getRfcCandidatoByIdTransaccion(@Param("idTransaccion")String idTransaccion);
+	
+	@Query(nativeQuery = true, value = "select p.* from pagos p where p.id_transaccion like %?1%")
+	public Pago getPagosByIdTransaccion(@Param("idTransaccion")String idTransaccion);
 }

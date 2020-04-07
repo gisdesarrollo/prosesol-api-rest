@@ -139,29 +139,6 @@
 							   class="form-control form-control-line" disabled>
 					</div>
 				</div>
-				<div class="table-responsive" th:if="${!beneficiarios.isEmpty()}">
-					<h5 class="card-title">Beneficiarios</h5>
-					<div class="clearfix"></div>
-					<hr>
-					<table class="table">
-						<thead>
-						<tr>
-							<th>Nombre</th>
-							<th>Apellido Paterno</th>
-							<th>Apellido Materno</th>
-							<th>RFC</th>
-						</tr>
-						</thead>
-						<tbody>
-						<tr th:each="afiliado : ${beneficiarios}">
-							<td th:text="${afiliado.nombre}">Nombre</td>
-							<td th:text="${afiliado.apellidoPaterno}">Apellido Paterno</td>
-							<td th:text="${afiliado.apellidoMaterno}">Apellido Materno</td>
-							<td th:text="${afiliado.rfc}">RFC</td>
-						</tr>
-						</tbody>
-					</table>
-				</div>
 				<div class="form-group">
 					<div class="col-sm-12">
 						<a style="position:relative; right:30px;background:#3380a9;"

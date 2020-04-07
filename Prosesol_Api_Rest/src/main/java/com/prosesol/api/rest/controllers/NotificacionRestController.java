@@ -1,8 +1,12 @@
 package com.prosesol.api.rest.controllers;
 
 import com.prosesol.api.rest.models.entity.Afiliado;
+import com.prosesol.api.rest.models.entity.Candidato;
+import com.prosesol.api.rest.models.entity.Pago;
 import com.prosesol.api.rest.models.entity.Webhook;
+import com.prosesol.api.rest.repository.AfiliadoRepository;
 import com.prosesol.api.rest.services.IAfiliadoService;
+import com.prosesol.api.rest.services.ICandidatoService;
 import com.prosesol.api.rest.services.IPagoService;
 import com.prosesol.api.rest.services.IWebhookService;
 import org.apache.commons.io.IOUtils;
@@ -42,6 +46,12 @@ public class NotificacionRestController {
 
     @Autowired
     private IAfiliadoService afiliadoService;
+    
+    @Autowired
+    private ICandidatoService candidatoService;
+    
+    @Autowired
+	private AfiliadoRepository afiliadoRepository;
 
     @Value("${afiliado.servicio.total.id}")
     private Long idTotal;
@@ -77,10 +87,38 @@ public class NotificacionRestController {
                     pagoService.actualizarEstatusPagoByIdTransaccion(reference, status, idTransaccion);
                 }
 
-                // Obtener el rfc de la tabla de Pagos
-                String rfc = pagoService.getRfcByIdTransaccion(idTransaccion);
-                Afiliado afiliado = afiliadoService.findByRfc(rfc);
-
+                // Obtener el rfc candidato de la tabla de Pagos
+                String rfcC = pagoService.getRfcCandidatoByIdTransaccion(idTransaccion);
+                Pago pago= pagoService.getPagosByIdTransaccion(idTransaccion);
+                Candidato candidato = candidatoService.findByRfc(rfcC);
+                
+                if(candidato!=null) {
+                	 // Verificar si es pago de inscripción
+                	if(candidato.getIsInscripcion()) {
+                		 Double restaCostoInscripcion = new Double(0.0);
+                		// Se resta el saldo acumulado obteniendo la inscripción de su servicio
+                         Double saldoAcumulado = candidato.getSaldoAcumulado() -
+                                 candidato.getServicio().getInscripcionTitular();
+                         candidato.setSaldoAcumulado(saldoAcumulado);
+                         candidato.setIsInscripcion(false);
+                	}
+                	 // Actualizar saldo al corte a ceros
+                    candidato.setSaldoCorte(0.0);
+                    if (candidato.getEstatus() != 1 && candidato.getServicio().getId() != idTotal) {
+                        candidato.setEstatus(1);
+                        candidato.setFechaAfiliacion(new Date());
+                    }
+                    Afiliado datosA = datosAfiliado(candidato);
+                    afiliadoService.save(datosA);
+                    candidatoService.deleteRelCandidatoPagosById(candidato.getId());
+                    candidatoService.deleteById(candidato.getId());
+                    afiliadoRepository.insertRelAfiliadosPagos(datosA,pago.getId());
+                }else {
+                
+                // Obtener el rfc afiliado de la tabla de Pagos
+                String rfcA = pagoService.getRfcByIdTransaccion(idTransaccion);
+                Afiliado afiliado = afiliadoService.findByRfc(rfcA);
+                if(afiliado!=null) {	                
                 // Verificar si es pago de inscripción y también si tiene beneficiarios
                 if(afiliado.getIsInscripcion()){
                     // Se obtiene la lista de beneficiarios
@@ -123,7 +161,9 @@ public class NotificacionRestController {
                 }
 
                 afiliadoService.save(afiliado);
-
+             }
+            }
+               
             }
 
             response.put("status", "OK");
@@ -144,5 +184,53 @@ public class NotificacionRestController {
         }
 
         return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+    
+    /**
+     * Método para pasar datos de candidato a afiliado
+     *
+     * @param candidato
+     * @return
+     */  
+ public Afiliado datosAfiliado(Candidato candidato) {
+    	
+    	Afiliado afiliado=new Afiliado();
+    		afiliado.setClave(candidato.getClave());
+    		afiliado.setNombre(candidato.getNombre());
+    		afiliado.setApellidoPaterno(candidato.getApellidoPaterno());
+    		afiliado.setApellidoMaterno(candidato.getApellidoMaterno());
+    		afiliado.setFechaNacimiento(candidato.getFechaNacimiento());
+    		afiliado.setLugarNacimiento(candidato.getLugarNacimiento());
+    		afiliado.setEstadoCivil(candidato.getEstadoCivil());
+    		afiliado.setOcupacion(candidato.getOcupacion());
+    		afiliado.setSexo(candidato.getSexo());
+    		afiliado.setPais(candidato.getPais());
+    		afiliado.setCurp(candidato.getCurp());
+    		afiliado.setNss(candidato.getNss());
+    		afiliado.setRfc(candidato.getRfc());
+    		afiliado.setTelefonoFijo(candidato.getTelefonoFijo());
+    		afiliado.setTelefonoMovil(candidato.getTelefonoMovil());
+    		afiliado.setEmail(candidato.getEmail());
+    		afiliado.setDireccion(candidato.getDireccion());
+    		afiliado.setMunicipio(candidato.getMunicipio());
+    		afiliado.setCodigoPostal(candidato.getCodigoPostal());
+    		afiliado.setEntidadFederativa(candidato.getEntidadFederativa());
+    		afiliado.setInfonavit(candidato.getInfonavit());
+    		afiliado.setNumeroInfonavit(candidato.getNumeroInfonavit());
+    		afiliado.setFechaAlta(candidato.getFechaAlta());
+    		afiliado.setFechaAfiliacion(candidato.getFechaAfiliacion());
+    		afiliado.setFechaCorte(candidato.getFechaCorte());
+    		afiliado.setSaldoAcumulado(candidato.getSaldoAcumulado());
+    		afiliado.setSaldoCorte(candidato.getSaldoCorte());
+    		afiliado.setEstatus(candidato.getEstatus());
+    		afiliado.setInscripcion(candidato.getInscripcion());
+    		afiliado.setServicio(candidato.getServicio());
+    		afiliado.setComentarios(candidato.getComentarios());
+    		afiliado.setIsBeneficiario(candidato.getIsBeneficiario());
+    		afiliado.setIsInscripcion(candidato.getIsInscripcion());
+    		afiliado.setPeriodicidad(candidato.getPeriodicidad());
+    		afiliado.setCorte(candidato.getCorte());
+		return afiliado;
+    	
     }
 }

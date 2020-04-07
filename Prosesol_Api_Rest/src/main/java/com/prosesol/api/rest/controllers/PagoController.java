@@ -87,6 +87,9 @@ public class PagoController {
 
     @Autowired
     private IClienteService clienteService;
+    
+    @Autowired
+    private ICandidatoService candidatoService;
 
     @Autowired
     private AfiliadoRepository afiliadoRepository;
@@ -139,9 +142,11 @@ public class PagoController {
     public String obtenerAfiliadoByRfcTarjeta(@ModelAttribute(name = "rfc") String rfc, Model model,
                                               RedirectAttributes redirect) {
 
-        Afiliado afiliado = afiliadoService.findByRfc(rfc);
+    	Candidato candidato =candidatoService.findByRfc(rfc);
+    	Afiliado afiliado = afiliadoService.findByRfc(rfc);
         Cliente cliente = clienteService.getClienteByIdAfiliado(afiliado);
-
+        
+     
         if (rfc.length() < 13) {
 
             LOG.info("ERR: ", "El RFC no cumple con los campos necesarios");
@@ -154,8 +159,29 @@ public class PagoController {
                     "No puede realizar su pago ya que su servicio está domiciliado");
             return "redirect:/pagos/tarjeta/buscar";
         }
+        
+        if(candidato!=null) {
+        	if (candidato.getIsBeneficiario() == false) {
 
+                if (candidato.getSaldoCorte() == null) {
+                    LOG.info("El afiliado no cuenta con un saldo");
+                    redirect.addFlashAttribute("info", "Usted no cuenta con un saldo al cual " +
+                            "se le puede hacer el cargo, póngase en contacto a contacto@prosesol.org para dudas o aclaraciones");
+                    return "redirect:/pagos/tarjeta/buscar";
+                }
+                else {
+                    model.addAttribute("afiliado", candidato);
+                }
+            } else {
+                LOG.info("ERR: ", "El afiliado no es titular del servicio");
+                redirect.addFlashAttribute("error", "El afiliado no es titular del servicio");
+                return "redirect:tarjeta/buscar";
+            }
 
+        	 return "/pagosCandidato";
+        }else {
+      	  
+        
         if (afiliado == null) {
 
             LOG.info("ERR: ", "No existe el afiliado, proporcione otro RFC");
@@ -181,8 +207,9 @@ public class PagoController {
                 return "redirect:tarjeta/buscar";
             }
         }
-
         return "/pagos";
+    }
+       
 
     }
 
@@ -203,6 +230,7 @@ public class PagoController {
                                                HttpServletResponse servletResponse) {
 
         Afiliado afiliado = afiliadoService.findByRfc(rfc);
+        Candidato candidato =candidatoService.findByRfc(rfc);
         String reference = null;
         String idTransaccion = null;
 
@@ -216,6 +244,19 @@ public class PagoController {
             return "redirect:/pagos/tienda/buscar";
 
         }
+        
+        if(candidato!=null) {
+        	 if (candidato.getIsBeneficiario() == false) {
+                 if (candidato.getSaldoCorte().equals(0.0)) {
+                     LOG.info("El afiliado va al corriente de sus pagos");
+                     redirect.addFlashAttribute("info", "Usted va al corriente con su pago, " +
+                             "no es necesario que realice su pago");
+                     return "redirect:/pagos/tienda/buscar";
+                 } 
+        	 }
+        	 return "redirect:/pagos/tienda/"+rfc;
+        	
+        }else {
 
         if (afiliado == null) {
 
@@ -242,7 +283,7 @@ public class PagoController {
                 return "redirect:/pagos/tienda/buscar";
             }
         }
-
+        }
         try {
 
             OpenpayAPI openpayAPI = new OpenpayAPI(openpayURL, privateKey, merchantId);
@@ -340,6 +381,7 @@ public class PagoController {
                                              HttpServletResponse servletResponse) {
 
         Afiliado afiliado = afiliadoService.findByRfc(rfc);
+        Candidato candidato = candidatoService.findByRfc(rfc);
         String idTransaccion = null;
 
         Pago pago = new Pago();
@@ -352,6 +394,18 @@ public class PagoController {
             return "redirect:/pagos/banco/buscar";
 
         }
+         
+        if(candidato!=null) {
+        	if (candidato.getIsBeneficiario() == false) {
+                if (candidato.getSaldoCorte().equals(0.0)) {
+                    LOG.info("El afiliado va al corriente de sus pagos");
+                    redirect.addFlashAttribute("info", "Usted va al corriente con su pago, " +
+                            "no es necesario que realice su pago");
+                    return "redirect:/pagos/banco/buscar";
+                } 
+        	}
+        	 return "redirect:/pagos/banco/"+rfc;
+        }else {
 
         if (afiliado == null) {
 
@@ -376,7 +430,7 @@ public class PagoController {
                 return "redirect:/pagos/banco/buscar";
             }
         }
-
+        }
         try {
 
             OpenpayAPI openpayAPI = new OpenpayAPI(openpayURL, privateKey, merchantId);
@@ -759,5 +813,5 @@ public class PagoController {
 
         return true;
     }
-
+    
 }

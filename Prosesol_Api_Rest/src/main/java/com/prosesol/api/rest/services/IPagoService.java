@@ -1,9 +1,6 @@
 package com.prosesol.api.rest.services;
 
 import com.prosesol.api.rest.models.entity.Pago;
-import org.springframework.data.repository.query.Param;
-
-import java.util.List;
 
 public interface IPagoService {
 
@@ -13,6 +10,9 @@ public interface IPagoService {
 													 String idTransaccion);
 
 	public String getRfcByIdTransaccion(String idTransaccion);
-
+	
+	public String getRfcCandidatoByIdTransaccion(String idTransaccion);
+	
+	public Pago getPagosByIdTransaccion(String idTransaccion);
 
 }

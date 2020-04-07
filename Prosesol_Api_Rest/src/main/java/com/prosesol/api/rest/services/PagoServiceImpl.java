@@ -32,4 +32,16 @@ public class PagoServiceImpl implements IPagoService{
 		return pagoDao.getRfcByIdTransaccion(idTransaccion);
 	}
 
+
+	@Override
+	@Transactional
+	public String getRfcCandidatoByIdTransaccion(String idTransaccion) {
+		return pagoDao.getRfcCandidatoByIdTransaccion(idTransaccion);
+	}
+
+	@Override
+	public Pago getPagosByIdTransaccion(String idTransaccion) {
+		return pagoDao.getPagosByIdTransaccion(idTransaccion);
+	}
+
 }
