@@ -178,7 +178,7 @@ public class PagoController {
                 return "redirect:tarjeta/buscar";
             }
 
-        	 return "/pagosCandidato";
+        	
         }else {
       	  
         
@@ -207,9 +207,9 @@ public class PagoController {
                 return "redirect:tarjeta/buscar";
             }
         }
-        return "/pagos";
+        
     }
-       
+        return "/pagos";
 
     }
 
@@ -244,7 +244,7 @@ public class PagoController {
             return "redirect:/pagos/tienda/buscar";
 
         }
-        
+        try {
         if(candidato!=null) {
         	 if (candidato.getIsBeneficiario() == false) {
                  if (candidato.getSaldoCorte().equals(0.0)) {
@@ -254,7 +254,56 @@ public class PagoController {
                      return "redirect:/pagos/tienda/buscar";
                  } 
         	 }
-        	 return "redirect:/pagos/tienda/"+rfc;
+
+ 	            OpenpayAPI openpayAPI = new OpenpayAPI(openpayURL, privateKey, merchantId);
+ 	            BigDecimal amount = BigDecimal.valueOf(candidato.getSaldoCorte());
+
+ 	            customer.setName(candidato.getNombre());
+ 	            customer.setLastName(candidato.getApellidoPaterno() + ' '
+ 	                    + candidato.getApellidoMaterno());
+
+ 	            boolean isNotValid = isNullOrEmpty(candidato.getEmail());
+
+ 	            if (isNotValid) {
+ 	                customer.setEmail("mail@mail.com");
+ 	            } else {
+ 	                customer.setEmail(candidato.getEmail());
+ 	            }
+
+ 	            CreateStoreChargeParams createStoreChargeParams = new CreateStoreChargeParams()
+ 	                    .description("Cargo a Tienda")
+ 	                    .amount(amount)
+ 	                    .customer(customer);
+
+ 	            Charge charge = openpayAPI.charges().createCharge(createStoreChargeParams);
+
+ 	            String response = charge.toString().substring(charge.toString().indexOf("("),
+ 	                    charge.toString().lastIndexOf(")"));
+
+ 	            String responseValues[] = response.split(",");
+
+ 	            ArrayList<String> list = new ArrayList<String>(Arrays.asList(responseValues));
+
+ 	            for (String value : list) {
+ 	                LOG.info(value);
+ 	                if (value.contains("reference")) {
+ 	                    reference = value.substring(value.lastIndexOf("=") + 1);
+ 	                }
+ 	                if (value.contains("id=")) {
+ 	                    idTransaccion = value.substring(value.lastIndexOf("=") + 1);
+ 	                }
+ 	            }
+
+ 	            pago.setMonto(amount.doubleValue());
+ 	            pago.setFechaPago(new Date());
+ 	            pago.setReferenciaBancaria("000000000");
+ 	            pago.setTipoTransaccion("Referencia en tienda");
+ 	            pago.setEstatus("in_progress");
+ 	            pago.setIdTransaccion(idTransaccion);
+
+
+ 	            pagoService.save(pago);
+ 	            afiliadoRepository.insertRelCandidatoPagos(candidato, pago.getId());
         	
         }else {
 
@@ -265,8 +314,6 @@ public class PagoController {
             return "redirect:/pagos/tienda/buscar";
 
         } else {
-
-            System.out.println(afiliado.toString());
 
             if (afiliado.getIsBeneficiario() == false) {
                 if (afiliado.getSaldoCorte().equals(0.0)) {
@@ -282,9 +329,8 @@ public class PagoController {
                 redirect.addFlashAttribute("error", "El afiliado no es titular del servicio");
                 return "redirect:/pagos/tienda/buscar";
             }
-        }
-        }
-        try {
+        
+        
 
             OpenpayAPI openpayAPI = new OpenpayAPI(openpayURL, privateKey, merchantId);
             BigDecimal amount = BigDecimal.valueOf(afiliado.getSaldoCorte());
@@ -335,7 +381,8 @@ public class PagoController {
 
             pagoService.save(pago);
             afiliadoRepository.insertRelAfiliadosPagos(afiliado, pago.getId());
-
+        	}
+          }
         } catch (OpenpayServiceException | ServiceUnavailableException e) {
             String response = e.toString().substring(e.toString().indexOf("("), e.toString().lastIndexOf(")"));
             String responseValues[] = response.split(",");
@@ -355,7 +402,6 @@ public class PagoController {
             redirect.addFlashAttribute("error", descripcionError);
             return "redirect:/pagos/tienda/buscar";
         }
-
         servletResponse.setHeader("Location", openpayDashboardUrl + "/paynet-pdf/" + merchantId + "/"
                 + reference);
         servletResponse.setStatus(302);
@@ -382,6 +428,7 @@ public class PagoController {
 
         Afiliado afiliado = afiliadoService.findByRfc(rfc);
         Candidato candidato = candidatoService.findByRfc(rfc);
+        
         String idTransaccion = null;
 
         Pago pago = new Pago();
@@ -394,7 +441,7 @@ public class PagoController {
             return "redirect:/pagos/banco/buscar";
 
         }
-         
+        try {
         if(candidato!=null) {
         	if (candidato.getIsBeneficiario() == false) {
                 if (candidato.getSaldoCorte().equals(0.0)) {
@@ -404,7 +451,54 @@ public class PagoController {
                     return "redirect:/pagos/banco/buscar";
                 } 
         	}
-        	 return "redirect:/pagos/banco/"+rfc;
+        	
+
+ 	            OpenpayAPI openpayAPI = new OpenpayAPI(openpayURL, privateKey, merchantId);
+ 	            BigDecimal amount = BigDecimal.valueOf(candidato.getSaldoCorte());
+
+ 	            customer.setName(candidato.getNombre());
+ 	            customer.setLastName(candidato.getApellidoPaterno() + ' '
+ 	                    + candidato.getApellidoMaterno());
+
+ 	            boolean isNotValid = isNullOrEmpty(candidato.getEmail());
+
+ 	            if (isNotValid) {
+ 	                customer.setEmail("mail@mail.com");
+ 	            } else {
+ 	                customer.setEmail(candidato.getEmail());
+ 	            }
+
+ 	            CreateBankChargeParams createStoreChargeParams = new CreateBankChargeParams()
+ 	                    .description("Cargo con banco")
+ 	                    .amount(amount)
+ 	                    .customer(customer);
+
+ 	            Charge charge = openpayAPI.charges().createCharge(createStoreChargeParams);
+
+ 	            String response = charge.toString().substring(charge.toString().indexOf("("),
+ 	                    charge.toString().lastIndexOf(")"));
+
+ 	            String responseValues[] = response.split(",");
+
+ 	            ArrayList<String> list = new ArrayList<String>(Arrays.asList(responseValues));
+
+ 	            for (String value : list) {
+ 	                if (value.contains("id")) {
+ 	                    idTransaccion = value.substring(value.lastIndexOf("=") + 1);
+ 	                }
+ 	            }
+
+ 	            pago.setMonto(amount.doubleValue());
+ 	            pago.setFechaPago(new Date());
+ 	            pago.setReferenciaBancaria("000000000");
+ 	            pago.setTipoTransaccion("SPEI");
+ 	            pago.setEstatus("in_progress");
+ 	            pago.setIdTransaccion(idTransaccion);
+
+
+ 	            pagoService.save(pago);
+ 	            afiliadoRepository.insertRelCandidatoPagos(candidato, pago.getId());
+ 	        	
         }else {
 
         if (afiliado == null) {
@@ -429,10 +523,8 @@ public class PagoController {
                 redirect.addFlashAttribute("error", "El afiliado no es titular del servicio");
                 return "redirect:/pagos/banco/buscar";
             }
-        }
-        }
-        try {
-
+        
+        
             OpenpayAPI openpayAPI = new OpenpayAPI(openpayURL, privateKey, merchantId);
             BigDecimal amount = BigDecimal.valueOf(afiliado.getSaldoCorte());
 
@@ -479,6 +571,8 @@ public class PagoController {
             pagoService.save(pago);
             afiliadoRepository.insertRelAfiliadosPagos(afiliado, pago.getId());
 
+          }
+         }
         } catch (OpenpayServiceException | ServiceUnavailableException e) {
             String response = e.toString().substring(e.toString().indexOf("("), e.toString().lastIndexOf(")"));
             String responseValues[] = response.split(",");
@@ -499,7 +593,6 @@ public class PagoController {
             redirect.addFlashAttribute("error", descripcionError);
             return "redirect:/pagos/banco/buscar";
         }
-
         servletResponse.setHeader("Location", openpayDashboardUrl + "/spei-pdf/" + merchantId + "/"
                 + idTransaccion);
         servletResponse.setStatus(302);
@@ -526,15 +619,20 @@ public class PagoController {
                                        RedirectAttributes redirect, SessionStatus status, Model vista) {
 
         Afiliado afiliado = afiliadoService.findById(id);
+        Candidato candidato=candidatoService.finById(id);
+        if(candidato!=null) {
+        	afiliado=datosAfiliado(candidato);
+        }
+    
         Customer customer = new Customer();
-
+        Suscripcion sus = new Suscripcion();
         apiOpenpay = new OpenpayAPI(openpayURL, privateKey, merchantId);
 
         BigDecimal amount = BigDecimal.valueOf(montoPagar);
         amount = amount.setScale(2, BigDecimal.ROUND_HALF_EVEN);
 
         try {
-
+        	Cliente cliente = new Cliente(); 
             Pago pago = new Pago();
 
             customer.setName(afiliado.getNombre());
@@ -583,10 +681,12 @@ public class PagoController {
                             redirect.addFlashAttribute("error", "Error al momento de suscribir");
                             return "redirect:/pagos/tarjeta/buscar";
                         }else{ // Se crea la suscripcion y el cliente en la base de datos
-                            Suscripcion sus = new Suscripcion(plan, subscription.getId(), true);
+                            sus = new Suscripcion(plan, subscription.getId(), true);
                             suscripcionService.save(sus);
-                            Cliente cliente = new Cliente(sus, customer.getId(), true, afiliado);
-                            clienteService.save(cliente);
+                            if(candidato==null) {
+                            	cliente = new Cliente(sus, customer.getId(), true, afiliado);
+                                clienteService.save(cliente);
+                            }
                         }
                     }
                 }else{
@@ -610,6 +710,7 @@ public class PagoController {
                 // Se verifica si eel afiliado se ha inscrito por primera vez o es su segundo pago
                 if (afiliado.getIsInscripcion()) {
                     // Se obtiene la lista de beneficiarios
+                	if(candidato==null) {
                     List<Afiliado> beneficiarios = afiliadoService
                             .getBeneficiarioByIdByIsBeneficiario(afiliado.getId());
                     Double restaCostoInscripcion = new Double(0.0);
@@ -632,7 +733,8 @@ public class PagoController {
                         afiliado.setSaldoAcumulado(saldoAcumulado);
                         afiliado.setIsInscripcion(false);
 
-                    } else {
+                    } 
+                }else {
                         // Se resta el saldo acumulado obteniendo la inscripción de su servicio
                         Double saldoAcumulado = afiliado.getSaldoAcumulado() -
                                 afiliado.getServicio().getInscripcionTitular();
@@ -732,7 +834,14 @@ public class PagoController {
                 pagoService.save(pago);
                 afiliadoService.save(afiliado);
                 afiliadoRepository.insertRelAfiliadosPagos(afiliado, pago.getId());
-
+                if(suscripcion && candidato!=null) {
+            		cliente = new Cliente(sus, customer.getId(), true, afiliado);
+            		clienteService.save(cliente);
+            	}
+                if(candidato!=null) {
+            		candidatoService.deleteById(candidato.getId());
+            	}
+                
                 redirect.addFlashAttribute("success", "Su pago se ha realizado correctamente con el " +
                         "siguiente número de folio: " + charge.getAuthorization());
 
@@ -813,5 +922,54 @@ public class PagoController {
 
         return true;
     }
+    
+    /**
+     * Método para pasar datos del candidato a afiliado
+     *
+     * @param candidato
+     * @return
+     */  
+ public Afiliado datosAfiliado(Candidato candidato) {
+    	
+    	Afiliado afiliado=new Afiliado();
+    		afiliado.setClave(candidato.getClave());
+    		afiliado.setNombre(candidato.getNombre());
+    		afiliado.setApellidoPaterno(candidato.getApellidoPaterno());
+    		afiliado.setApellidoMaterno(candidato.getApellidoMaterno());
+    		afiliado.setFechaNacimiento(candidato.getFechaNacimiento());
+    		afiliado.setLugarNacimiento(candidato.getLugarNacimiento());
+    		afiliado.setEstadoCivil(candidato.getEstadoCivil());
+    		afiliado.setOcupacion(candidato.getOcupacion());
+    		afiliado.setSexo(candidato.getSexo());
+    		afiliado.setPais(candidato.getPais());
+    		afiliado.setCurp(candidato.getCurp());
+    		afiliado.setNss(candidato.getNss());
+    		afiliado.setRfc(candidato.getRfc());
+    		afiliado.setTelefonoFijo(candidato.getTelefonoFijo());
+    		afiliado.setTelefonoMovil(candidato.getTelefonoMovil());
+    		afiliado.setEmail(candidato.getEmail());
+    		afiliado.setDireccion(candidato.getDireccion());
+    		afiliado.setMunicipio(candidato.getMunicipio());
+    		afiliado.setCodigoPostal(candidato.getCodigoPostal());
+    		afiliado.setEntidadFederativa(candidato.getEntidadFederativa());
+    		afiliado.setInfonavit(candidato.getInfonavit());
+    		afiliado.setNumeroInfonavit(candidato.getNumeroInfonavit());
+    		afiliado.setFechaAlta(candidato.getFechaAlta());
+    		afiliado.setFechaAfiliacion(candidato.getFechaAfiliacion());
+    		afiliado.setFechaCorte(candidato.getFechaCorte());
+    		afiliado.setSaldoAcumulado(candidato.getSaldoAcumulado());
+    		afiliado.setSaldoCorte(candidato.getSaldoCorte());
+    		afiliado.setEstatus(candidato.getEstatus());
+    		afiliado.setInscripcion(candidato.getInscripcion());
+    		afiliado.setServicio(candidato.getServicio());
+    		afiliado.setComentarios(candidato.getComentarios());
+    		afiliado.setIsBeneficiario(candidato.getIsBeneficiario());
+    		afiliado.setIsInscripcion(candidato.getIsInscripcion());
+    		afiliado.setPeriodicidad(candidato.getPeriodicidad());
+    		afiliado.setCorte(candidato.getCorte());
+		return afiliado;
+    	
+    }
+
     
 }
