@@ -5,24 +5,80 @@ $(document).ready(function() {
 		autoHide : true
 
 	});
-
+	
 	$('#nombre').on('input', function(e) {
+		if (!/^[ A-ZÁÉÍÓÚÜÑ]*$/.test(this.value)) {
+				this.value = this.value.replace(/[^ A-ZÁÉÍÓÚÜÑ]+$/, "");
+			}
+		});
+		$('#apellidoPaterno').on('input', function(e) {
+			if (!/^[ A-ZÁÉÍÓÚÜÑ]*$/.test(this.value)) {
+				this.value = this.value.replace(/[^ A-ZÁÉÍÓÚÜÑ]+$/, "");
+			}
+		});
+		$('#apellidoMaterno').on('input', function(e) {
+			if (!/^[ A-ZÁÉÍÓÚÜÑ]*$/.test(this.value)) {
+				this.value = this.value.replace(/[^ A-ZÁÉÍÓÚÜÑ]+$/, "");
+			}
+		});
+		$('#lugarNacimiento').on('input', function(e) {
+			if (!/^[ A-ZÁÉÍÓÚÜÑ]*$/.test(this.value)) {
+				this.value = this.value.replace(/[^ A-ZÁÉÍÓÚÜÑ]+$/, "");
+			}
+		});
+		$('#ocupacion').on('input', function(e) {
+			if (!/^[ A-ZÁÉÍÓÚÜÑ]*$/.test(this.value)) {
+				this.value = this.value.replace(/[^ A-ZÁÉÍÓÚÜÑ]+$/, "");
+			}
+		});
+		$('#lugarNacimiento').on('input', function(e) {
+			if (!/^[ A-ZÁÉÍÓÚÜÑ]*$/.test(this.value)) {
+				this.value = this.value.replace(/[^ A-ZÁÉÍÓÚÜÑ]+$/, "");
+			}
+		});
+		$('#curp').on('input', function(e) {
+			if (!/^[ A-Z0-9]*$/.test(this.value)) {
+				this.value = this.value.replace(/[^ A-Z0-9]+$/, "");
+			}
+		});
+		$('#nss').on('input', function(e) {
+			if (!/^[ 0-9]*$/.test(this.value)) {
+				this.value = this.value.replace(/[^ 0-9]+$/, "");
+			}
+		});
+		$('#rfc').on('input', function(e) {
+			if (!/^[ A-Z0-9]*$/.test(this.value)) {
+				this.value = this.value.replace(/[^ A-Z0-9]+$/, "");
+			}
+		});
+		$('#telefonoFijo').on('input', function(e) {
+			if (!/^[ 0-9]*$/.test(this.value)) {
+				this.value = this.value.replace(/[^ 0-9]+$/, "");
+			}
+		});
+		$('#telefonoMovil').on('input', function(e) {
+			if (!/^[ 0-9]*$/.test(this.value)) {
+				this.value = this.value.replace(/[^ 0-9]+$/, "");
+			}
+		});
+		$('#direccion').on('input', function(e) {
+			if (!/^[ A-Z0-9ÁÉÍÓÚÜÑ]*$/.test(this.value)) {
+				this.value = this.value.replace(/[^ A-Z0-9ÁÉÍÓÚÜÑ]+$/, "");
+			}
+		});
+		$('#municipio').on('input', function(e) {
+			if (!/^[ A-ZÁÉÍÓÚÜÑ]*$/.test(this.value)) {
+				this.value = this.value.replace(/[^ A-ZÁÉÍÓÚÜÑ]+$/, "");
+			}
+		});
+		$('#codigoPostal').on('input', function(e) {
+			if (!/^[ 0-9]*$/.test(this.value)) {
+				this.value = this.value.replace(/[^ 0-9]+$/, "");
+			}
+		});
 
-		if (!/^[ a-záéíóúüñ]*$/i.test(this.value)) {
-			this.value = this.value.replace(/[^ a-záéíóúüñ]+/ig, "");
-		}
-	});
-	$('#apellidoPaterno').on('input', function(e) {
-		if (!/^[ a-záéíóúüñ]*$/i.test(this.value)) {
-			this.value = this.value.replace(/[^ a-záéíóúüñ]+/ig, "");
-		}
-	});
-	$('#apellidoMaterno').on('input', function(e) {
-		if (!/^[ a-záéíóúüñ]*$/i.test(this.value)) {
-			this.value = this.value.replace(/[^ a-záéíóúüñ]+/ig, "");
-		}
-	});
 
+	
 });
 
 function validaDatosAfiliado() {
