@@ -118,7 +118,7 @@
                                 </div>
                             </div>
 
-                            <div class="form-group col-md-3">
+                            <div class="form-group col-md-3" th:if="${servicioEmpresa} == 1">
                                 <label>Lugar de Nacimiento</label>
                                 <input type="text"
                                        th:field="*{lugarNacimiento}" id="lugarNacimiento"
@@ -127,7 +127,7 @@
                             </div>
 
 
-                            <div class="form-group col-md-3">
+                            <div class="form-group col-md-3" th:if="${servicioEmpresa} == 1">
                                 <label>Estado Civil</label>
                                 <select th:field="*{estadoCivil}"
                                         id="estadoCivil" name="estadoCivil" class="form-control form-control-line">
@@ -141,7 +141,7 @@
                                                 th:errors="*{estadoCivil}"></small>
                             </div>
 
-                            <div class="form-group col-md-3">
+                            <div class="form-group col-md-3" th:if="${servicioEmpresa} == 1">
                                 <label>Ocupación</label><input type="text"
                                                                th:field="*{ocupacion}" id="ocupacion"
                                                                name="ocupacion"
@@ -152,7 +152,7 @@
                                        th:errors="*{ocupacion}"></small>
                             </div>
 
-                            <div class="form-group col-md-3">
+                            <div class="form-group col-md-3" th:if="${servicioEmpresa} == 1">
                                 <label>Sexo</label> <select th:field="*{sexo}" id="sexo"
                                                             name="sexo" class="form-control form-control-line">
                                 <option th:value="'Masculino'" th:selected>Masculino</option>
@@ -161,7 +161,7 @@
                                             th:if="${#fields.hasErrors('sexo')}" th:errors="*{sexo}"></small>
                             </div>
 
-                            <div class="form-group col-md-3">
+                            <div class="form-group col-md-3" th:if="${servicioEmpresa} == 1">
                                 <label>País</label>
                                 <select th:field="*{pais}"
                                         id="pais" name="pais" class="form-control form-control-line">
@@ -171,7 +171,7 @@
                                                  th:if="${#fields.hasErrors('pais')}" th:errors="*{pais}"></small>
                             </div>
 
-                            <div class="form-group col-md-3">
+                            <div class="form-group col-md-3" th:if="${servicioEmpresa} == 1">
                                 <label>Curp</label><input type="text" th:field="*{curp}"
                                                           id="curp" name="curp"
                                                           class="form-control form-control-user curpText"><small
@@ -180,7 +180,7 @@
                                     id="smallCurp"></small>
                             </div>
 
-                            <div class="form-group col-md-3">
+                            <div class="form-group col-md-3" th:if="${servicioEmpresa} == 1">
                                 <label>Número de seguridad social</label><input type="text"
                                                                                 th:field="*{nss}" id="nss"
                                                                                 name="nss"
@@ -206,7 +206,7 @@
 
                             </div>
 
-                            <div class="form-group col-md-3">
+                            <div class="form-group col-md-3" th:if="${servicioEmpresa} == 1">
                                 <label>Teléfono Fijo</label><input type="text" id="telefonoFijo"
                                                                    th:field="*{telefonoFijo}"
                                                                    class="form-control form-control-user"
@@ -226,7 +226,7 @@
                                        th:errors="*{telefonoMovil}"></small>
                             </div>
 
-                            <div class="form-group col-md-3">
+                            <div class="form-group col-md-3" th:if="${servicioEmpresa} == 1">
                                 <label>Correo electrónico</label><input type="email"
                                                                         th:field="*{email}"
                                                                         class="form-control form-control-user"
@@ -235,7 +235,7 @@
                                     th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></small>
                             </div>
 
-                            <div class="form-group col-md-3">
+                            <div class="form-group col-md-3" th:if="${servicioEmpresa} == 1">
                                 <label>Dirección</label><input type="text" id="direccion"
                                                                th:field="*{direccion}"
                                                                class="form-control form-control-user"
@@ -245,7 +245,7 @@
                                        th:errors="*{direccion}"></small>
                             </div>
 
-                            <div class="form-group col-md-3">
+                            <div class="form-group col-md-3" th:if="${servicioEmpresa} == 1">
                                 <label>Municipio</label><input type="text" id="municipio"
                                                                th:field="*{municipio}"
                                                                class="form-control form-control-user"
@@ -255,7 +255,7 @@
                                        th:errors="*{municipio}"></small>
                             </div>
 
-                            <div class="form-group col-md-3">
+                            <div class="form-group col-md-3" th:if="${servicioEmpresa} == 1">
                                 <label>Entidad Federativa</label> <select
                                     name="entidadFederativa" th:field="*{entidadFederativa}"
                                     class="form-control form-control-line">
@@ -266,7 +266,7 @@
                                             th:errors="*{entidadFederativa}"></small>
                             </div>
 
-                            <div class="form-group col-md-3">
+                            <div class="form-group col-md-3" th:if="${servicioEmpresa} == 1">
                                 <label>Código Postal</label><input type="text" id="codigoPostal"
                                                                    th:field="*{codigoPostal}"
                                                                    class="form-control form-control-user"

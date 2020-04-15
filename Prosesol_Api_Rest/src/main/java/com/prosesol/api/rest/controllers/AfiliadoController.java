@@ -1,13 +1,11 @@
 package com.prosesol.api.rest.controllers;
 
+import com.prosesol.api.rest.controllers.exception.AfiliadoException;
 import com.prosesol.api.rest.models.entity.Afiliado;
 import com.prosesol.api.rest.models.entity.Candidato;
 import com.prosesol.api.rest.models.entity.Periodicidad;
 import com.prosesol.api.rest.models.entity.Servicio;
-import com.prosesol.api.rest.services.IAfiliadoService;
-import com.prosesol.api.rest.services.ICandidatoService;
-import com.prosesol.api.rest.services.IPeriodicidadService;
-import com.prosesol.api.rest.services.IServicioService;
+import com.prosesol.api.rest.services.*;
 import com.prosesol.api.rest.utils.CalcularFecha;
 import com.prosesol.api.rest.utils.GenerarClave;
 import com.prosesol.api.rest.utils.Paises;
@@ -22,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.servlet.http.HttpServletRequest;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -60,6 +59,9 @@ public class AfiliadoController {
     
     @Autowired
     private ICandidatoService candidatoService;
+
+    @Autowired
+    private IGetTemplateByServicio getTemplateByServicio;
     
     @RequestMapping(value = "/servicio")
     public String seleccionarServicio(Model model) {
@@ -74,17 +76,25 @@ public class AfiliadoController {
                                 RedirectAttributes redirect) {
 
         Servicio servicio = servicioService.findById(id);
-       // Afiliado afiliado = new Afiliado();
         Candidato afiliado = new Candidato();
         afiliado.setServicio(servicio);
-        if (servicio == null) {
 
-            redirect.addFlashAttribute("error", "Debes seleccionar un servicio");
-            return "redirect:/afiliados/servicio";
+        try {
+            Integer servicioEmpresa = getTemplateByServicio.getTemplateByIdServicio(servicio.getId());
+
+            if (servicio == null) {
+                redirect.addFlashAttribute("error", "Debes seleccionar un servicio");
+                return "redirect:/afiliados/servicio";
+            }
+
+            model.addAttribute("afiliado", afiliado);
+            model.addAttribute("servicio", servicio);
+            model.addAttribute("servicioEmpresa", servicioEmpresa);
+
+        }catch (AfiliadoException aE){
+            redirect.addFlashAttribute("error", aE.getMessage());
+            return "redirect:/afiliados/servcio";
         }
-        
-        model.addAttribute("afiliado", afiliado);
-        model.addAttribute("servicio", servicio);
 
         return "afiliados/crear";
     }
