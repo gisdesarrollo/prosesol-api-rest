@@ -8,36 +8,43 @@ $(document).ready(function() {
 	
 	$('#nombre').on('input', function(e) {
 		if (!/^[ A-ZÁÉÍÓÚÜÑ]*$/.test(this.value)) {
+				this.value = this.value.toUpperCase();
 				this.value = this.value.replace(/[^ A-ZÁÉÍÓÚÜÑ]+$/, "");
 			}
 		});
 		$('#apellidoPaterno').on('input', function(e) {
 			if (!/^[ A-ZÁÉÍÓÚÜÑ]*$/.test(this.value)) {
+				this.value = this.value.toUpperCase();
 				this.value = this.value.replace(/[^ A-ZÁÉÍÓÚÜÑ]+$/, "");
 			}
 		});
 		$('#apellidoMaterno').on('input', function(e) {
 			if (!/^[ A-ZÁÉÍÓÚÜÑ]*$/.test(this.value)) {
+				this.value = this.value.toUpperCase();
 				this.value = this.value.replace(/[^ A-ZÁÉÍÓÚÜÑ]+$/, "");
 			}
 		});
 		$('#lugarNacimiento').on('input', function(e) {
 			if (!/^[ A-ZÁÉÍÓÚÜÑ]*$/.test(this.value)) {
+				this.value = this.value.toUpperCase();
 				this.value = this.value.replace(/[^ A-ZÁÉÍÓÚÜÑ]+$/, "");
 			}
 		});
 		$('#ocupacion').on('input', function(e) {
 			if (!/^[ A-ZÁÉÍÓÚÜÑ]*$/.test(this.value)) {
+				this.value = this.value.toUpperCase();
 				this.value = this.value.replace(/[^ A-ZÁÉÍÓÚÜÑ]+$/, "");
 			}
 		});
 		$('#lugarNacimiento').on('input', function(e) {
 			if (!/^[ A-ZÁÉÍÓÚÜÑ]*$/.test(this.value)) {
+				this.value = this.value.toUpperCase();
 				this.value = this.value.replace(/[^ A-ZÁÉÍÓÚÜÑ]+$/, "");
 			}
 		});
 		$('#curp').on('input', function(e) {
 			if (!/^[ A-Z0-9]*$/.test(this.value)) {
+				this.value = this.value.toUpperCase();
 				this.value = this.value.replace(/[^ A-Z0-9]+$/, "");
 			}
 		});
@@ -48,6 +55,7 @@ $(document).ready(function() {
 		});
 		$('#rfc').on('input', function(e) {
 			if (!/^[ A-Z0-9]*$/.test(this.value)) {
+				this.value = this.value.toUpperCase();
 				this.value = this.value.replace(/[^ A-Z0-9]+$/, "");
 			}
 		});
@@ -63,11 +71,13 @@ $(document).ready(function() {
 		});
 		$('#direccion').on('input', function(e) {
 			if (!/^[ A-Z0-9ÁÉÍÓÚÜÑ]*$/.test(this.value)) {
+				this.value = this.value.toUpperCase();
 				this.value = this.value.replace(/[^ A-Z0-9ÁÉÍÓÚÜÑ]+$/, "");
 			}
 		});
 		$('#municipio').on('input', function(e) {
 			if (!/^[ A-ZÁÉÍÓÚÜÑ]*$/.test(this.value)) {
+				this.value = this.value.toUpperCase();
 				this.value = this.value.replace(/[^ A-ZÁÉÍÓÚÜÑ]+$/, "");
 			}
 		});
