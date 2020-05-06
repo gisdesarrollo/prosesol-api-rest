@@ -32,7 +32,7 @@ public class Candidato implements Serializable{
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "id_candidato")
 	private Long id;
-	
+
 	@Column(name = "clave")
 	private String clave;
 
@@ -156,7 +156,7 @@ public class Candidato implements Serializable{
 	@Transient
 	private Integer corte;
 
-	
+
 
 	public Long getId() {
 		return id;

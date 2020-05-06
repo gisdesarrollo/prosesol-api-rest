@@ -173,68 +173,81 @@ public class AfiliadoRestController {
                 List<AfiliadoResponse> listaBeneficiarios = new ArrayList<>();
 
                 afiliado = validateAfiliadoRequest.validateAfiliadoFromJson(afiliadoRequest);
-                afiliado.setClave(generarClave.getClaveAfiliado(clave));
-                afiliado.setFechaCorte(null);
-                afiliadoService.save(afiliado);
+                if (afiliado == null) {
+                    log.add("El afiliado " + afiliadoRequest.getNombre() + " " +
+                            afiliadoRequest.getApellidoPaterno() + " " +
+                            afiliadoRequest.getApellidoMaterno() +
+                            " ya se encuentra registrado" + "\n");
+                } else {
+                    afiliado.setClave(generarClave.getClaveAfiliado(clave));
+                    afiliado.setFechaCorte(null);
+                    afiliadoService.save(afiliado);
 
-                if (afiliadoRequest.getBeneficiario() != null) {
+                    if (afiliadoRequest.getBeneficiario() != null) {
 
-                    Servicio servicio = afiliado.getServicio();
-                    for (Afiliado beneficiarios : afiliadoRequest.getBeneficiario()) {
+                        Servicio servicio = afiliado.getServicio();
+                        for (Afiliado beneficiarios : afiliadoRequest.getBeneficiario()) {
 
-                        AfiliadoResponse beneficiarioResponse = new AfiliadoResponse();
-                        validateAfiliadoRequest.validateBeneficiarioFromJson(beneficiarios);
+                            AfiliadoResponse beneficiarioResponse = new AfiliadoResponse();
+                            validateAfiliadoRequest.validateBeneficiarioFromJson(beneficiarios);
 
-                        beneficiarios.setClave(generarClave.getClaveAfiliado(clave));
-                        beneficiarios.setFechaAlta(new Date());
-                        beneficiarios.setEstatus(1);
-                        beneficiarios.setServicio(servicio);
+                            beneficiarios.setClave(generarClave.getClaveAfiliado(clave));
+                            beneficiarios.setFechaAlta(new Date());
+                            beneficiarios.setEstatus(1);
+                            beneficiarios.setServicio(servicio);
 
-                        afiliadoService.save(beneficiarios);
+                            afiliadoService.save(beneficiarios);
 
-                        beneficiarioRepository.insertBeneficiario(beneficiarios, afiliado.getId());
+                            beneficiarioRepository.insertBeneficiario(beneficiarios, afiliado.getId());
 
-                        beneficiarioResponse.setClave(beneficiarios.getClave());
-                        beneficiarioResponse.setNombre(beneficiarios.getNombre());
-                        beneficiarioResponse.setApellidoPaterno(beneficiarios.getApellidoPaterno());
-                        beneficiarioResponse.setApellidoMaterno(beneficiarios.getApellidoMaterno());
-                        beneficiarioResponse.setRfc(beneficiarios.getRfc());
+                            beneficiarioResponse.setClave(beneficiarios.getClave());
+                            beneficiarioResponse.setNombre(beneficiarios.getNombre());
+                            beneficiarioResponse.setApellidoPaterno(beneficiarios.getApellidoPaterno());
+                            beneficiarioResponse.setApellidoMaterno(beneficiarios.getApellidoMaterno());
+                            beneficiarioResponse.setRfc(beneficiarios.getRfc());
 
-                        listaBeneficiarios.add(beneficiarioResponse);
-                        afiliadoResponse.setBeneficiarios(listaBeneficiarios);
+                            listaBeneficiarios.add(beneficiarioResponse);
+                            afiliadoResponse.setBeneficiarios(listaBeneficiarios);
 
+                        }
                     }
-                }
 
-                afiliadoResponse.setClave(afiliado.getClave());
-                afiliadoResponse.setNombre(afiliado.getNombre());
-                afiliadoResponse.setApellidoPaterno(afiliado.getApellidoPaterno());
-                afiliadoResponse.setApellidoMaterno(afiliado.getApellidoMaterno());
-                afiliadoResponse.setRfc(afiliado.getRfc());
+                    afiliadoResponse.setClave(afiliado.getClave());
+                    afiliadoResponse.setNombre(afiliado.getNombre());
+                    afiliadoResponse.setApellidoPaterno(afiliado.getApellidoPaterno());
+                    afiliadoResponse.setApellidoMaterno(afiliado.getApellidoMaterno());
+                    afiliadoResponse.setRfc(afiliado.getRfc());
 
-                afiliadoJsonResponse.getAfiliado().add(afiliadoResponse);
+                    afiliadoJsonResponse.getAfiliado().add(afiliadoResponse);
 
-                if(afiliado.getServicio().getId().equals(mBBasico) ||
-                        afiliado.getServicio().getId().equals(mBAmpliado)){
-                    log.add("Se ha registrado el afiliado: " +
-                            afiliado.getNombre() + " " +
-                            afiliado.getApellidoPaterno() + " " +
-                            afiliado.getApellidoMaterno() +
-                            " con RFC: " + afiliado.getRfc() + "\n");
+                    if (afiliado.getServicio().getId().equals(mBBasico) ||
+                            afiliado.getServicio().getId().equals(mBAmpliado)) {
+                        log.add("Se ha registrado el afiliado: " +
+                                afiliado.getNombre() + " " +
+                                afiliado.getApellidoPaterno() + " " +
+                                afiliado.getApellidoMaterno() +
+                                " con RFC: " + afiliado.getRfc() + "\n");
+                    }
                 }
             }
 
             generaArchivoLog.generarArchivo(NOMBRE_ARCHIVO + "_MAS_BIENESTAR",
                     numRegistros, log);
 
-            response.put("afiliados", afiliadoJsonResponse);
-            response.put("estatus", "OK");
-            response.put("code", HttpStatus.OK.value());
-            response.put("mensaje", "Se han insertado correctamente los registros");
+            if(afiliadoJsonResponse.getAfiliado().size() > 0){
+                response.put("afiliados", afiliadoJsonResponse);
+                response.put("estatus", "OK");
+                response.put("code", HttpStatus.OK.value());
+                response.put("mensaje", "Se han insertado correctamente los registros");
+            }else{
+                response.put("estatus", "OK");
+                response.put("code", HttpStatus.OK.value());
+                response.put("mensaje", "Todos los registros se insertaron con anterioridad");
+            }
 
         } catch (AfiliadoException e) {
 
-            if(log.size() > 0){
+            if (log.size() > 0) {
                 generaArchivoLog.generarArchivo(NOMBRE_ARCHIVO + "_MAS_BIENESTAR",
                         numRegistros, log);
             }
@@ -247,7 +260,7 @@ public class AfiliadoRestController {
             return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         } catch (NullPointerException npe) {
 
-            if(log.size() > 0){
+            if (log.size() > 0) {
                 generaArchivoLog.generarArchivo(NOMBRE_ARCHIVO + "_MAS_BIENESTAR",
                         numRegistros, log);
             }

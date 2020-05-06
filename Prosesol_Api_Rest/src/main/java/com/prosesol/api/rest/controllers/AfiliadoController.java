@@ -160,7 +160,7 @@ public class AfiliadoController {
             }
             candidato.setEstatus(3);
             logger.info(mensajeFlash);
-            candidatoService.save(candidato);	
+            candidatoService.save(candidato);
             status.setComplete();
             
         } catch (DataIntegrityViolationException e) {

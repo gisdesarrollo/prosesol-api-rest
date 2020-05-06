@@ -82,9 +82,7 @@ public class ValidateAfiliadoRequest {
         boolean isAfiliado = validaAfiliado(afiliado);
 
         if(!isAfiliado){
-            throw new AfiliadoException(4000, "El afiliado " + afiliado.getNombre() + " " +
-                    afiliado.getApellidoPaterno() + " " + afiliado.getApellidoMaterno() +
-                    " con RFC " + afiliado.getRfc() + " ya se encuentra registrado");
+            return null;
         }
 
         afiliado.setTelefonoFijo(afiliadoRequest.getTelefonoFijo());
