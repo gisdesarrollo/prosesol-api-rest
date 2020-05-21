@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <!-- Tell the browser to be responsive to screen width -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <!-- Favicon icon -->
+    <title>Prosesol</title>
+    <!-- Bootstrap Core CSS -->
+    <link th:href="@{/css/afiliados/bootstrap.min.css}" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link th:href="@{/css/afiliados/style.css}" rel="stylesheet">
+    <!-- You can change the theme colors from here -->
+    <link th:href="@{/css/afiliados/default.css}" id="theme" rel="stylesheet">
+    <!-- Jquery -->
+    <script type="text/javascript"
+            src="https://code.jquery.com/jquery-3.3.1.js"></script>
+    <!--datepicker -->
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <!--  [endif]-->
+</head>
+<body>
+<!-- Navigation -->
+<nav class="navbar navbar-light static-top">
+    <div class="container">
+        <div class="col-md-8" style="position:relative; bottom:0px; right:13px;">
+            <div id="hostP" style="display:none">
+                <img src="https://prosesol.org/wp-content/uploads/2019/06/logo_prosesol-1.png" alt="Prosesol.org">
+            </div>
+            <div id="hostA" style="display:none">
+                <img src="https://assismex.com/images/logo-assismex-white.svg" alt="Prosesol.org"
+                     style="width:304px;height:70px;background-color:#2271b3;">
+            </div>
+
+
+            <a th:href="@{/obtener/aviso}">Aviso de privacidad /</a>
+            <a th:href="@{/obtener/termino}">Términos y condiciones</a>
+        </div>
+    </div>
+</nav>
+<br>
+<div class="container" style="position:relative; bottom:20px;">
+    <div class="card">
+        <div class="card-body">
+            <div th:replace="fragments/navbar :: div-messages"></div>
+            <div class="row ">
+                <div class="col-md mb-4">
+
+                    <!--th:action="@{/afiliados/crear/}"-->
+                    <form class="form-horizontal form-material"
+                          method="post" th:object="${respuesta}" th:action="@{/afiliados/crear}">
+                        <h5 class="card-title">Pregunta diagnóstica</h5>
+                        <hr>
+                        <div class="pl-lg-4">
+                            <div class="form-group" th:each="pregunta : ${preguntas}">
+                                <h2 th:text="${pregunta.pregunta}" th:value="${pregunta.id}"></h2>
+                                <div class="control" th:each="entry : ${respuestas}">
+                                    <label th:if="${pregunta.id} == ${entry.key}"
+                                           th:text="${entry.get(1)}">
+
+                                    </label>
+
+                                </div>
+
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="clearfix"></div>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <button style="background:#3380a9;" type="button" id="disabledButton"
+                                        onclick="validaDatosAfiliado()"
+                                        class="btn btn-primary btn-square float-right">Crear
+                                    Afiliado
+                                </button>
+
+                            </div>
+                        </div>
+                    </form>
+
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+</div>
+<script th:src="@{/js/hostUrl.js}"></script>
+</body>
+
+</html>

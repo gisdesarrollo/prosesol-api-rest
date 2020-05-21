@@ -1,10 +1,7 @@
 package com.prosesol.api.rest.controllers;
 
 import com.prosesol.api.rest.controllers.exception.AfiliadoException;
-import com.prosesol.api.rest.models.entity.Afiliado;
-import com.prosesol.api.rest.models.entity.Candidato;
-import com.prosesol.api.rest.models.entity.Periodicidad;
-import com.prosesol.api.rest.models.entity.Servicio;
+import com.prosesol.api.rest.models.entity.*;
 import com.prosesol.api.rest.services.*;
 import com.prosesol.api.rest.utils.CalcularFecha;
 import com.prosesol.api.rest.utils.GenerarClave;
@@ -16,11 +13,13 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import javax.servlet.http.HttpServletRequest;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -34,8 +33,7 @@ import java.util.List;
 public class AfiliadoController {
 
     protected static final Log logger = LogFactory.getLog(AfiliadoController.class);
-    
-    
+
     @Value("${app.clave}")
     private String clave;
 
@@ -62,6 +60,12 @@ public class AfiliadoController {
 
     @Autowired
     private IGetTemplateByServicio getTemplateByServicio;
+
+    @Autowired
+    private IPreguntaService preguntaService;
+
+    @Autowired
+    private IRespuestaService respuestaService;
     
     @RequestMapping(value = "/servicio")
     public String seleccionarServicio(Model model) {
@@ -93,10 +97,27 @@ public class AfiliadoController {
 
         }catch (AfiliadoException aE){
             redirect.addFlashAttribute("error", aE.getMessage());
-            return "redirect:/afiliados/servcio";
+            return "redirect:/afiliados/servicio";
         }
 
         return "afiliados/crear";
+    }
+
+    @RequestMapping(value = "/servicio/cuestionario/{id}")
+    public String getIdServicioCovid(@PathVariable("id")Long id, Model model, RedirectAttributes redirect){
+
+        List<Pregunta> preguntas = preguntaService.findAll();
+        List<Respuesta> respuestas = respuestaService.findAll();
+
+        try{
+            model.addAttribute("preguntas", preguntas);
+            model.addAttribute("respuestas", respuestas);
+        }catch(AfiliadoException aExc){
+            redirect.addFlashAttribute("error", aExc.getMessage());
+            return "";
+        }
+
+        return "afiliados/servicioCovid";
     }
 
     @RequestMapping(value = "/crear", method = RequestMethod.POST)

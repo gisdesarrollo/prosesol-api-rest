@@ -2,22 +2,13 @@ package com.prosesol.api.rest.models.entity;
 
 import java.io.Serializable;
 import java.util.Date;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-import javax.persistence.Transient;
+import java.util.List;
+import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import com.prosesol.api.rest.models.rel.RelPreguntaRespuestaCandidato;
 import org.springframework.format.annotation.DateTimeFormat;
 
 @Entity
@@ -153,10 +144,11 @@ public class Candidato implements Serializable{
 	@JoinColumn(name = "id_periodicidad")
 	private Periodicidad periodicidad;
 
+	@OneToMany(mappedBy = "candidato", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<RelPreguntaRespuestaCandidato> relPreguntaRespuestaCandidato;
+
 	@Transient
 	private Integer corte;
-
-
 
 	public Long getId() {
 		return id;
@@ -444,6 +436,26 @@ public class Candidato implements Serializable{
 
 	public void setCorte(Integer corte) {
 		this.corte = corte;
+	}
+
+	public Boolean getBeneficiario() {
+		return isBeneficiario;
+	}
+
+	public void setBeneficiario(Boolean beneficiario) {
+		isBeneficiario = beneficiario;
+	}
+
+	public void setInscripcion(Boolean inscripcion) {
+		isInscripcion = inscripcion;
+	}
+
+	public List<RelPreguntaRespuestaCandidato> getRelPreguntaRespuestaCandidato() {
+		return relPreguntaRespuestaCandidato;
+	}
+
+	public void setRelPreguntaRespuestaCandidato(List<RelPreguntaRespuestaCandidato> relPreguntaRespuestaCandidato) {
+		this.relPreguntaRespuestaCandidato = relPreguntaRespuestaCandidato;
 	}
 
 	@Override
