@@ -2,6 +2,9 @@ package com.prosesol.api.rest.controllers;
 
 import com.prosesol.api.rest.controllers.exception.AfiliadoException;
 import com.prosesol.api.rest.models.entity.*;
+import com.prosesol.api.rest.models.entity.custom.PreguntaRespuestaCustom;
+import com.prosesol.api.rest.models.entity.dto.RelPreguntaRespuestaDto;
+import com.prosesol.api.rest.models.rel.RelPreguntaRespuesta;
 import com.prosesol.api.rest.services.*;
 import com.prosesol.api.rest.utils.CalcularFecha;
 import com.prosesol.api.rest.utils.GenerarClave;
@@ -65,7 +68,7 @@ public class AfiliadoController {
     private IPreguntaService preguntaService;
 
     @Autowired
-    private IRespuestaService respuestaService;
+    private IRelPreguntaRespuestaService relPreguntaRespuestaService;
     
     @RequestMapping(value = "/servicio")
     public String seleccionarServicio(Model model) {
@@ -76,7 +79,9 @@ public class AfiliadoController {
     }
 
     @RequestMapping(value = "/servicio/{id}")
-    public String getIdServicio(@PathVariable("id") Long id, Model model,
+    public String getIdServicio(@PathVariable("id") Long id,
+                                @ModelAttribute RelPreguntaRespuestaDto relPreguntaRespuesta,
+                                Model model,
                                 RedirectAttributes redirect) {
 
         Servicio servicio = servicioService.findById(id);
@@ -84,6 +89,9 @@ public class AfiliadoController {
         afiliado.setServicio(servicio);
 
         try {
+
+            System.out.println(relPreguntaRespuesta.getRelPreguntaRespuestas().size());
+
             Integer servicioEmpresa = getTemplateByServicio.getTemplateByIdServicio(servicio.getId());
 
             if (servicio == null) {
@@ -107,11 +115,13 @@ public class AfiliadoController {
     public String getIdServicioCovid(@PathVariable("id")Long id, Model model, RedirectAttributes redirect){
 
         List<Pregunta> preguntas = preguntaService.findAll();
-        List<Respuesta> respuestas = respuestaService.findAll();
+        List<PreguntaRespuestaCustom> relPreguntaRespuestas = relPreguntaRespuestaService.getPreguntaRespuesta();
+        Servicio servicio = servicioService.findById(id);
 
         try{
             model.addAttribute("preguntas", preguntas);
-            model.addAttribute("respuestas", respuestas);
+            model.addAttribute("relPreguntaRespuestas", relPreguntaRespuestas);
+            model.addAttribute("servicio", servicio);
         }catch(AfiliadoException aExc){
             redirect.addFlashAttribute("error", aExc.getMessage());
             return "";

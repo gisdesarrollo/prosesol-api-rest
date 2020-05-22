@@ -1,27 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <!-- Tell the browser to be responsive to screen width -->
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="">
-    <meta name="author" content="">
-    <!-- Favicon icon -->
-    <title>Prosesol</title>
-    <!-- Bootstrap Core CSS -->
-    <link th:href="@{/css/afiliados/bootstrap.min.css}" rel="stylesheet">
-    <!-- Custom CSS -->
-    <link th:href="@{/css/afiliados/style.css}" rel="stylesheet">
-    <!-- You can change the theme colors from here -->
-    <link th:href="@{/css/afiliados/default.css}" id="theme" rel="stylesheet">
-    <!-- Jquery -->
-    <script type="text/javascript"
-            src="https://code.jquery.com/jquery-3.3.1.js"></script>
-    <!--datepicker -->
-    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-    <!--  [endif]-->
-</head>
+<head th:replace="fragments/head :: head"></head>
 <body>
 <!-- Navigation -->
 <nav class="navbar navbar-light static-top">
@@ -48,31 +27,36 @@
             <div th:replace="fragments/navbar :: div-messages"></div>
             <div class="row ">
                 <div class="col-md mb-4">
-
-                    <!--th:action="@{/afiliados/crear/}"-->
                     <form class="form-horizontal form-material"
-                          method="post" th:object="${respuesta}" th:action="@{/afiliados/crear}">
+                          method="post"
+                          th:action="@{/afiliados/servicio/} + ${servicio.id}">
                         <h5 class="card-title">Pregunta diagnóstica</h5>
                         <hr>
                         <div class="pl-lg-4">
-                            <div class="form-group" th:each="pregunta : ${preguntas}">
-                                <h2 th:text="${pregunta.pregunta}" th:value="${pregunta.id}"></h2>
-                                <div class="control" th:each="entry : ${respuestas}">
-                                    <label th:if="${pregunta.id} == ${entry.key}"
-                                           th:text="${entry.get(1)}">
+                            <div class="form-group" th:each="pregunta, iterstat : ${preguntas}">
+                                <h2 th:text="${pregunta.pregunta}"
+                                    th:value="${pregunta.id}"></h2>
+                                <input type="hidden"
+                                       th:name="|relPreguntaRespuestas[${iterstat.index}].pregunta.id|"
+                                       th:value="${pregunta.id}">
+                                <div class="control" th:each="respuesta : ${relPreguntaRespuestas}">
+                                    <input th:if="${pregunta.id} == ${respuesta.idPregunta}"
+                                           th:id="'respuesta' + ${respuesta.idRespuesta}"
+                                           th:name="|relPreguntaRespuestas[${iterstat.index}].respuesta.id|"
+                                           th:value="${respuesta.idRespuesta}"
+                                           class="form-check-input" type="radio" required>
+                                    <label th:if="${pregunta.id} == ${respuesta.idPregunta}"
+                                           th:text="${respuesta.respuesta}">
 
                                     </label>
-
                                 </div>
-
                             </div>
                         </div>
                         <hr>
                         <div class="clearfix"></div>
                         <div class="row">
                             <div class="col-sm-12">
-                                <button style="background:#3380a9;" type="button" id="disabledButton"
-                                        onclick="validaDatosAfiliado()"
+                                <button style="background:#3380a9;" type="submit" id="disabledButton"
                                         class="btn btn-primary btn-square float-right">Crear
                                     Afiliado
                                 </button>

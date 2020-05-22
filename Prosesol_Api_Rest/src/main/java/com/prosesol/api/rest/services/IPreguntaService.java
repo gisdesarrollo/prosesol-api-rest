@@ -12,4 +12,5 @@ public interface IPreguntaService{
     public List<Pregunta> findAll();
 
     public Pregunta findById(Long id);
+
 }

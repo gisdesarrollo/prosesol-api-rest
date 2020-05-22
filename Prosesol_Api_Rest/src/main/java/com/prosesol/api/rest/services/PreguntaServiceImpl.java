@@ -25,4 +25,5 @@ public class PreguntaServiceImpl implements IPreguntaService{
     public Pregunta findById(Long id) {
         return preguntaDao.findById(id).orElse(null);
     }
+
 }

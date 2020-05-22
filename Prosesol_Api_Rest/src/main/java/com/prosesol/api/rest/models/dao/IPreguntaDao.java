@@ -7,4 +7,5 @@ import org.springframework.data.repository.CrudRepository;
  * @author Luis Enrique Morales Soriano
  */
 public interface IPreguntaDao extends CrudRepository<Pregunta, Long> {
+
 }
