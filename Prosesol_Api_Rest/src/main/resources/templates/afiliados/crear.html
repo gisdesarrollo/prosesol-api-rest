@@ -289,6 +289,29 @@
                                        class="form-control form-control-user">
                             </div>
                         </div>
+                        <div class="pl-lg-4" th:if="${servicio.id} == 79" >
+                            <div class="card">
+                                <div class="card-header" id="headingOne">
+                                    <h5 class="mb-0">
+                                        <button class="btn btn-link" data-toggle="collapse"
+                                                data-target="#collapseOne" aria-expanded="true"
+                                                aria-controls="collapseOne">
+                                            Datos de Persona Políticamente Expuesta
+                                        </button>
+                                    </h5>
+                                </div>
+                                <div id="collapseOne" class="collapse show" aria-labelledby="headinOne"
+                                     data-parent="#accordion">
+                                    <div class="card-body">
+                                        <select class="form-control" th:name="option" required>
+                                            <option value="">Seleccione una opción</option>
+                                            <option th:value="5" >Sí, tengo parentesco directo</option>
+                                            <option th:value="6" >No, no tengo parentesco</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                         <hr>
                         <div class="clearfix"></div>
                         <div class="row">

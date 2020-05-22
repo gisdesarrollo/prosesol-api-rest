@@ -5,6 +5,7 @@ import com.prosesol.api.rest.models.entity.*;
 import com.prosesol.api.rest.models.entity.custom.PreguntaRespuestaCustom;
 import com.prosesol.api.rest.models.entity.dto.RelPreguntaRespuestaDto;
 import com.prosesol.api.rest.models.rel.RelPreguntaRespuesta;
+import com.prosesol.api.rest.models.rel.RelPreguntaRespuestaCandidato;
 import com.prosesol.api.rest.services.*;
 import com.prosesol.api.rest.utils.CalcularFecha;
 import com.prosesol.api.rest.utils.GenerarClave;
@@ -16,10 +17,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -33,9 +31,10 @@ import java.util.List;
 
 @Controller
 @RequestMapping("/afiliados")
+@SessionAttributes("respuestas")
 public class AfiliadoController {
 
-    protected static final Log logger = LogFactory.getLog(AfiliadoController.class);
+    protected static final Log LOG = LogFactory.getLog(AfiliadoController.class);
 
     @Value("${app.clave}")
     private String clave;
@@ -68,7 +67,13 @@ public class AfiliadoController {
     private IPreguntaService preguntaService;
 
     @Autowired
+    private IRespuestaService respuestaService;
+
+    @Autowired
     private IRelPreguntaRespuestaService relPreguntaRespuestaService;
+
+    @Autowired
+    private IRelPreguntaRespuestaCandidatoService relPreguntaRespuestaCandidatoService;
     
     @RequestMapping(value = "/servicio")
     public String seleccionarServicio(Model model) {
@@ -80,17 +85,22 @@ public class AfiliadoController {
 
     @RequestMapping(value = "/servicio/{id}")
     public String getIdServicio(@PathVariable("id") Long id,
-                                @ModelAttribute RelPreguntaRespuestaDto relPreguntaRespuesta,
+                                @ModelAttribute RelPreguntaRespuestaDto relPreguntaRespuestaDto,
                                 Model model,
                                 RedirectAttributes redirect) {
 
         Servicio servicio = servicioService.findById(id);
         Candidato afiliado = new Candidato();
         afiliado.setServicio(servicio);
+        List<RelPreguntaRespuesta> respuestas = relPreguntaRespuestaDto.getRelPreguntaRespuestas();
 
         try {
 
-            System.out.println(relPreguntaRespuesta.getRelPreguntaRespuestas().size());
+            for(RelPreguntaRespuesta rel : relPreguntaRespuestaDto.getRelPreguntaRespuestas()){
+                if(rel.getRespuesta().getId() == 3){
+                    return "/error/solicitud";
+                }
+            }
 
             Integer servicioEmpresa = getTemplateByServicio.getTemplateByIdServicio(servicio.getId());
 
@@ -102,6 +112,7 @@ public class AfiliadoController {
             model.addAttribute("afiliado", afiliado);
             model.addAttribute("servicio", servicio);
             model.addAttribute("servicioEmpresa", servicioEmpresa);
+            model.addAttribute("respuestas", respuestas);
 
         }catch (AfiliadoException aE){
             redirect.addFlashAttribute("error", aE.getMessage());
@@ -112,19 +123,26 @@ public class AfiliadoController {
     }
 
     @RequestMapping(value = "/servicio/cuestionario/{id}")
-    public String getIdServicioCovid(@PathVariable("id")Long id, Model model, RedirectAttributes redirect){
+    public String getIdServicioCovid(@PathVariable("id")Long id, Model model,
+                                     RedirectAttributes redirect){
 
         List<Pregunta> preguntas = preguntaService.findAll();
         List<PreguntaRespuestaCustom> relPreguntaRespuestas = relPreguntaRespuestaService.getPreguntaRespuesta();
         Servicio servicio = servicioService.findById(id);
 
         try{
-            model.addAttribute("preguntas", preguntas);
-            model.addAttribute("relPreguntaRespuestas", relPreguntaRespuestas);
-            model.addAttribute("servicio", servicio);
+
+            if(servicio != null) {
+                model.addAttribute("preguntas", preguntas);
+                model.addAttribute("relPreguntaRespuestas", relPreguntaRespuestas);
+                model.addAttribute("servicio", servicio);
+            }else{
+                LOG.error("ERROR: ", new NullPointerException());
+                throw new NullPointerException();
+            }
         }catch(AfiliadoException aExc){
             redirect.addFlashAttribute("error", aExc.getMessage());
-            return "";
+            return "redirect:/servicio/cuestionario/" + servicio.getId();
         }
 
         return "afiliados/servicioCovid";
@@ -132,6 +150,9 @@ public class AfiliadoController {
 
     @RequestMapping(value = "/crear", method = RequestMethod.POST)
     public String guardar(Candidato candidato,
+                          @ModelAttribute(name = "respuestas")
+                                  List<RelPreguntaRespuesta> respuestas,
+                          @RequestParam(value = "option") Long option,
                           RedirectAttributes redirect,
                           SessionStatus status) {
 
@@ -140,6 +161,10 @@ public class AfiliadoController {
         Double saldoAcumulado = 0.0;
         Integer corte = 0;
         String periodo = "MENSUAL";
+
+        Pregunta pregunta;
+        Respuesta respuesta;
+
         try {
 
             Afiliado buscarAfiliadoExistente = afiliadoService.findByRfc(candidato.getRfc());
@@ -149,7 +174,7 @@ public class AfiliadoController {
             Periodicidad periodicidad = periodicidadService.getPeriodicidadByNombrePeriodo(periodo);
 
             if (buscarAfiliadoExistente != null || buscarCandidatoExistente!=null) {
-                logger.error("Error afiliado ya se encuentra registrado");
+                LOG.error("Error afiliado ya se encuentra registrado");
                 redirect.addFlashAttribute("error", "El Afiliado ya se encuentra registrado");
 
                 return "redirect:/afiliados/servicio/" + candidato.getServicio().getId();
@@ -190,17 +215,28 @@ public class AfiliadoController {
                  
             }
             candidato.setEstatus(3);
-            logger.info(mensajeFlash);
+            LOG.info(mensajeFlash);
             candidatoService.save(candidato);
+
+            // Se guardan las preguntas y respuestas del candidato
+            for(RelPreguntaRespuesta PRC : respuestas){
+                pregunta = preguntaService.findById(PRC.getPregunta().getId());
+                respuesta = respuestaService.findById(PRC.getRespuesta().getId());
+                RelPreguntaRespuestaCandidato RPRC = new RelPreguntaRespuestaCandidato(candidato,
+                        pregunta, respuesta);
+
+                relPreguntaRespuestaCandidatoService.save(RPRC);
+            }
+
             status.setComplete();
             
         } catch (DataIntegrityViolationException e) {
-            logger.error("Error al momento de ejecutar el proceso: " + e);
+            LOG.error("Error al momento de ejecutar el proceso: " + e);
             redirect.addFlashAttribute("error", "El RFC ya existe en la base de datos ");
 
             return "redirect:/afiliados/servicio/" + candidato.getServicio().getId();
         } catch (Exception e) {
-            logger.error("Error al momento de ejecutar el proceso: " + e);
+            LOG.error("Error al momento de ejecutar el proceso: " + e);
 
             redirect.addFlashAttribute("error", "Ocurrió un error al momento de insertar el Afiliado");
 
@@ -208,7 +244,7 @@ public class AfiliadoController {
         }
       
         mensajeFlash = "id del afiliado creado es: " + candidato.getId();
-        logger.info(mensajeFlash);
+        LOG.info(mensajeFlash);
         redirect.addFlashAttribute("success", "Afiliado creado con éxito");
         return "redirect:/afiliados/bienvenido/" +candidato.getId() ;
     }
@@ -225,7 +261,7 @@ public class AfiliadoController {
 
         } catch (Exception e) {
             e.printStackTrace();
-            logger.error("Error al momento de ejecutar el proceso: " + e);
+            LOG.error("Error al momento de ejecutar el proceso: " + e);
             redirect.addFlashAttribute("error", "Ocurrió un error ");
 
             return "redirect:/afiliados/bienvenido/" + id;

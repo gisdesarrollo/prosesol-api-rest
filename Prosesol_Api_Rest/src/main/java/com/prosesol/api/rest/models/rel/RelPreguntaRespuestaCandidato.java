@@ -33,6 +33,9 @@ public class RelPreguntaRespuestaCandidato implements Serializable {
     @JoinColumn(name = "id_respuesta")
     private Respuesta respuesta;
 
+    public RelPreguntaRespuestaCandidato() {
+    }
+
     public RelPreguntaRespuestaCandidato(Candidato candidato, Pregunta pregunta, Respuesta respuesta) {
         this.candidato = candidato;
         this.pregunta = pregunta;

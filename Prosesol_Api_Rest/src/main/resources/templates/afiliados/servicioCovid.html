@@ -33,7 +33,8 @@
                         <h5 class="card-title">Pregunta diagnóstica</h5>
                         <hr>
                         <div class="pl-lg-4">
-                            <div class="form-group" th:each="pregunta, iterstat : ${preguntas}">
+                            <div class="form-group" th:each="pregunta, iterstat : ${preguntas}"
+                            th:if="${pregunta.id} <= 3">
                                 <h2 th:text="${pregunta.pregunta}"
                                     th:value="${pregunta.id}"></h2>
                                 <input type="hidden"
