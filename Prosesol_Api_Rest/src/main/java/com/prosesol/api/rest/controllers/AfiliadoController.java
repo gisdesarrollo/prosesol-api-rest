@@ -108,7 +108,7 @@ public class AfiliadoController {
 
             for(RelPreguntaRespuesta rel : relPreguntaRespuestaDto.getRelPreguntaRespuestas()){
                 if(rel.getRespuesta().getId() == 3){
-                    return "/error/solicitud";
+                  return "/error/solicitud";
                 }
             }
 
@@ -174,6 +174,9 @@ public class AfiliadoController {
 
         Pregunta pregunta;
         Respuesta respuesta;
+        List<String> correos = new ArrayList<>();
+    	JSONArray rPRC = new JSONArray();
+    	JSONObject jsonObjectParameters = new JSONObject();
 
         try {
 
@@ -237,25 +240,17 @@ public class AfiliadoController {
 
                 relPreguntaRespuestaCandidatoService.save(RPRC);
             }
-          //implementa el envio de correos
-            if(servicio!=null) {
-            	Long idC=74L;
-            	List<String> correos = new ArrayList<>();
-            	JSONArray rPRC = new JSONArray();
-            	JSONObject jsonObjectParameters = new JSONObject();
-            	
-            	List<PreguntaRespuestaCandidatoCustom> rPRCService=relPreguntaRespuestaCandidatoService.getPreguntaAndRespuestaBycandidatoById(idC);
+          //implementa el envio de correos            	            	
+            List<PreguntaRespuestaCandidatoCustom> rPRCService=relPreguntaRespuestaCandidatoService.getPreguntaAndRespuestaBycandidatoById(candidato.getId());
             	for(PreguntaRespuestaCandidatoCustom resultadoPRC :rPRCService) {
             		rPRC.put(getDatosJson(resultadoPRC.getPregunta(),resultadoPRC.getRespuesta()));
     				
             	}
+            	//jsonObjectParameters.put("candidato", candidato.getNombre()+" "+candidato.getApellidoPaterno()+" "+candidato.getApellidoMaterno());
             	jsonObjectParameters.put("resultado", rPRC);
-            	 
-            	 correos.add("gama_9416@hotmail.com");
-                  emailController.sendEmailCuestionario(templateCuestionarioId, correos, jsonObjectParameters);
-
-            }
-
+            	correos.add("gama_9416@hotmail.com");
+                emailController.sendEmailCuestionario(templateCuestionarioId, correos, jsonObjectParameters);
+            
             status.setComplete();
             
         } catch (DataIntegrityViolationException e) {
