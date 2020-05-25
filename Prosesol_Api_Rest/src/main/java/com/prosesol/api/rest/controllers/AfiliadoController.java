@@ -2,6 +2,7 @@ package com.prosesol.api.rest.controllers;
 
 import com.prosesol.api.rest.controllers.exception.AfiliadoException;
 import com.prosesol.api.rest.models.entity.*;
+import com.prosesol.api.rest.models.entity.custom.PreguntaRespuestaCandidatoCustom;
 import com.prosesol.api.rest.models.entity.custom.PreguntaRespuestaCustom;
 import com.prosesol.api.rest.models.entity.dto.RelPreguntaRespuestaDto;
 import com.prosesol.api.rest.models.rel.RelPreguntaRespuesta;
@@ -12,6 +13,8 @@ import com.prosesol.api.rest.utils.GenerarClave;
 import com.prosesol.api.rest.utils.Paises;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -25,6 +28,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -74,6 +78,12 @@ public class AfiliadoController {
 
     @Autowired
     private IRelPreguntaRespuestaCandidatoService relPreguntaRespuestaCandidatoService;
+    
+    @Autowired
+    private EmailController emailController;
+    
+    @Value("${template.cuestionario.covid}")
+    private String templateCuestionarioId;
     
     @RequestMapping(value = "/servicio")
     public String seleccionarServicio(Model model) {
@@ -227,6 +237,24 @@ public class AfiliadoController {
 
                 relPreguntaRespuestaCandidatoService.save(RPRC);
             }
+          //implementa el envio de correos
+            if(servicio!=null) {
+            	Long idC=74L;
+            	List<String> correos = new ArrayList<>();
+            	JSONArray rPRC = new JSONArray();
+            	JSONObject jsonObjectParameters = new JSONObject();
+            	
+            	List<PreguntaRespuestaCandidatoCustom> rPRCService=relPreguntaRespuestaCandidatoService.getPreguntaAndRespuestaBycandidatoById(idC);
+            	for(PreguntaRespuestaCandidatoCustom resultadoPRC :rPRCService) {
+            		rPRC.put(getDatosJson(resultadoPRC.getPregunta(),resultadoPRC.getRespuesta()));
+    				
+            	}
+            	jsonObjectParameters.put("resultado", rPRC);
+            	 
+            	 correos.add("gama_9416@hotmail.com");
+                  emailController.sendEmailCuestionario(templateCuestionarioId, correos, jsonObjectParameters);
+
+            }
 
             status.setComplete();
             
@@ -309,6 +337,20 @@ public class AfiliadoController {
         }
 
         return true;
+    }
+    
+    /**
+     * Metodo para los arrays json
+     *
+     * @param pregunta
+     * @param respuesta
+     * @return
+     */
+    public JSONObject getDatosJson(String pregunta, String respuesta){
+    	JSONObject cuestionario = new JSONObject();
+    	   cuestionario.put("pregunta", pregunta);
+    	   cuestionario.put("respuesta", respuesta);
+    	   return cuestionario ;
     }
 
 }

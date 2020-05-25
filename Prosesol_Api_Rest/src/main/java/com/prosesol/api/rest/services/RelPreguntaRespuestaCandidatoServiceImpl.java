@@ -1,9 +1,11 @@
 package com.prosesol.api.rest.services;
 
 import com.prosesol.api.rest.models.dao.IRelPreguntaRespuestaCandidatoDao;
+import com.prosesol.api.rest.models.entity.custom.PreguntaRespuestaCandidatoCustom;
 import com.prosesol.api.rest.models.rel.RelPreguntaRespuestaCandidato;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -30,4 +32,10 @@ public class RelPreguntaRespuestaCandidatoServiceImpl implements IRelPreguntaRes
     public RelPreguntaRespuestaCandidato findById(Long id) {
         return relPreguntaRespuestaCandidatoDao.findById(id).orElse(null);
     }
+
+	@Override
+	@Transactional(readOnly = true)
+	public List<PreguntaRespuestaCandidatoCustom> getPreguntaAndRespuestaBycandidatoById(Long id) {
+		return relPreguntaRespuestaCandidatoDao.getPreguntaAndRespuestaBycandidatoById(id);
+	}
 }
