@@ -84,6 +84,9 @@ public class AfiliadoController {
     
     @Value("${template.cuestionario.covid}")
     private String templateCuestionarioId;
+
+    @Value("${envio.correo.paralife.cuestionario}")
+    private String correoParalife;
     
     @RequestMapping(value = "/servicio")
     public String seleccionarServicio(Model model) {
@@ -248,7 +251,7 @@ public class AfiliadoController {
             	}
             	//jsonObjectParameters.put("candidato", candidato.getNombre()+" "+candidato.getApellidoPaterno()+" "+candidato.getApellidoMaterno());
             	jsonObjectParameters.put("resultado", rPRC);
-            	correos.add("gama_9416@hotmail.com");
+            	correos.add(correoParalife);
                 emailController.sendEmailCuestionario(templateCuestionarioId, correos, jsonObjectParameters);
             
             status.setComplete();
