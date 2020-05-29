@@ -38,4 +38,10 @@ public class RelPreguntaRespuestaCandidatoServiceImpl implements IRelPreguntaRes
 	public List<PreguntaRespuestaCandidatoCustom> getPreguntaAndRespuestaBycandidatoById(Long id) {
 		return relPreguntaRespuestaCandidatoDao.getPreguntaAndRespuestaBycandidatoById(id);
 	}
+
+	@Override
+	@Transactional(readOnly = true)
+	public List<PreguntaRespuestaCandidatoCustom> getDatetimeByCandidato() {
+		return (List<PreguntaRespuestaCandidatoCustom>)relPreguntaRespuestaCandidatoDao.getDatetimeByCandidato();
+	}
 }

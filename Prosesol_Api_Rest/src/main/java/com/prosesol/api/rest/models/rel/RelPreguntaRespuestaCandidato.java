@@ -7,6 +7,7 @@ import com.prosesol.api.rest.models.entity.composite.id.RelPreguntaRespuestaCand
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * @author Luis Enrique Morales Soriano
@@ -32,14 +33,19 @@ public class RelPreguntaRespuestaCandidato implements Serializable {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_respuesta")
     private Respuesta respuesta;
+    
+    @Column(name="fecha_registro")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date fecha;
 
     public RelPreguntaRespuestaCandidato() {
     }
 
-    public RelPreguntaRespuestaCandidato(Candidato candidato, Pregunta pregunta, Respuesta respuesta) {
+    public RelPreguntaRespuestaCandidato(Candidato candidato, Pregunta pregunta, Respuesta respuesta, Date fecha) {
         this.candidato = candidato;
         this.pregunta = pregunta;
         this.respuesta = respuesta;
+        this.fecha = fecha;
     }
 
     public Candidato getCandidato() {
@@ -65,4 +71,14 @@ public class RelPreguntaRespuestaCandidato implements Serializable {
     public void setRespuesta(Respuesta respuesta) {
         this.respuesta = respuesta;
     }
+
+	public Date getFecha() {
+		return fecha;
+	}
+
+	public void setFecha(Date fecha) {
+		this.fecha = fecha;
+	}
+    
+    
 }

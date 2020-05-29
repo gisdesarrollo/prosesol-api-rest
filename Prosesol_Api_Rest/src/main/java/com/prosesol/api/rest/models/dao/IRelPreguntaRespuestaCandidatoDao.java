@@ -19,4 +19,9 @@ public interface IRelPreguntaRespuestaCandidatoDao extends CrudRepository<RelPre
 	            "join rel.respuesta r " +
 	            "where rel.pregunta.id = p.id and rel.respuesta.id = r.id and rel.candidato.id=?1 ")
 	    public List<PreguntaRespuestaCandidatoCustom> getPreguntaAndRespuestaBycandidatoById(@Param("id") Long id);
+	 
+	@Query("select new com.prosesol.api.rest.models.entity.custom.PreguntaRespuestaCandidatoCustom(" +
+	            "rel.candidato.id,rel.fecha) from RelPreguntaRespuestaCandidato rel " +
+	            "group by rel.candidato.id")
+	 public List<PreguntaRespuestaCandidatoCustom> getDatetimeByCandidato();
 }

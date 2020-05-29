@@ -19,4 +19,6 @@ public interface IRelPreguntaRespuestaCandidatoService{
     public RelPreguntaRespuestaCandidato findById(Long id);
     
     public List<PreguntaRespuestaCandidatoCustom> getPreguntaAndRespuestaBycandidatoById(Long id);
+    
+    public List<PreguntaRespuestaCandidatoCustom> getDatetimeByCandidato();
 }
