@@ -28,14 +28,11 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.ZoneId;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Controller
 @RequestMapping("/afiliados")
-@SessionAttributes("respuestas")
+@SessionAttributes({"respuestas", "candidato", "rfc"})
 public class AfiliadoController {
 
     protected static final Log LOG = LogFactory.getLog(AfiliadoController.class);
@@ -87,7 +84,10 @@ public class AfiliadoController {
 
     @Value("${envio.correo.paralife.cuestionario}")
     private String correoParalife;
-    
+
+    @Value("${servicio.covid.id}")
+    private Long servicioCovid;
+
     @RequestMapping(value = "/servicio")
     public String seleccionarServicio(Model model) {
         List<Servicio> servicios = servicioService.findAll();
@@ -126,6 +126,7 @@ public class AfiliadoController {
             model.addAttribute("servicio", servicio);
             model.addAttribute("servicioEmpresa", servicioEmpresa);
             model.addAttribute("respuestas", respuestas);
+            model.addAttribute("servicioCovid", servicioCovid);
 
         }catch (AfiliadoException aE){
             redirect.addFlashAttribute("error", aE.getMessage());
@@ -234,12 +235,18 @@ public class AfiliadoController {
             LOG.info(mensajeFlash);
             candidatoService.save(candidato);
 
+            //Se obtiene la hora local MX
+            Locale locale = new Locale("es", "MX");
+            Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("America/Mexico_City"),
+                    locale);
+            Date fechaMX = calendar.getTime();
+
             // Se guardan las preguntas y respuestas del candidato
             for(RelPreguntaRespuesta PRC : respuestas){
                 pregunta = preguntaService.findById(PRC.getPregunta().getId());
                 respuesta = respuestaService.findById(PRC.getRespuesta().getId());
                 RelPreguntaRespuestaCandidato RPRC = new RelPreguntaRespuestaCandidato(candidato,
-                        pregunta, respuesta);
+                        pregunta, respuesta, fechaMX);
 
                 relPreguntaRespuestaCandidatoService.save(RPRC);
             }
@@ -247,9 +254,9 @@ public class AfiliadoController {
             List<PreguntaRespuestaCandidatoCustom> rPRCService=relPreguntaRespuestaCandidatoService.getPreguntaAndRespuestaBycandidatoById(candidato.getId());
             	for(PreguntaRespuestaCandidatoCustom resultadoPRC :rPRCService) {
             		rPRC.put(getDatosJson(resultadoPRC.getPregunta(),resultadoPRC.getRespuesta()));
-    				
+
             	}
-            	//jsonObjectParameters.put("candidato", candidato.getNombre()+" "+candidato.getApellidoPaterno()+" "+candidato.getApellidoMaterno());
+            	jsonObjectParameters.put("candidato", candidato.getNombre()+" "+candidato.getApellidoPaterno()+" "+candidato.getApellidoMaterno());
             	jsonObjectParameters.put("resultado", rPRC);
             	correos.add(correoParalife);
                 emailController.sendEmailCuestionario(templateCuestionarioId, correos, jsonObjectParameters);
@@ -283,7 +290,8 @@ public class AfiliadoController {
         	Candidato candidato=candidatoService.finById(id);
            
             model.addAttribute("id", id);
-            model.addAttribute("afiliado", candidato);
+            model.addAttribute("candidato", candidato);
+            model.addAttribute("servicioCovid", servicioCovid);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -295,8 +303,21 @@ public class AfiliadoController {
         return "afiliados/bienvenido";
     }
 
-    @RequestMapping(value = "/guardar")
-    public String guardaSaldoAfiliado(Model model, SessionStatus status, RedirectAttributes redirect) {
+    @RequestMapping(value = "/guardar", method = RequestMethod.POST)
+    public String guardaSaldoAfiliado(Candidato candidato,
+                                      Model model, RedirectAttributes redirect) {
+
+        String rfc = candidato.getRfc();
+
+        try{
+            if(candidato.getServicio().getId() == servicioCovid){
+                redirect.addFlashAttribute("rfc", rfc);
+                return "redirect:/pagos/tarjeta";
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
         return "redirect:/";
     }
 

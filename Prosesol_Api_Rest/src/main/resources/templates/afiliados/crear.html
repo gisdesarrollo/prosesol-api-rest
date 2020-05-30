@@ -289,7 +289,7 @@
                                        class="form-control form-control-user">
                             </div>
                         </div>
-                        <div class="pl-lg-4" th:if="${servicio.id} == 79" >
+                        <div class="pl-lg-4" th:if="${servicio.id} == ${servicioCovid}" >
                             <div class="card">
                                 <div class="card-header" id="headingOne">
                                     <h5 class="mb-0">
@@ -316,12 +316,10 @@
                         <div class="clearfix"></div>
                         <div class="row">
                             <div class="col-sm-12">
-                                <button style="background:#3380a9;" type="button" id="disabledButton"
+                                <button style="background:#3380a9;" type="button"
                                         onclick="validaDatosAfiliado()"
                                         class="btn btn-primary btn-square float-right">Crear
-                                    Afiliado
                                 </button>
-
                             </div>
                         </div>
                     </form>
