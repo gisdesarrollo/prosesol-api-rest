@@ -300,14 +300,21 @@
                                         </button>
                                     </h5>
                                 </div>
-                                <div id="collapseOne" class="collapse show" aria-labelledby="headinOne"
+                                <div id="collapseOne" class="collapse show" aria-labelledby="headingOne"
                                      data-parent="#accordion">
                                     <div class="card-body">
-                                        <select class="form-control" th:name="option" required>
-                                            <option value="">Seleccione una opción</option>
-                                            <option th:value="5" >Sí, tengo parentesco directo</option>
-                                            <option th:value="6" >No, no tengo parentesco</option>
-                                        </select>
+                                        <div class="form-group">
+                                            <label class="form-control-label">
+                                                Declaro que yo, mi cónyuge o pariente colateral hasta el segundo grado
+                                                desempeña o ha desempeñado funciones públicas destacadas en un país
+                                                extranjero o en territorio nacional.
+                                            </label>
+                                            <select class="form-control" th:name="option" required>
+                                                <option value="">Seleccione una opción</option>
+                                                <option th:value="5" >Sí, tengo parentesco directo</option>
+                                                <option th:value="6" >No, no tengo parentesco</option>
+                                            </select>
+                                        </div>
                                     </div>
                                 </div>
                             </div>

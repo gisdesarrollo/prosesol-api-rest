@@ -20,6 +20,12 @@ public class GetTemplateByServicio implements IGetTemplateByServicio {
     @Value("${servicio.covid.id}")
     private Long servicioCovid;
 
+    @Value("${servicio.familiar.total.id}")
+    private Long servicioFamiliarTotal;
+
+    @Value("${servicio.sin.fronteras.id}")
+    private Long servicioSinFronteras;
+
     @Override
     public Integer getTemplateByIdServicio(Long id)throws AfiliadoException {
 
@@ -27,7 +33,7 @@ public class GetTemplateByServicio implements IGetTemplateByServicio {
         Integer servicioEmpresa = 0;
 
         if(servicio != null){
-            if(servicio.getId() == 65 || servicio.getId() == 70 ||
+            if(servicio.getId() == servicioFamiliarTotal || servicio.getId() == servicioSinFronteras ||
                     servicio.getId() == servicioCovid){
                 servicioEmpresa = 1;
             }else{

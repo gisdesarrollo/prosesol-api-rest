@@ -109,9 +109,11 @@ public class AfiliadoController {
 
         try {
 
-            for(RelPreguntaRespuesta rel : relPreguntaRespuestaDto.getRelPreguntaRespuestas()){
-                if(rel.getRespuesta().getId() == 3){
-                  return "/error/solicitud";
+            if(id == servicioCovid) {
+                for (RelPreguntaRespuesta rel : relPreguntaRespuestaDto.getRelPreguntaRespuestas()) {
+                    if (rel.getRespuesta().getId() == 3) {
+                        return "/error/solicitud";
+                    }
                 }
             }
 
@@ -241,25 +243,37 @@ public class AfiliadoController {
                     locale);
             Date fechaMX = calendar.getTime();
 
-            // Se guardan las preguntas y respuestas del candidato
-            for(RelPreguntaRespuesta PRC : respuestas){
-                pregunta = preguntaService.findById(PRC.getPregunta().getId());
-                respuesta = respuestaService.findById(PRC.getRespuesta().getId());
-                RelPreguntaRespuestaCandidato RPRC = new RelPreguntaRespuestaCandidato(candidato,
-                        pregunta, respuesta, fechaMX);
+            if(candidato.getServicio().getId() == servicioCovid) {
+                Pregunta preguntaOpcion = preguntaService.findById(4L);
+                new Respuesta();
+                Respuesta respuestaOpcion;
+                respuestaOpcion = respuestaService.findById(option);
+                RelPreguntaRespuesta relPreguntaRespuesta =
+                        new RelPreguntaRespuesta(preguntaOpcion, respuestaOpcion);
 
-                relPreguntaRespuestaCandidatoService.save(RPRC);
-            }
-          //implementa el envio de correos            	            	
-            List<PreguntaRespuestaCandidatoCustom> rPRCService=relPreguntaRespuestaCandidatoService.getPreguntaAndRespuestaBycandidatoById(candidato.getId());
-            	for(PreguntaRespuestaCandidatoCustom resultadoPRC :rPRCService) {
-            		rPRC.put(getDatosJson(resultadoPRC.getPregunta(),resultadoPRC.getRespuesta()));
+                respuestas.add(relPreguntaRespuesta);
 
-            	}
-            	jsonObjectParameters.put("candidato", candidato.getNombre()+" "+candidato.getApellidoPaterno()+" "+candidato.getApellidoMaterno());
-            	jsonObjectParameters.put("resultado", rPRC);
-            	correos.add(correoParalife);
+                // Se guardan las preguntas y respuestas del candidato
+                for (RelPreguntaRespuesta PRC : respuestas) {
+                    pregunta = preguntaService.findById(PRC.getPregunta().getId());
+                    respuesta = respuestaService.findById(PRC.getRespuesta().getId());
+
+                    RelPreguntaRespuestaCandidato RPRC = new RelPreguntaRespuestaCandidato(candidato,
+                            pregunta, respuesta, fechaMX);
+
+                    relPreguntaRespuestaCandidatoService.save(RPRC);
+                }
+                //implementa el envio de correos
+                List<PreguntaRespuestaCandidatoCustom> rPRCService = relPreguntaRespuestaCandidatoService.getPreguntaAndRespuestaBycandidatoById(candidato.getId());
+                for (PreguntaRespuestaCandidatoCustom resultadoPRC : rPRCService) {
+                    rPRC.put(getDatosJson(resultadoPRC.getPregunta(), resultadoPRC.getRespuesta()));
+
+                }
+                jsonObjectParameters.put("candidato", candidato.getNombre() + " " + candidato.getApellidoPaterno() + " " + candidato.getApellidoMaterno());
+                jsonObjectParameters.put("resultado", rPRC);
+                correos.add(correoParalife);
                 emailController.sendEmailCuestionario(templateCuestionarioId, correos, jsonObjectParameters);
+            }
             
             status.setComplete();
             

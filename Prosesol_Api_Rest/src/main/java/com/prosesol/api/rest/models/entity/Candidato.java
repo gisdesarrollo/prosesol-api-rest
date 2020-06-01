@@ -1,6 +1,7 @@
 package com.prosesol.api.rest.models.entity;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import javax.persistence.*;
@@ -146,6 +147,10 @@ public class Candidato implements Serializable{
 
 	@OneToMany(mappedBy = "candidato", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<RelPreguntaRespuestaCandidato> relPreguntaRespuestaCandidato;
+
+	public Candidato(){
+		relPreguntaRespuestaCandidato = new ArrayList<>();
+	}
 
 	@Transient
 	private Integer corte;
