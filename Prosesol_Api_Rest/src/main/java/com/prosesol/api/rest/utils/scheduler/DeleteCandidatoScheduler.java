@@ -6,6 +6,9 @@ import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
+import java.util.TimeZone;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,29 +38,39 @@ public class DeleteCandidatoScheduler {
 		String formatoFecha = "yyyy-dd-MM HH:mm";
 		SimpleDateFormat SDF = new SimpleDateFormat(formatoFecha);
 		DateTimeFormatter DTF = DateTimeFormatter.ofPattern(formatoFecha);
-		String fechaHoy = SDF.format(new Date());
 		String fechaCandidato;
+		Locale locale = new Locale("es", "MX");
+        Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("America/Mexico_City"),
+                locale);
+        Date fechaMX = calendar.getTime();
+        String fechaHoy = SDF.format(fechaMX);
+        
+		try {
+			List<PreguntaRespuestaCandidatoCustom> listaFechas = relPreguntaRespuestaCandidatoService
+					.getDatetimeByCandidato();
+			for (PreguntaRespuestaCandidatoCustom lista : listaFechas) {
 
-		List<PreguntaRespuestaCandidatoCustom> listaFechas = relPreguntaRespuestaCandidatoService
-				.getDatetimeByCandidato();
-		for (PreguntaRespuestaCandidatoCustom lista : listaFechas) {
-			
-			fechaCandidato = SDF.format(lista.getFecha());
-			LocalDateTime fechaC = LocalDateTime.parse(fechaCandidato, DTF);
-			LocalDateTime fechaH = LocalDateTime.parse(fechaHoy, DTF);
+				if (lista.getFecha() != null) {
+					fechaCandidato = SDF.format(lista.getFecha());
+					LocalDateTime fechaC = LocalDateTime.parse(fechaCandidato, DTF);
+					LocalDateTime fechaH = LocalDateTime.parse(fechaHoy, DTF);
 
-			//Asigna tiempo de 24 horas para expirar
-			fechaC = fechaC.plusHours(24);
-			// valida si el tiempo a expirado
-			if (fechaC.isBefore(fechaH)) {
-				candidatoService.deleteById(lista.getIdAfiliado());
-				LOG.info("El candidato se eliminó correctamente por tiempo de expiración");
+					// Asigna tiempo de 24 horas para expirar
+					fechaC = fechaC.plusHours(24);
+					// valida si el tiempo a expirado
+					if (fechaC.isBefore(fechaH)) {
+						candidatoService.deleteById(lista.getIdAfiliado());
+						LOG.info("El candidato se eliminó correctamente por tiempo de expiración");
+					}
+					if (fechaC.isEqual(fechaH)) {
+						candidatoService.deleteById(lista.getIdAfiliado());
+						LOG.info("El candidato se eliminó correctamente por tiempo de expiración");
+					}
+
+				}
 			}
-			if (fechaC.isEqual(fechaH)) {
-				candidatoService.deleteById(lista.getIdAfiliado());
-				LOG.info("El candidato se eliminó correctamente por tiempo de expiración");
-			}
-
+		} catch (Exception e) {
+			LOG.info("Error al momento de ejecutar el cron ",e);
 		}
 	}
 }
