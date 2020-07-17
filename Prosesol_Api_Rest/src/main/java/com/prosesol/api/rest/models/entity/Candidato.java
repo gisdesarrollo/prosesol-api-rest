@@ -148,8 +148,20 @@ public class Candidato implements Serializable{
 	@Transient
 	private Integer corte;
 
-	@Transient
+	@Column(name = "ciudad")
 	private String ciudad;
+
+	@Column(name = "calle")
+	private String calle;
+
+	@Column(name = "colonia")
+	private String colonia;
+
+	@Column(name = "no_interior")
+	private Integer noInterior;
+
+	@Column(name = "no_exterior")
+	private Integer noExterior;
 
 	@OneToMany(mappedBy = "candidato", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<RelPreguntaRespuestaCandidato> relPreguntaRespuestaCandidato;
@@ -466,6 +478,46 @@ public class Candidato implements Serializable{
 		this.relPreguntaRespuestaCandidato = relPreguntaRespuestaCandidato;
 	}
 
+	public String getCiudad() {
+		return ciudad;
+	}
+
+	public void setCiudad(String ciudad) {
+		this.ciudad = ciudad;
+	}
+
+	public String getCalle() {
+		return calle;
+	}
+
+	public void setCalle(String calle) {
+		this.calle = calle;
+	}
+
+	public String getColonia() {
+		return colonia;
+	}
+
+	public void setColonia(String colonia) {
+		this.colonia = colonia;
+	}
+
+	public Integer getNoInterior() {
+		return noInterior;
+	}
+
+	public void setNoInterior(Integer noInterior) {
+		this.noInterior = noInterior;
+	}
+
+	public Integer getNoExterior() {
+		return noExterior;
+	}
+
+	public void setNoExterior(Integer noExterior) {
+		this.noExterior = noExterior;
+	}
+
 	@Override
 	public String toString() {
 		return "Candidato{" +
@@ -505,6 +557,11 @@ public class Candidato implements Serializable{
 				", isInscripcion=" + isInscripcion +
 				", periodicidad=" + periodicidad +
 				", corte=" + corte +
+				", ciudad=" + ciudad +
+				", colonia=" + colonia +
+				", calle=" + calle +
+				", noInterior=" + noInterior +
+				", noExterior=" + noExterior +
 				'}';
 	}
 }

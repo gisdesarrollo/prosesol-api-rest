@@ -144,19 +144,19 @@ public class Afiliado implements Serializable {
 	@Transient
 	private Integer corte;
 
-	@Transient
+	@Column(name = "calle")
 	private String calle;
 
-	@Transient
+	@Column(name = "colonia")
 	private String colonia;
 
-	@Transient
+	@Column(name = "no_interior")
 	private Integer noInterior;
 
-	@Transient
+	@Column(name = "no_exterior")
 	private Integer noExterior;
 
-	@Transient
+	@Column(name = "ciudad")
 	private String ciudad;
 
 	public Long getId() {
