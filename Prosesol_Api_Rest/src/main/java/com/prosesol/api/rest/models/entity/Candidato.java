@@ -145,15 +145,18 @@ public class Candidato implements Serializable{
 	@JoinColumn(name = "id_periodicidad")
 	private Periodicidad periodicidad;
 
+	@Transient
+	private Integer corte;
+
+	@Transient
+	private String ciudad;
+
 	@OneToMany(mappedBy = "candidato", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<RelPreguntaRespuestaCandidato> relPreguntaRespuestaCandidato;
 
 	public Candidato(){
 		relPreguntaRespuestaCandidato = new ArrayList<>();
 	}
-
-	@Transient
-	private Integer corte;
 
 	public Long getId() {
 		return id;
@@ -465,18 +468,43 @@ public class Candidato implements Serializable{
 
 	@Override
 	public String toString() {
-		return "Candidato [id=" + id + ", clave=" + clave + ", nombre=" + nombre + ", apellidoPaterno="
-				+ apellidoPaterno + ", apellidoMaterno=" + apellidoMaterno + ", fechaNacimiento=" + fechaNacimiento
-				+ ", lugarNacimiento=" + lugarNacimiento + ", estadoCivil=" + estadoCivil + ", ocupacion=" + ocupacion
-				+ ", sexo=" + sexo + ", pais=" + pais + ", curp=" + curp + ", nss=" + nss + ", rfc=" + rfc
-				+ ", telefonoFijo=" + telefonoFijo + ", telefonoMovil=" + telefonoMovil + ", email=" + email
-				+ ", direccion=" + direccion + ", municipio=" + municipio + ", codigoPostal=" + codigoPostal
-				+ ", entidadFederativa=" + entidadFederativa + ", infonavit=" + infonavit + ", numeroInfonavit="
-				+ numeroInfonavit + ", fechaAlta=" + fechaAlta + ", fechaAfiliacion=" + fechaAfiliacion
-				+ ", fechaCorte=" + fechaCorte + ", saldoAcumulado=" + saldoAcumulado + ", saldoCorte=" + saldoCorte
-				+ ", estatus=" + estatus + ", inscripcion=" + inscripcion + ", servicio=" + servicio + ", comentarios="
-				+ comentarios + ", isBeneficiario=" + isBeneficiario + ", isInscripcion=" + isInscripcion
-				+ ", periodicidad=" + periodicidad + ", corte=" + corte + "]";
+		return "Candidato{" +
+				"id=" + id +
+				", clave='" + clave + '\'' +
+				", nombre='" + nombre + '\'' +
+				", apellidoPaterno='" + apellidoPaterno + '\'' +
+				", apellidoMaterno='" + apellidoMaterno + '\'' +
+				", fechaNacimiento=" + fechaNacimiento +
+				", lugarNacimiento='" + lugarNacimiento + '\'' +
+				", estadoCivil='" + estadoCivil + '\'' +
+				", ocupacion='" + ocupacion + '\'' +
+				", sexo='" + sexo + '\'' +
+				", pais='" + pais + '\'' +
+				", curp='" + curp + '\'' +
+				", nss=" + nss +
+				", rfc='" + rfc + '\'' +
+				", telefonoFijo=" + telefonoFijo +
+				", telefonoMovil=" + telefonoMovil +
+				", email='" + email + '\'' +
+				", direccion='" + direccion + '\'' +
+				", municipio='" + municipio + '\'' +
+				", codigoPostal=" + codigoPostal +
+				", entidadFederativa='" + entidadFederativa + '\'' +
+				", infonavit='" + infonavit + '\'' +
+				", numeroInfonavit=" + numeroInfonavit +
+				", fechaAlta=" + fechaAlta +
+				", fechaAfiliacion=" + fechaAfiliacion +
+				", fechaCorte=" + fechaCorte +
+				", saldoAcumulado=" + saldoAcumulado +
+				", saldoCorte=" + saldoCorte +
+				", estatus=" + estatus +
+				", inscripcion=" + inscripcion +
+				", servicio=" + servicio +
+				", comentarios='" + comentarios + '\'' +
+				", isBeneficiario=" + isBeneficiario +
+				", isInscripcion=" + isInscripcion +
+				", periodicidad=" + periodicidad +
+				", corte=" + corte +
+				'}';
 	}
-
 }

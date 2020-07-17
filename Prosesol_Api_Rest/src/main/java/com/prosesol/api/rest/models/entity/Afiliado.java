@@ -144,6 +144,21 @@ public class Afiliado implements Serializable {
 	@Transient
 	private Integer corte;
 
+	@Transient
+	private String calle;
+
+	@Transient
+	private String colonia;
+
+	@Transient
+	private Integer noInterior;
+
+	@Transient
+	private Integer noExterior;
+
+	@Transient
+	private String ciudad;
+
 	public Long getId() {
 		return id;
 	}
@@ -436,6 +451,50 @@ public class Afiliado implements Serializable {
 		this.periodicidad = periodicidad;
 	}
 
+	public void setInscripcion(Boolean inscripcion) {
+		isInscripcion = inscripcion;
+	}
+
+	public String getCalle() {
+		return calle;
+	}
+
+	public void setCalle(String calle) {
+		this.calle = calle;
+	}
+
+	public String getColonia() {
+		return colonia;
+	}
+
+	public void setColonia(String colonia) {
+		this.colonia = colonia;
+	}
+
+	public Integer getNoInterior() {
+		return noInterior;
+	}
+
+	public void setNoInterior(Integer noInterior) {
+		this.noInterior = noInterior;
+	}
+
+	public Integer getNoExterior() {
+		return noExterior;
+	}
+
+	public void setNoExterior(Integer noExterior) {
+		this.noExterior = noExterior;
+	}
+
+	public String getCiudad() {
+		return ciudad;
+	}
+
+	public void setCiudad(String ciudad) {
+		this.ciudad = ciudad;
+	}
+
 	@Override
 	public String toString() {
 		return "Afiliado{" +
@@ -469,9 +528,17 @@ public class Afiliado implements Serializable {
 				", saldoCorte=" + saldoCorte +
 				", estatus=" + estatus +
 				", inscripcion=" + inscripcion +
+				", servicio=" + servicio +
 				", comentarios='" + comentarios + '\'' +
 				", isBeneficiario=" + isBeneficiario +
+				", isInscripcion=" + isInscripcion +
+				", periodicidad=" + periodicidad +
 				", corte=" + corte +
+				", calle='" + calle + '\'' +
+				", colonia='" + colonia + '\'' +
+				", ciudad='" + ciudad + '\'' +
+				", noInterior=" + noInterior +
+				", noExterior=" + noExterior +
 				'}';
 	}
 }

@@ -186,6 +186,8 @@ public class AfiliadoController {
 
         try {
 
+            System.out.println(candidato.toString());
+
             Afiliado buscarAfiliadoExistente = afiliadoService.findByRfc(candidato.getRfc());
         	Candidato buscarCandidatoExistente=candidatoService.findByRfc(candidato.getRfc());
         	Servicio servicio = servicioService.findById(candidato.getServicio().getId());

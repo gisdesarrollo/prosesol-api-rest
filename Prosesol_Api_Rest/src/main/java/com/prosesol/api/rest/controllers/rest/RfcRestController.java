@@ -1,12 +1,10 @@
-package com.prosesol.api.rest.controllers.utils;
+package com.prosesol.api.rest.controllers.rest;
 
 import com.josketres.rfcfacil.Rfc;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -23,8 +21,7 @@ public class RfcRestController {
     public String generarRfc(@RequestParam(value = "nombre")String nombre,
                              @RequestParam(value = "apellidoPaterno")String apellidoPaterno,
                              @RequestParam(value = "apellidoMaterno")String apellidoMaterno,
-                             @RequestParam(value = "fechaNacimiento")String fechaNacimiento,
-                             HttpServletRequest request, HttpServletResponse response){
+                             @RequestParam(value = "fechaNacimiento")String fechaNacimiento){
 
         Rfc rfc = null;
 

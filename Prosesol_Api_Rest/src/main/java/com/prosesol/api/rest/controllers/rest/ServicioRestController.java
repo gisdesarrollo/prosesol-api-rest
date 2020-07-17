@@ -1,4 +1,4 @@
-package com.prosesol.api.rest.controllers;
+package com.prosesol.api.rest.controllers.rest;
 
 import com.prosesol.api.rest.controllers.exception.AfiliadoException;
 import com.prosesol.api.rest.models.entity.Servicio;

@@ -236,37 +236,6 @@
                             </div>
 
                             <div class="form-group col-md-3" th:if="${servicioEmpresa} == 1">
-                                <label>Dirección</label><input type="text" id="direccion"
-                                                               th:field="*{direccion}"
-                                                               class="form-control form-control-user"
-                                                               placeholder="">
-                                <small class="form-text text-danger"
-                                       th:if="${#fields.hasErrors('direccion')}"
-                                       th:errors="*{direccion}"></small>
-                            </div>
-
-                            <div class="form-group col-md-3" th:if="${servicioEmpresa} == 1">
-                                <label>Municipio</label><input type="text" id="municipio"
-                                                               th:field="*{municipio}"
-                                                               class="form-control form-control-user"
-                                                               placeholder="">
-                                <small class="form-text text-danger"
-                                       th:if="${#fields.hasErrors('municipio')}"
-                                       th:errors="*{municipio}"></small>
-                            </div>
-
-                            <div class="form-group col-md-3" th:if="${servicioEmpresa} == 1">
-                                <label>Entidad Federativa</label> <select
-                                    name="entidadFederativa" th:field="*{entidadFederativa}"
-                                    class="form-control form-control-line">
-                                <option th:each="estado : ${estados}" th:value="${estado}"
-                                        th:text="${estado}" th:selected="false"/>
-                            </select><small class="form-text text-danger"
-                                            th:if="${#fields.hasErrors('entidadFederativa')}"
-                                            th:errors="*{entidadFederativa}"></small>
-                            </div>
-
-                            <div class="form-group col-md-3" th:if="${servicioEmpresa} == 1">
                                 <label>Código Postal</label><input type="text" id="codigoPostal"
                                                                    th:field="*{codigoPostal}"
                                                                    class="form-control form-control-user"
@@ -274,6 +243,87 @@
                                 <small class="form-text text-danger"
                                        th:if="${#fields.hasErrors('codigoPostal')}"
                                        th:errors="*{codigoPostal}"></small>
+                                <p>Ingresa tu código postal</p>
+                                <input type="button" id="generarCodigoPostal" name="generarCodigoPostal"
+                                       value="Buscar" onclick="getZipCode()">
+                            </div>
+
+                            <!-- CAMBIAR EL CAMPO, QUE SE LLENE CON LOS DATOS DEL SERVICIO -->
+                            <div class="form-group col-md-3" th:if="${servicioEmpresa} == 1">
+                                <label>Entidad Federativa</label>
+                                <input type="text" id="entidadFederativa"
+                                       th:field="*{entidadFederativa}"
+                                       class="form-control form-control-user"
+                                       disabled>
+                                <small class="form-text text-danger"
+                                            th:if="${#fields.hasErrors('entidadFederativa')}"
+                                            th:errors="*{entidadFederativa}"></small>
+                            </div>
+
+                            <div class="form-group col-md-3" th:if="${servicioEmpresa} == 1">
+                                <label>Municipio/Delegación</label>
+                                <input type="text" id="municipio"
+                                       th:field="*{municipio}"
+                                       class="form-control form-control-user"
+                                       disabled>
+                                <small class="form-text text-danger"
+                                       th:if="${#fields.hasErrors('municipio')}"
+                                       th:errors="*{municipio}"></small>
+                            </div>
+
+                            <div class="form-group col-md-3" th:if="${servicioEmpresa} == 1">
+                                <label>Ciudad</label>
+                                <input type="text" id="ciudad"
+                                       th:field="*{ciudad}"
+                                       class="form-control form-control-user"
+                                       disabled>
+                                <small class="form-text text-danger"
+                                       th:if="${#fields.hasErrors('ciudad')}"
+                                       th:errors="*{ciudad}"></small>
+                            </div>
+
+                            <div class="form-group col-md-3" th:if="${servicioEmpresa} == 1">
+                                <label>Colonia</label>
+                                <select id="colonia"
+                                    name="colonia" th:field="*{colonia}"
+                                    class="form-control form-control-line">
+                                </select>
+                                <small class="form-text text-danger"
+                                       th:if="${#fields.hasErrors('colonia')}"
+                                       th:errors="*{colonia}"></small>
+                            </div>
+
+                            <div class="form-group col-md-3" th:if="${servicioEmpresa} == 1">
+                                <label>Calle</label>
+                                <input type="text" id="calle"
+                                       th:field="*{calle}"
+                                       class="form-control form-control-user"
+                                       placeholder="">
+                                <small class="form-text text-danger"
+                                       th:if="${#fields.hasErrors('calle')}"
+                                       th:errors="*{calle}"></small>
+                            </div>
+
+                            <div class="form-group col-md-3" th:if="${servicioEmpresa} == 1">
+                                <label>No. Interior</label>
+                                <input type="text" id="noInterior"
+                                       th:field="*{noInterior}"
+                                       class="form-control form-control-user"
+                                       placeholder="">
+                                <small class="form-text text-danger"
+                                       th:if="${#fields.hasErrors('noInterior')}"
+                                       th:errors="*{noInterior}"></small>
+                            </div>
+
+                            <div class="form-group col-md-3" th:if="${servicioEmpresa} == 1">
+                                <label>No. Exterior</label>
+                                <input type="text" id="noExterior"
+                                       th:field="*{noExterior}"
+                                       class="form-control form-control-user"
+                                       placeholder="">
+                                <small class="form-text text-danger"
+                                       th:if="${#fields.hasErrors('noExterior')}"
+                                       th:errors="*{noExterior}"></small>
                             </div>
 
                             <div class="form-group col-md-3">
@@ -340,6 +390,7 @@
 </div>
 <script src="/js/crearAfiliado.js"></script>
 <script th:src="@{/js/rfc.js}"></script>
+<script th:src="@{/js/zipCode.js}"></script>
 <script th:src="@{/js/datepicker.js}"></script>
 <script th:src="@{/js/datepicker.es-ES.js}"></script>
 <script th:src="@{/js/hostUrl.js}"></script>
