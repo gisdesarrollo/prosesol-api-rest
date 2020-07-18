@@ -169,6 +169,7 @@ public class AfiliadoController {
                           @ModelAttribute(name = "respuestas")
                                   List<RelPreguntaRespuesta> respuestas,
                           @RequestParam(value = "option") Long option,
+                          @RequestParam(name = "formPersonExpuesta[]", required = false) List<String> formPersonExpuesta,
                           RedirectAttributes redirect,
                           SessionStatus status) {
 
@@ -185,7 +186,6 @@ public class AfiliadoController {
     	JSONObject jsonObjectParameters = new JSONObject();
 
         try {
-
             System.out.println(candidato.toString());
 
             Afiliado buscarAfiliadoExistente = afiliadoService.findByRfc(candidato.getRfc());
