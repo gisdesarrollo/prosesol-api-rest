@@ -361,11 +361,49 @@
                                                 desempeña o ha desempeñado funciones públicas destacadas en un país
                                                 extranjero o en territorio nacional.
                                             </label>
-                                            <select class="form-control" th:name="option" required>
+                                            <select class="form-control" th:name="option" required >
                                                 <option value="">Seleccione una opción</option>
-                                                <option th:value="5" >Sí, tengo parentesco directo</option>
-                                                <option th:value="6" >No, no tengo parentesco</option>
+                                                <option id="si" th:value="5" >Sí, tengo parentesco directo</option>
+                                                <option id="no" th:value="6" >No, no tengo parentesco</option>
                                             </select>
+                                      <div class="formulario" id="for" style="display:none"><br>
+                 							<div class="form-group">
+													<label class="col-md-12">Nombre</label>
+												<div class="col-md-12">
+													<input type="text" id="nombPariente" name="formPersonExpuesta[]"
+							  			 		class="form-control form-control-line" >
+											</div>
+										</div>
+										<div class="form-group">
+													<label class="col-md-12">Apellidos</label>
+												<div class="col-md-12">
+													<input type="text" id="apellPariente" name="formPersonExpuesta[]"
+							  			 		class="form-control form-control-line" >
+											</div>
+										</div>
+										<div class="form-group">
+													<label class="col-md-12">Cargo</label>
+												<div class="col-md-12">
+													<input type="text" id="cargoPariente" name="formPersonExpuesta[]"
+							  			 		class="form-control form-control-line" >
+											</div>
+										</div>
+										<div class="form-group">
+													<label class="col-md-12">Parentesco</label>
+												<div class="col-md-12">
+													<input type="text" id="parentPariente" name="formPersonExpuesta[]"
+							  			 		class="form-control form-control-line" >
+											</div>
+										</div>
+										<div class="form-group">
+													<label class="col-md-12">Periodo</label>
+												<div class="col-md-12">
+													<input type="text" id="periodPariente" name="formPersonExpuesta[]"
+							  			 		class="form-control form-control-line" >
+											</div>
+										</div>
+												
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -382,7 +420,7 @@
                             </div>
                         </div>
                     </form>
-
+			
                 </div>
 
             </div>
@@ -396,6 +434,7 @@
 <script th:src="@{/js/datepicker.js}"></script>
 <script th:src="@{/js/datepicker.es-ES.js}"></script>
 <script th:src="@{/js/hostUrl.js}"></script>
+<script th:src="@{/js/activaFormulario.js}"></script>
 </body>
 
 </html>
