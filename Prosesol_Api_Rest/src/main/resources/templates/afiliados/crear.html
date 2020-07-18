@@ -254,7 +254,9 @@
                                 <input type="text" id="entidadFederativa"
                                        th:field="*{entidadFederativa}"
                                        class="form-control form-control-user"
-                                       disabled>
+                                       placeholder=""
+                                       readonly
+                                >
                                 <small class="form-text text-danger"
                                             th:if="${#fields.hasErrors('entidadFederativa')}"
                                             th:errors="*{entidadFederativa}"></small>
@@ -263,10 +265,9 @@
                             <div class="form-group col-md-3" th:if="${servicioEmpresa} == 1">
                                 <label>Municipio/Delegación</label>
                                 <input type="text" id="municipio"
-                                       th:name="*{municipio}"
                                        th:field="*{municipio}"
                                        class="form-control form-control-user"
-                                       disabled>
+                                       readonly>
                                 <small class="form-text text-danger"
                                        th:if="${#fields.hasErrors('municipio')}"
                                        th:errors="*{municipio}"></small>
@@ -275,10 +276,9 @@
                             <div class="form-group col-md-3" th:if="${servicioEmpresa} == 1">
                                 <label>Ciudad</label>
                                 <input type="text" id="ciudad"
-                                       name="ciudad"
-                                       field="ciudad"
+                                       th:field="*{ciudad}"
                                        class="form-control form-control-user"
-                                       disabled>
+                                       readonly>
                                 <small class="form-text text-danger"
                                        th:if="${#fields.hasErrors('ciudad')}"
                                        th:errors="*{ciudad}"></small>
