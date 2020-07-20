@@ -1,12 +1,14 @@
-$("#si").click(function(event){
-	document.getElementById("for").style.display = "block";
-	 
-	});
-$("#no").click(function(event){
-	document.getElementById("for").style.display = "none";
-	$('#nombPariente').val('');
-	$('#apellPariente').val('');
-	$('#cargoPariente').val('');
-	$('#parentPariente').val('');
-	$('#periodPariente').val('');
-	});
+function showFormulario()
+{
+	var resultado = document.getElementById('selector').value;
+	if(resultado==5){
+		document.getElementById('activeform').style.display = 'block';
+	}else{
+		document.getElementById('activeform').style.display = 'none';
+		$('#nombPariente').val('');
+		$('#apellPariente').val('');
+		$('#cargoPariente').val('');
+		$('#parentPariente').val('');
+		$('#periodPariente').val('');
+	}
+}

@@ -361,12 +361,12 @@
                                                 desempeña o ha desempeñado funciones públicas destacadas en un país
                                                 extranjero o en territorio nacional.
                                             </label>
-                                            <select class="form-control" th:name="option" required >
+                                            <select class="form-control" id="selector" th:name="option" required onchange="showFormulario();" >
                                                 <option value="">Seleccione una opción</option>
                                                 <option id="si" th:value="5" >Sí, tengo parentesco directo</option>
                                                 <option id="no" th:value="6" >No, no tengo parentesco</option>
                                             </select>
-                                      <div class="formulario" id="for" style="display:none"><br>
+                                      <div class="formulario" id="activeform" style="display:none"><br>
                  							<div class="form-group">
 													<label class="col-md-12">Nombre</label>
 												<div class="col-md-12">
