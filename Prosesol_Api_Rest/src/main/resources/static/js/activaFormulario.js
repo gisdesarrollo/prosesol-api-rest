@@ -1,7 +1,7 @@
 function showFormulario()
 {
 	var resultado = document.getElementById('selector').value;
-	if(resultado==5){
+	if(resultado==1){
 		document.getElementById('activeform').style.display = 'block';
 	}else{
 		document.getElementById('activeform').style.display = 'none';
