@@ -5,7 +5,7 @@ import com.prosesol.api.rest.models.entity.Candidato;
 
 public interface ICandidatoService {
 
-    public Candidato finById(Long id);
+    public Candidato findById(Long id);
 
     public void save(Candidato candidato);
 

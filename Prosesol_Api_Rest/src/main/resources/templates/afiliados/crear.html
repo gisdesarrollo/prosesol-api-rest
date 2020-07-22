@@ -236,6 +236,15 @@
                             </div>
 
                             <div class="form-group col-md-3" th:if="${servicioEmpresa} == 1">
+                                <label>Ocupación</label><input type="text"
+                                                                        th:field="*{ocupacion}"
+                                                                        class="form-control form-control-user"
+                                                                        placeholder=""> <small
+                                    class="form-text text-danger"
+                                    th:if="${#fields.hasErrors('ocupacion')}" th:errors="*{ocupacion}"></small>
+                            </div>
+
+                            <div class="form-group col-md-3" th:if="${servicioEmpresa} == 1">
                                 <label>Código Postal</label><input type="text" id="codigoPostal"
                                                                    th:field="*{codigoPostal}"
                                                                    class="form-control form-control-user"
@@ -248,7 +257,6 @@
                                        value="Buscar" onclick="getZipCode()">
                             </div>
 
-                            <!-- CAMBIAR EL CAMPO, QUE SE LLENE CON LOS DATOS DEL SERVICIO -->
                             <div class="form-group col-md-3" th:if="${servicioEmpresa} == 1">
                                 <label>Entidad Federativa</label>
                                 <input type="text" id="entidadFederativa"
@@ -363,8 +371,8 @@
                                             </label>
                                             <select class="form-control" th:name="option" required >
                                                 <option value="">Seleccione una opción</option>
-                                                <option id="si" th:value="5" >Sí, tengo parentesco directo</option>
-                                                <option id="no" th:value="6" >No, no tengo parentesco</option>
+                                                <option id="si" th:value="1" >Sí, tengo parentesco directo</option>
+                                                <option id="no" th:value="2" >No, no tengo parentesco</option>
                                             </select>
                                       <div class="formulario" id="for" style="display:none"><br>
                  							<div class="form-group">

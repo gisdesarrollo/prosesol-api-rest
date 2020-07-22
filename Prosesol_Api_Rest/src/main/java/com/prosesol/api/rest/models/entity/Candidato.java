@@ -555,7 +555,6 @@ public class Candidato implements Serializable{
 				", comentarios='" + comentarios + '\'' +
 				", isBeneficiario=" + isBeneficiario +
 				", isInscripcion=" + isInscripcion +
-				", periodicidad=" + periodicidad +
 				", corte=" + corte +
 				", ciudad=" + ciudad +
 				", colonia=" + colonia +

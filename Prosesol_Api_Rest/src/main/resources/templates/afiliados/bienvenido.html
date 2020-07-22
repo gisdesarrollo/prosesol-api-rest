@@ -146,6 +146,11 @@
 							   class="form-control form-control-line" disabled>
 					</div>
 				</div>
+				<div class="form-group" th:if="*{servicio.id} == ${servicioCovid}">
+					<div class="col-md-12">
+						<a th:href="${urlPdf}">Obtenga su poliza de seguro aquí</a>
+					</div>
+				</div>
 				<div class="form-group" th:if="*{servicio.id} != ${servicioCovid}">
 					<div class="col-sm-12">
 						<button style="position:relative; right:30px;background:#3380a9;"

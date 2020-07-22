@@ -21,7 +21,7 @@ public class CandidatoServiceImpl implements ICandidatoService {
 
     @Override
     @Transactional(readOnly = true)
-    public Candidato finById(Long id) {
+    public Candidato findById(Long id) {
         return candidatoDao.findById(id).orElse(null);
     }
 

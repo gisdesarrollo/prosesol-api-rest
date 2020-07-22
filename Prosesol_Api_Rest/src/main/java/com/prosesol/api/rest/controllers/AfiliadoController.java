@@ -17,6 +17,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -24,6 +25,10 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.io.*;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -32,8 +37,9 @@ import java.util.*;
 
 @Controller
 @RequestMapping("/afiliados")
-@SessionAttributes({"respuestas", "candidato", "rfc"})
-public class AfiliadoController {
+@SessionAttributes({"respuestas", "candidato", "rfc", "urlPdf"})
+@PropertySource({"classpath:hostname.properties", "classpath:application.properties"})
+public class AfiliadoController implements IHttpUrlConnection{
 
     protected static final Log LOG = LogFactory.getLog(AfiliadoController.class);
 
@@ -42,6 +48,15 @@ public class AfiliadoController {
 
     @Value("${afiliado.servicio.total.id}")
     private Long idTotal;
+
+    @Value("${email.bc4nb.login}")
+    private String emailLogin;
+
+    @Value("${password.bc4nb.login}")
+    private String passwordLogin;
+
+    @Value("${api.url.insurance}")
+    private String urlInsurance;
 
     @Autowired
     private CalcularFecha calcularFechas;
@@ -78,6 +93,9 @@ public class AfiliadoController {
     
     @Autowired
     private EmailController emailController;
+
+    @Autowired
+    private IGetTokenService getTokenService;
     
     @Value("${template.cuestionario.covid}")
     private String templateCuestionarioId;
@@ -108,6 +126,7 @@ public class AfiliadoController {
         List<RelPreguntaRespuesta> respuestas = relPreguntaRespuestaDto.getRelPreguntaRespuestas();
 
         try {
+
 
             if(id == servicioCovid) {
                 for (RelPreguntaRespuesta rel : relPreguntaRespuestaDto.getRelPreguntaRespuestas()) {
@@ -168,8 +187,10 @@ public class AfiliadoController {
     public String guardar(Candidato candidato,
                           @ModelAttribute(name = "respuestas")
                                   List<RelPreguntaRespuesta> respuestas,
-                          @RequestParam(value = "option") Long option,
-                          @RequestParam(name = "formPersonExpuesta[]", required = false) List<String> formPersonExpuesta,
+                          @ModelAttribute("option") Integer option,
+                          @RequestParam(name = "formPersonExpuesta[]", required = false)
+                                      List<String> formPersonaExpuesta,
+                          Model model,
                           RedirectAttributes redirect,
                           SessionStatus status) {
 
@@ -178,18 +199,12 @@ public class AfiliadoController {
         Double saldoAcumulado = 0.0;
         Integer corte = 0;
         String periodo = "MENSUAL";
-
-        Pregunta pregunta;
-        Respuesta respuesta;
-        List<String> correos = new ArrayList<>();
-    	JSONArray rPRC = new JSONArray();
-    	JSONObject jsonObjectParameters = new JSONObject();
+        String urlPdf = null;
 
         try {
-            System.out.println(candidato.toString());
 
             Afiliado buscarAfiliadoExistente = afiliadoService.findByRfc(candidato.getRfc());
-        	Candidato buscarCandidatoExistente=candidatoService.findByRfc(candidato.getRfc());
+        	Candidato buscarCandidatoExistente = candidatoService.findByRfc(candidato.getRfc());
         	Servicio servicio = servicioService.findById(candidato.getServicio().getId());
 
             Periodicidad periodicidad = periodicidadService.getPeriodicidadByNombrePeriodo(periodo);
@@ -246,38 +261,19 @@ public class AfiliadoController {
             Date fechaMX = calendar.getTime();
 
             if(candidato.getServicio().getId() == servicioCovid) {
-                Pregunta preguntaOpcion = preguntaService.findById(4L);
-                new Respuesta();
-                Respuesta respuestaOpcion;
-                respuestaOpcion = respuestaService.findById(option);
-                RelPreguntaRespuesta relPreguntaRespuesta =
-                        new RelPreguntaRespuesta(preguntaOpcion, respuestaOpcion);
-
-                respuestas.add(relPreguntaRespuesta);
-
                 // Se guardan las preguntas y respuestas del candidato
                 for (RelPreguntaRespuesta PRC : respuestas) {
-                    pregunta = preguntaService.findById(PRC.getPregunta().getId());
-                    respuesta = respuestaService.findById(PRC.getRespuesta().getId());
-
                     RelPreguntaRespuestaCandidato RPRC = new RelPreguntaRespuestaCandidato(candidato,
-                            pregunta, respuesta, fechaMX);
+                            PRC.getPregunta(), PRC.getRespuesta(), fechaMX);
 
                     relPreguntaRespuestaCandidatoService.save(RPRC);
                 }
-                //implementa el envio de correos
-                List<PreguntaRespuestaCandidatoCustom> rPRCService = relPreguntaRespuestaCandidatoService.getPreguntaAndRespuestaBycandidatoById(candidato.getId());
-                for (PreguntaRespuestaCandidatoCustom resultadoPRC : rPRCService) {
-                    rPRC.put(getDatosJson(resultadoPRC.getPregunta(), resultadoPRC.getRespuesta()));
 
-                }
-                jsonObjectParameters.put("candidato", candidato.getNombre() + " " + candidato.getApellidoPaterno() + " " + candidato.getApellidoMaterno());
-                jsonObjectParameters.put("resultado", rPRC);
-                correos.add(correoParalife);
-                emailController.sendEmailCuestionario(templateCuestionarioId, correos, jsonObjectParameters);
+                // Envío de datos y envío de correo por servicio externo (BC4NB)
+                urlPdf = enviarDatosAseguradora(candidato, respuestas, option, formPersonaExpuesta);
+                model.addAttribute("urlPdf", urlPdf);
+
             }
-            
-            status.setComplete();
             
         } catch (DataIntegrityViolationException e) {
             LOG.error("Error al momento de ejecutar el proceso: " + e);
@@ -291,7 +287,8 @@ public class AfiliadoController {
 
             return "redirect:/afiliados/servicio/" + candidato.getServicio().getId();
         }
-      
+
+
         mensajeFlash = "id del afiliado creado es: " + candidato.getId();
         LOG.info(mensajeFlash);
         redirect.addFlashAttribute("success", "Afiliado creado con éxito");
@@ -300,14 +297,18 @@ public class AfiliadoController {
 
     @RequestMapping(value = "/bienvenido/{id}")
     public String mostrar(@PathVariable("id") Long id,
-                          Model model, RedirectAttributes redirect) {
+                          @ModelAttribute(name = "urlPdf") String urlPdf,
+                          Model model,
+                          RedirectAttributes redirect,
+                          SessionStatus status) {
     	
         try {
-        	Candidato candidato=candidatoService.finById(id);
+        	Candidato candidato=candidatoService.findById(id);
            
             model.addAttribute("id", id);
             model.addAttribute("candidato", candidato);
             model.addAttribute("servicioCovid", servicioCovid);
+            model.addAttribute("urlPdf", urlPdf);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -316,6 +317,7 @@ public class AfiliadoController {
 
             return "redirect:/afiliados/bienvenido/" + id;
         }
+
         return "afiliados/bienvenido";
     }
 
@@ -388,4 +390,125 @@ public class AfiliadoController {
     	   return cuestionario ;
     }
 
+    /**
+     * Método que se encarga de enviar la información para la póliza de seguro Covid-19
+     * @param candidato
+     * @param respuestas
+     * @param option
+     * @param formPersonaExpuesta
+     * @return
+     * @throws IOException
+     */
+    private String enviarDatosAseguradora(Candidato candidato, List<RelPreguntaRespuesta> respuestas,
+                                          Integer option, List<String> formPersonaExpuesta)
+            throws IOException {
+
+        URL url = new URL(urlInsurance);
+        String urlPdf = null;
+        HttpURLConnection urlConnection = null;
+        urlConnection = openConnection(urlConnection, "POST", url);
+
+        if(urlConnection != null){
+            urlConnection.setDoOutput(true);
+
+            OutputStream os = urlConnection.getOutputStream();
+            JSONObject data = new JSONObject();
+
+            // Creación del payload
+            data.put("insured_relationship", "Titular");
+            data.put("titular_name", candidato.getNombre());
+            data.put("titular_last_name", candidato.getApellidoPaterno());
+            data.put("titular_mother_name", candidato.getApellidoMaterno());
+            data.put("titular_gender", candidato.getSexo().toUpperCase());
+            data.put("titular_birthday", candidato.getFechaNacimiento());
+            data.put("titular_cellphone", candidato.getTelefonoMovil());
+            data.put("titular_address", candidato.getCalle());
+            data.put("titular_email", candidato.getEmail());
+            data.put("titular_num_ext", candidato.getNoExterior());
+            data.put("titular_zip", candidato.getCodigoPostal().toString());
+            data.put("titular_state", candidato.getEntidadFederativa());
+            data.put("titular_town", candidato.getCiudad());
+            data.put("titular_city", candidato.getCiudad());
+            data.put("titular_suburb", candidato.getCalle());
+            data.put("titular_occupation", candidato.getOcupacion());
+
+            // Verificar respuestas
+            for(RelPreguntaRespuesta respuesta : respuestas){
+                if(respuesta.getPregunta().getId() == 2){
+                    if(respuesta.getRespuesta().getId() == 4){
+                        data.put("diagnosed_covid", false);
+                    }
+                }else if(respuesta.getPregunta().getId() == 3){
+                    if(respuesta.getRespuesta().getId() == 4){
+                        data.put("is_hospitalized", false);
+                    }
+                }
+            }
+
+            // Se evalúa la opción de los datos de la persona políticamente expuesta
+            if(option == 1){
+                data.put("exposed_value", "1");
+                LinkedHashMap<Integer, String> exposedData = new LinkedHashMap<>();
+                exposedData.put(0, "exposed_name");
+                exposedData.put(1, "exposed_last_name");
+                exposedData.put(2, "exposed_title");
+                exposedData.put(3, "exposed_relationship");
+                exposedData.put(4, "exposed_period");
+                for(Map.Entry<Integer, String> exposedInfo : exposedData.entrySet()){
+                    data.put(exposedInfo.getValue(), formPersonaExpuesta.get(exposedInfo.getKey()));
+                    if(exposedInfo.getKey() == 4){
+                        if(formPersonaExpuesta.get(exposedInfo.getKey()).length() > 0){
+                            data.put(exposedInfo.getValue(), formPersonaExpuesta.get(
+                                    exposedInfo.getKey()));
+                        }else{
+                            data.put(exposedInfo.getValue(), "-");
+                        }
+                    }
+                }
+            }else{
+                data.put("exposed_value", "0");
+            }
+
+            os.write(data.toString().getBytes("UTF-8"));
+            os.close();
+
+            //Leemos respuesta
+            InputStream inputStream = urlConnection.getInputStream();
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+            StringBuilder sb = new StringBuilder();
+
+            String result;
+            while((result = bufferedReader.readLine()) != null){
+                sb.append(result);
+                LOG.info(sb.toString());
+            }
+
+            JSONObject response = new JSONObject(sb.toString());
+            urlPdf = response.getString("insurance_url");
+
+            urlConnection.disconnect();
+
+        }
+
+        return urlPdf;
+    }
+
+    @Override
+    public HttpURLConnection openConnection(HttpURLConnection httpUrlConnection, String method, URL url) {
+
+        String token = getTokenService.getTokenWithEmailAndPassword(emailLogin, passwordLogin);
+
+        try{
+            httpUrlConnection = (HttpURLConnection)url.openConnection();
+            httpUrlConnection.setRequestMethod(method);
+            httpUrlConnection.setRequestProperty("Content-Type", "application/json");
+            httpUrlConnection.setRequestProperty("Accept", "application/json");
+            httpUrlConnection.setRequestProperty("Authorization", "Bearer " + token);
+        }catch (IOException e){
+            e.printStackTrace();
+        }
+
+
+        return httpUrlConnection;
+    }
 }

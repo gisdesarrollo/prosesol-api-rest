@@ -616,7 +616,7 @@ public class PagoController {
                                        RedirectAttributes redirect, SessionStatus status, Model vista) {
 
         Afiliado afiliado = afiliadoService.findById(id);
-        Candidato candidato = candidatoService.finById(id);
+        Candidato candidato = candidatoService.findById(id);
         if (candidato != null) {
             afiliado = datosAfiliado(candidato);
         }
