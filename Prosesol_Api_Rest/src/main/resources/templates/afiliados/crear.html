@@ -109,7 +109,8 @@
                                 <label>Fecha de Nacimiento*</label>
                                 <input th:field="*{fechaNacimiento}" type="text"
                                        id="fechaNacimiento" name="fechaNacimiento"
-                                       class="form-control form-control-user">
+                                       class="form-control form-control-user"
+                                        placeholder="dd/MM/yyyy">
                                 <div id="fechaNacVacio" style="display: none; color: red;">
                                     Proporcione su fecha de nacimiento
                                 </div>
@@ -147,18 +148,18 @@
                                                                name="ocupacion"
                                                                class="form-control form-control-user"
                                                                placeholder="">
-                                <small class="form-text text-danger"
-                                       th:if="${#fields.hasErrors('ocupacion')}"
-                                       th:errors="*{ocupacion}"></small>
+                                <div id="ocupacionVacio" style="display: none; color: red;">
+                                    Campo obligatorio para la membresía
+                                </div>
                             </div>
 
                             <div class="form-group col-md-3" th:if="${servicioEmpresa} == 1">
-                                <label>Sexo</label> <select th:field="*{sexo}" id="sexo"
-                                                            name="sexo" class="form-control form-control-line">
-                                <option th:value="'Masculino'" th:selected>Masculino</option>
-                                <option th:value="'Femenino'">Femenino</option>
-                            </select><small class="form-text text-danger"
-                                            th:if="${#fields.hasErrors('sexo')}" th:errors="*{sexo}"></small>
+                                <label>Sexo</label>
+                                <select th:field="*{sexo}" id="sexo"
+                                        name="sexo" class="form-control form-control-line">
+                                    <option th:value="'Masculino'" th:selected>Masculino</option>
+                                    <option th:value="'Femenino'">Femenino</option>
+                                </select>
                             </div>
 
                             <div class="form-group col-md-3" th:if="${servicioEmpresa} == 1">
@@ -221,27 +222,19 @@
                                                                     th:field="*{telefonoMovil}"
                                                                     class="form-control form-control-user"
                                                                     placeholder="">
-                                <small class="form-text text-danger"
-                                       th:if="${#fields.hasErrors('telefonoMovil')}"
-                                       th:errors="*{telefonoMovil}"></small>
+                                <div id="movilVacio" style="display: none; color: red;">
+                                    Campo obligatorio para la membresía
+                                </div>
                             </div>
 
                             <div class="form-group col-md-3" th:if="${servicioEmpresa} == 1">
                                 <label>Correo electrónico</label><input type="email"
                                                                         th:field="*{email}"
                                                                         class="form-control form-control-user"
-                                                                        placeholder=""> <small
-                                    class="form-text text-danger"
-                                    th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></small>
-                            </div>
-
-                            <div class="form-group col-md-3" th:if="${servicioEmpresa} == 1">
-                                <label>Ocupación</label><input type="text"
-                                                                        th:field="*{ocupacion}"
-                                                                        class="form-control form-control-user"
-                                                                        placeholder=""> <small
-                                    class="form-text text-danger"
-                                    th:if="${#fields.hasErrors('ocupacion')}" th:errors="*{ocupacion}"></small>
+                                                                        placeholder="">
+                                <div id="emailVacio" style="display: none; color: red;">
+                                    Campo obligatorio para la membresía
+                                </div>
                             </div>
 
                             <div class="form-group col-md-3" th:if="${servicioEmpresa} == 1">
@@ -249,12 +242,12 @@
                                                                    th:field="*{codigoPostal}"
                                                                    class="form-control form-control-user"
                                                                    placeholder="">
-                                <small class="form-text text-danger"
-                                       th:if="${#fields.hasErrors('codigoPostal')}"
-                                       th:errors="*{codigoPostal}"></small>
                                 <p>Ingresa tu código postal</p>
                                 <input type="button" id="generarCodigoPostal" name="generarCodigoPostal"
                                        value="Buscar" onclick="getZipCode()">
+                                <div id="zipVacio" style="display: none; color: red;">
+                                    Campo obligatorio para la membresía
+                                </div>
                             </div>
 
                             <div class="form-group col-md-3" th:if="${servicioEmpresa} == 1">
@@ -309,20 +302,9 @@
                                        th:field="*{calle}"
                                        class="form-control form-control-user"
                                        placeholder="">
-                                <small class="form-text text-danger"
-                                       th:if="${#fields.hasErrors('calle')}"
-                                       th:errors="*{calle}"></small>
-                            </div>
-
-                            <div class="form-group col-md-3" th:if="${servicioEmpresa} == 1">
-                                <label>No. Interior</label>
-                                <input type="text" id="noInterior"
-                                       th:field="*{noInterior}"
-                                       class="form-control form-control-user"
-                                       placeholder="">
-                                <small class="form-text text-danger"
-                                       th:if="${#fields.hasErrors('noInterior')}"
-                                       th:errors="*{noInterior}"></small>
+                                <div id="calleVacio" style="display: none; color: red;">
+                                    Campo obligatorio para la membresía
+                                </div>
                             </div>
 
                             <div class="form-group col-md-3" th:if="${servicioEmpresa} == 1">
@@ -331,9 +313,17 @@
                                        th:field="*{noExterior}"
                                        class="form-control form-control-user"
                                        placeholder="">
-                                <small class="form-text text-danger"
-                                       th:if="${#fields.hasErrors('noExterior')}"
-                                       th:errors="*{noExterior}"></small>
+                                <div id="noExteriorVacio" style="display: none; color: red;">
+                                    Campo obligatorio para la membresía
+                                </div>
+                            </div>
+
+                            <div class="form-group col-md-3" th:if="${servicioEmpresa} == 1">
+                                <label>No. Interior</label>
+                                <input type="text" id="noInterior"
+                                       th:field="*{noInterior}"
+                                       class="form-control form-control-user"
+                                       placeholder="">
                             </div>
 
                             <div class="form-group col-md-3">
@@ -374,19 +364,28 @@
                                                 <option id="si" th:value="1" >Sí, tengo parentesco directo</option>
                                                 <option id="no" th:value="2" >No, no tengo parentesco</option>
                                             </select>
+                                            <div id="selectorVacio" style="display: none; color: red;">
+                                                Seleccione una opción
+                                            </div>
                                       <div class="formulario" id="activeform" style="display:none"><br>
-                 							<div class="form-group">
-													<label class="col-md-12">Nombre</label>
-												<div class="col-md-12">
-													<input type="text" id="nombPariente" name="formPersonExpuesta[]"
-							  			 		class="form-control form-control-line" >
-											</div>
-										</div>
+                                          <div class="form-group">
+                                                <label class="col-md-12">Nombre</label>
+                                            <div class="col-md-12">
+                                                <input type="text" id="nombPariente" name="formPersonExpuesta[]"
+                                                class="form-control form-control-line" >
+                                                <div id="nombParienteVacio" style="display: none; color: red;">
+                                                    Campo obligatorio
+                                                </div>
+                                            </div>
+                                        </div>
 										<div class="form-group">
 													<label class="col-md-12">Apellidos</label>
 												<div class="col-md-12">
-													<input type="text" id="apellPariente" name="formPersonExpuesta[]"
-							  			 		class="form-control form-control-line" >
+                                                    <input type="text" id="apellPariente" name="formPersonExpuesta[]"
+							  			 		    class="form-control form-control-line" >
+                                                    <div id="apellParienteVacio" style="display: none; color: red;">
+                                                        Campo obligatorio
+                                                    </div>
 											</div>
 										</div>
 										<div class="form-group">
@@ -394,6 +393,9 @@
 												<div class="col-md-12">
 													<input type="text" id="cargoPariente" name="formPersonExpuesta[]"
 							  			 		class="form-control form-control-line" >
+                                                <div id="cargoParienteVacio" style="display: none; color: red;">
+                                                    Campo obligatorio
+                                                </div>
 											</div>
 										</div>
 										<div class="form-group">
@@ -401,7 +403,10 @@
 												<div class="col-md-12">
 													<input type="text" id="parentPariente" name="formPersonExpuesta[]"
 							  			 		class="form-control form-control-line" >
-											</div>
+                                                <div id="parentParienteVacio" style="display: none; color: red;">
+                                                    Campo obligatorio
+                                                </div>
+                                                </div>
 										</div>
 										<div class="form-group">
 													<label class="col-md-12">Periodo</label>
@@ -420,9 +425,15 @@
                         <hr>
                         <div class="clearfix"></div>
                         <div class="row">
-                            <div class="col-sm-12">
+                            <div class="col-sm-12" th:if="${servicio.id} == ${servicioCovid}">
                                 <button style="background:#3380a9;" type="button"
-                                        onclick="validaDatosAfiliado()"
+                                        onclick="validaDatosAfiliado(1)"
+                                        class="btn btn-primary btn-square float-right">Crear
+                                </button>
+                            </div>
+                            <div class="col-sm-12" th:if="${servicio.id} != ${servicioCovid}">
+                                <button style="background:#3380a9;" type="button"
+                                        onclick="validaDatosAfiliado(0)"
                                         class="btn btn-primary btn-square float-right">Crear
                                 </button>
                             </div>

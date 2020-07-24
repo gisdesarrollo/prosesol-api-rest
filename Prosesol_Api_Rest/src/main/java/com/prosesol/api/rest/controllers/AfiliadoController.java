@@ -123,17 +123,20 @@ public class AfiliadoController implements IHttpUrlConnection{
         Servicio servicio = servicioService.findById(id);
         Candidato afiliado = new Candidato();
         afiliado.setServicio(servicio);
-        List<RelPreguntaRespuesta> respuestas = relPreguntaRespuestaDto.getRelPreguntaRespuestas();
 
         try {
 
-
             if(id == servicioCovid) {
-                for (RelPreguntaRespuesta rel : relPreguntaRespuestaDto.getRelPreguntaRespuestas()) {
-                    if (rel.getRespuesta().getId() == 3) {
-                        return "/error/solicitud";
+                List<RelPreguntaRespuesta> respuestas = relPreguntaRespuestaDto.getRelPreguntaRespuestas();
+                if(relPreguntaRespuestaDto.getRelPreguntaRespuestas().size() > 0 &&
+                    relPreguntaRespuestaDto != null) {
+                    for (RelPreguntaRespuesta rel : relPreguntaRespuestaDto.getRelPreguntaRespuestas()) {
+                        if (rel.getRespuesta().getId() == 3) {
+                            return "/error/solicitud";
+                        }
                     }
                 }
+                model.addAttribute("respuestas", respuestas);
             }
 
             Integer servicioEmpresa = getTemplateByServicio.getTemplateByIdServicio(servicio.getId());
@@ -146,7 +149,6 @@ public class AfiliadoController implements IHttpUrlConnection{
             model.addAttribute("afiliado", afiliado);
             model.addAttribute("servicio", servicio);
             model.addAttribute("servicioEmpresa", servicioEmpresa);
-            model.addAttribute("respuestas", respuestas);
             model.addAttribute("servicioCovid", servicioCovid);
 
         }catch (AfiliadoException aE){
@@ -187,12 +189,11 @@ public class AfiliadoController implements IHttpUrlConnection{
     public String guardar(Candidato candidato,
                           @ModelAttribute(name = "respuestas")
                                   List<RelPreguntaRespuesta> respuestas,
-                          @ModelAttribute("option") Integer option,
+                          @RequestParam(name = "option", required = false) Integer option,
                           @RequestParam(name = "formPersonExpuesta[]", required = false)
                                       List<String> formPersonaExpuesta,
                           Model model,
-                          RedirectAttributes redirect,
-                          SessionStatus status) {
+                          RedirectAttributes redirect) {
 
         String mensajeFlash = null;
         Date date = new Date();
@@ -359,6 +360,11 @@ public class AfiliadoController implements IHttpUrlConnection{
     @ModelAttribute("paises")
     public List<Paises> getAllPaises() {
         return afiliadoService.getAllPaises();
+    }
+
+    @ModelAttribute("respuestas")
+    public List<RelPreguntaRespuesta> getRespuestas(){
+        return new ArrayList<RelPreguntaRespuesta>();
     }
 
     /**
