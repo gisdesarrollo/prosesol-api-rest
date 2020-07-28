@@ -128,15 +128,15 @@ public class AfiliadoController implements IHttpUrlConnection{
 
             if(id == servicioCovid) {
                 List<RelPreguntaRespuesta> respuestas = relPreguntaRespuestaDto.getRelPreguntaRespuestas();
-                if(relPreguntaRespuestaDto.getRelPreguntaRespuestas().size() > 0 &&
-                    relPreguntaRespuestaDto != null) {
+                if(relPreguntaRespuestaDto.getRelPreguntaRespuestas() != null &&
+                        relPreguntaRespuestaDto.getRelPreguntaRespuestas().size() > 0) {
                     for (RelPreguntaRespuesta rel : relPreguntaRespuestaDto.getRelPreguntaRespuestas()) {
                         if (rel.getRespuesta().getId() == 3) {
                             return "/error/solicitud";
                         }
                     }
+                    model.addAttribute("respuestas", respuestas);
                 }
-                model.addAttribute("respuestas", respuestas);
             }
 
             Integer servicioEmpresa = getTemplateByServicio.getTemplateByIdServicio(servicio.getId());
