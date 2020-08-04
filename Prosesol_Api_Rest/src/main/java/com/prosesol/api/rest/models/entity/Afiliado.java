@@ -451,10 +451,6 @@ public class Afiliado implements Serializable {
 		this.periodicidad = periodicidad;
 	}
 
-	public void setInscripcion(Boolean inscripcion) {
-		isInscripcion = inscripcion;
-	}
-
 	public String getCalle() {
 		return calle;
 	}
