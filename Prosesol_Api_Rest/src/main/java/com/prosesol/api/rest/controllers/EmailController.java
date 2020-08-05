@@ -66,7 +66,7 @@ public class EmailController {
 		client = new MailjetClient(mailJetApiKey, mailJetSecretPassword, new ClientOptions("v3.1"));
 		request = new MailjetRequest(Emailv31.resource);
 			JSONObject from = new JSONObject();
-				from.put("Email", "desarrollo@gisconsultoria.com");
+				from.put("Email", "contacto@prosesol.org");
 				from.put("Name", "Prosesol");
 			almacena.put(Emailv31.Message.FROM, from);
 		// Parámetros dinámicos para el template

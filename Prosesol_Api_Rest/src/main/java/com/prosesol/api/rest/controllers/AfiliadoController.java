@@ -367,6 +367,11 @@ public class AfiliadoController implements IHttpUrlConnection{
         return new ArrayList<RelPreguntaRespuesta>();
     }
 
+    @ModelAttribute("urlPdf")
+    public String getUrlPdf(){
+        return new String();
+    }
+
     /**
      * Validación de correo
      *
