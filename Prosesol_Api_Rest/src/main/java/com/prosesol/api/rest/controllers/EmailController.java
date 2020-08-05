@@ -1,5 +1,15 @@
 package com.prosesol.api.rest.controllers;
 
+import com.mailjet.client.ClientOptions;
+import com.mailjet.client.MailjetClient;
+import com.mailjet.client.MailjetRequest;
+import com.mailjet.client.MailjetResponse;
+import com.mailjet.client.errors.MailjetException;
+import com.mailjet.client.errors.MailjetSocketTimeoutException;
+import com.mailjet.client.resource.Emailv31;
+import com.mailjet.client.resource.Template;
+import com.prosesol.api.rest.models.entity.Afiliado;
+import com.prosesol.api.rest.services.IGetTokenService;
 import com.prosesol.api.rest.services.IHttpUrlConnection;
 import com.prosesol.api.rest.utils.Archivos;
 import org.apache.commons.logging.Log;
@@ -21,201 +31,111 @@ import java.util.Map;
  * @author Luis Enrique Morales Soriano
  */
 @Service
-public class EmailController implements IHttpUrlConnection {
+public class EmailController {
 
-    protected static final Log LOG = LogFactory.getLog(EmailController.class);
+	protected static final Log LOG = LogFactory.getLog(EmailController.class);
+	
+	@Value("${mail.jet.api.key}")
+	private String mailJetApiKey;
 
-    @Value("${doppler.relay.url}")
-    private String dopplerUrl;
+	@Value("${mail.jet.secret.password}")
+	private String mailJetSecretPassword;
 
-    @Value("${doppler.relay.account.id}")
-    private int accountId;
+	@Autowired
+	private Archivos archivos;
 
-    @Value("${doppler.relay.api.key}")
-    private String dopplerApiKey;
+	private MailjetClient client;
 
-    @Autowired
-    private Archivos archivos;
+	private MailjetRequest request;
 
-    /**
-     * Obtiene los templates de doppler relay
-     * @throws IOException
-     */
-    public List getAllTemplates(){
+	private MailjetResponse response;
 
-        List<String> templates = new ArrayList<>();
+	/**
+	 * Envia email MailJet
+	 * 
+	 * @throws MailjetException
+	 * @throws MailjetSocketTimeoutException
+	 * @throws IOException
+	 */
+	public void sendMailJet( Map<String, String> model, int idTemplate, List<File> attachments, List<String> correos)
+			throws MailjetException, MailjetSocketTimeoutException, IOException {
 
-        try {
-
-            URL url = new URL(dopplerUrl + accountId + "/templates");
-
-            HttpURLConnection connection = null;
-
-            connection = openConnection(connection, "GET", url);
-
-            InputStream content = connection.getInputStream();
-            BufferedReader in = new BufferedReader(new InputStreamReader(content));
-            StringBuilder sb = new StringBuilder();
-            String line;
-            while((line = in.readLine()) != null){
-                sb.append(line);
-            }
-
-            JSONObject jsonObject = new JSONObject(sb.toString());
-            JSONArray jsonArray = jsonObject.getJSONArray("items");
-
-            for(int i = 0; i < jsonArray.length(); i++){
-                templates.add(jsonArray.getJSONObject(i).getString("id"));
-            }
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return templates;
-    }
-
-    public void sendEmail(String idTemplate, List<String> correos, List<File> attachments,
-                          Map<String, String> model){
-        try{
-            URL url = new URL(dopplerUrl + accountId + "/templates/" + idTemplate + "/message");
-
-            // Se abre la conexión
-            HttpURLConnection urlConnection = null;
-            urlConnection = openConnection(urlConnection, "POST", url);
-            urlConnection.setDoOutput(true);
-
-            OutputStream os = urlConnection.getOutputStream();
-
-            // Cabeceras principales
-            JSONObject json = new JSONObject();
-            json.put("from_name", "Prosesol");
-            json.put("from_email", "contacto@prosesol.org");
-
-            // Parámetros dinámicos para el template
-            JSONObject jsonObjectParameters = new JSONObject();
-            for(Map.Entry<String, String> parametros : model.entrySet()){
-                jsonObjectParameters.put(parametros.getKey(), parametros.getValue());
-            }
-            json.put("model", jsonObjectParameters);
-
-            // Arreglo para el envío de correos
-            JSONArray jsonArrayCorreos = new JSONArray();
-            JSONObject itemCorreos = new JSONObject();
-            for(String correo : correos){
-                itemCorreos.put("email", correo);
-                itemCorreos.put("type", "to");
-            }
-            jsonArrayCorreos.put(itemCorreos);
-            json.put("recipients", jsonArrayCorreos);
-
-            // Agregar archivos adjuntos
-            JSONArray jsonArrayAdjuntos = new JSONArray();
-            JSONObject itemAdjuntos = new JSONObject();
-            if(attachments.size() > 0){
-                for(File adjunto : attachments){
-
-                    String archivo = archivos.encode(adjunto);
-
-                    itemAdjuntos.put("content_type", "application/pdf");
-                    itemAdjuntos.put("base64_content", archivo);
-                    itemAdjuntos.put("filename", "Archivo adjunto");
-                }
-
-                jsonArrayAdjuntos.put(itemAdjuntos);
-                json.put("attachments", jsonArrayAdjuntos);
-            }
-
-            LOG.info("Arreglo para el envío de correos: " + json.toString());
-
-            os.write(json.toString().getBytes("UTF-8"));
-            os.close();
-
-            // Leemos la respuesta
-            InputStream inputStream = urlConnection.getInputStream();
-            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
-            StringBuilder sb = new StringBuilder();
-
-            String result;
-            LOG.info("Respuesta del servicio:");
-            while((result = bufferedReader.readLine()) != null){
-                sb.append(result);
-                LOG.info(sb.toString());
-            }
-
-            urlConnection.disconnect();
-
-        }catch (IOException e){
-            e.printStackTrace();
-        }
-    }
-    
-    public void sendEmailCuestionario(String idTemplate, List<String> correos, JSONObject pRC) {
-		try {
-			URL url = new URL(dopplerUrl + accountId + "/templates/" + idTemplate + "/message");
-
-			// Se abre la conexión
-			HttpURLConnection urlConnection = null;
-			urlConnection = openConnection(urlConnection, "POST", url);
-			urlConnection.setDoOutput(true);
-
-			OutputStream os = urlConnection.getOutputStream();
-
-			// Cabeceras principales
-			JSONObject json = new JSONObject();
-			json.put("from_name", "Prosesol");
-			json.put("from_email", "contacto@prosesol.org");
-
-			// Parámetros dinámicos para el template
-			json.put("model",pRC);
-			
-			// Arreglo para el envío de correos
-			JSONArray jsonArrayCorreos = new JSONArray();
-			JSONObject itemCorreos = new JSONObject();
+		JSONArray arrayDatos = new JSONArray();
+		JSONObject almacena = new JSONObject();
+		String nombreD=null;
+		client = new MailjetClient(mailJetApiKey, mailJetSecretPassword, new ClientOptions("v3.1"));
+		request = new MailjetRequest(Emailv31.resource);
+			JSONObject from = new JSONObject();
+				from.put("Email", "desarrollo@gisconsultoria.com");
+				from.put("Name", "Prosesol");
+			almacena.put(Emailv31.Message.FROM, from);
+		// Parámetros dinámicos para el template
+			JSONObject jsonObjectParameters = new JSONObject();
+				for (Map.Entry<String, String> parametros : model.entrySet()) {
+					jsonObjectParameters.put(parametros.getKey(), parametros.getValue());
+					if(parametros.getKey().equals("nombre")) {
+						nombreD=parametros.getValue();
+					}
+				}
+		// Arreglo para el envío de correos
+			JSONObject to = new JSONObject();
+			JSONArray toArray = new JSONArray();
 			for (String correo : correos) {
-				itemCorreos.put("email", correo);
-				itemCorreos.put("type", "to");
+					to.put("Email", correo);
+					to.put("Name", nombreD);
+				}
+			toArray.put(to);
+			almacena.put(Emailv31.Message.TO, toArray);
+			almacena.put(Emailv31.Message.TEMPLATEID, idTemplate);
+			almacena.put(Emailv31.Message.TEMPLATELANGUAGE, true);
+			almacena.put(Emailv31.Message.SUBJECT, "Prosesol");
+		
+		
+		almacena.put(Emailv31.Message.VARIABLES, jsonObjectParameters);
+
+		JSONObject attachment = new JSONObject();
+		JSONArray jsonArrayAdjuntos = new JSONArray();
+		//archivos adjuntos para el template
+		if (attachments.size() > 0) {
+			for (File adjunto : attachments) {
+
+				String archivo = archivos.encode(adjunto);
+				attachment.put("ContentType", "application/pdf");
+				attachment.put("Filename", "Archivo adjunto");
+				attachment.put("Base64Content", archivo);
 			}
-			jsonArrayCorreos.put(itemCorreos);
-			json.put("recipients", jsonArrayCorreos);
-
-			
-			LOG.info("Arreglo para el envío de correos: " + json.toString());
-
-			os.write(json.toString().getBytes("UTF-8"));
-			os.close();
-
-			// Leemos la respuesta
-			InputStream inputStream = urlConnection.getInputStream();
-			BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
-			StringBuilder sb = new StringBuilder();
-
-			String result;
-			LOG.info("Respuesta del servicio:");
-			while ((result = bufferedReader.readLine()) != null) {
-				sb.append(result);
-				LOG.info(sb.toString());
-			}
-
-			urlConnection.disconnect();
-
-		} catch (IOException e) {
-			e.printStackTrace();
+			jsonArrayAdjuntos.put(attachment);
+			almacena.put(Emailv31.Message.ATTACHMENTS, jsonArrayAdjuntos);
 		}
+		arrayDatos.put(almacena);
+		request.property(Emailv31.MESSAGES, arrayDatos);
+
+		response = client.post(request);
+		if(response.getStatus()==200) {
+			LOG.info("El correo se envio correctamente: "+response.getData());
+		}else {
+			LOG.error("Error el correo no se pudo enviar: "+response.getData());
+		}
+		
+
 	}
-    
-    @Override
-    public HttpURLConnection openConnection(HttpURLConnection urlConnection, String method, URL url){
 
-        try {
-            urlConnection = (HttpURLConnection)url.openConnection();
-            urlConnection.setRequestMethod(method);
-            urlConnection.setRequestProperty("Content-Type", "application/json; charset=utf-8;");
-            urlConnection.setRequestProperty("Authorization", "Bearer " + dopplerApiKey);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return urlConnection;
-    }
+	public List getTemplateMailjet() throws MailjetException, MailjetSocketTimeoutException {
+		List<Integer> templates = new ArrayList<>();
+		client = new MailjetClient(mailJetApiKey, mailJetSecretPassword);
+		// obtiene la lista de templates
+		request = new MailjetRequest(Template.resource);
+		response = client.get(request);
+		for (Object object : response.getData()) {
+			JSONObject jo = (JSONObject) object;
+			templates.add(jo.getInt("ID"));
+		}
+		if(response.getStatus()==200) {
+			LOG.info("Template obtenidos correctamente: "+response.getData());
+		}else {
+			LOG.error("Error al obtener los template: "+response.getData());
+		}
+		return templates;
+	}
+	
 }

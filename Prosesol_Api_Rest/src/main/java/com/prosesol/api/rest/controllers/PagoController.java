@@ -38,11 +38,11 @@ import java.util.*;
 public class PagoController {
 
     protected final Logger LOG = LoggerFactory.getLogger(PagoController.class);
-    private final static String ID_TEMPLATE_FT = "77e17b72";
-    private final static String ID_TEMPLATE_IB = "2cd93909";
-    private final static String ID_TEMPLATE_PI = "0044a2f4";
-    private final static String ID_TEMPLATE_PM = "d1112f68";
-
+    private final static int ID_TEMPLATE_FT = 1606126;
+    private final static int ID_TEMPLATE_IB = 1606124;
+    private final static int ID_TEMPLATE_PI = 1606129;
+    private final static int ID_TEMPLATE_PM= 1606131;
+    
     @Value("${openpay.id}")
     private String merchantId;
 
@@ -758,7 +758,7 @@ public class PagoController {
 
                     List<String> correos = new ArrayList<>();
                     List<File> adjuntos = new ArrayList<>();
-                    List<String> templates;
+                    List<Integer> templates;
 
                     try {
 
@@ -769,52 +769,46 @@ public class PagoController {
                         model.put("rfc", afiliado.getRfc());
 
                         correos.add(afiliado.getEmail());
-                        templates = emailController.getAllTemplates();
+                        templates=emailController.getTemplateMailjet();
 
                         // Se compara el id del estatus para saber qué tipo de correo se enviará
                         if (afiliado.getEstatus() == 3) {
                             // Comparamos los id's de los servicios para obtener el template correcto
                             if (afiliado.getServicio().getId() == idIndividual) {
-                                for (String template : templates) {
-                                    int separator = template.indexOf("-");
-                                    String idTemplateStr = template.substring(0, separator);
-                                    if (idTemplateStr.equals(ID_TEMPLATE_IB)) {
+                                for (Integer idTemplate : templates) {
+                                    if (idTemplate.equals(ID_TEMPLATE_IB)) {
                                         adjuntos.add(ResourceUtils.getFile(archivoPlanIndividual));
-                                        String templateBienvenidoIB = template;
-                                        LOG.info("Template de bienvenido Individual Básico: " + templateBienvenidoIB);
-                                        emailController.sendEmail(templateBienvenidoIB, correos, adjuntos, model);
+                                        LOG.info("Template de bienvenido Individual Básico: " + idTemplate);
+                                        emailController.sendMailJet(model,idTemplate,adjuntos,correos);
+                                        
                                     }
-                                    if (idTemplateStr.equals(ID_TEMPLATE_PI)) {
-                                        String templatePagoIN = template;
-                                        LOG.info("Template de inscripción: " + templatePagoIN);
-                                        emailController.sendEmail(templatePagoIN, correos, adjuntos, model);
+                                    if (idTemplate.equals(ID_TEMPLATE_PI)) {
+                                        LOG.info("Template de inscripción: " + idTemplate);
+                                        emailController.sendMailJet(model,idTemplate,adjuntos,correos);
+                                        
                                     }
                                 }
                             } else if (afiliado.getServicio().getId() == idTotal) {
-                                for (String template : templates) {
-                                    int separator = template.indexOf("-");
-                                    String idTemplateStr = template.substring(0, separator);
-                                    if (idTemplateStr.equals(ID_TEMPLATE_FT)) {
+                                for (Integer idTemplate : templates) {
+                                    if (idTemplate.equals(ID_TEMPLATE_FT)) {
                                         adjuntos.add(ResourceUtils.getFile(archivoPlanFamiliar));
-                                        String templateBienvenidoFT = template;
-                                        LOG.info("Template de bienvenido Familiar Total: " + templateBienvenidoFT);
-                                        emailController.sendEmail(templateBienvenidoFT, correos, adjuntos, model);
+                                        LOG.info("Template de bienvenido Familiar Total: " + idTemplate);
+                                        emailController.sendMailJet(model,idTemplate,adjuntos,correos);
+                                        
                                     }
-                                    if (idTemplateStr.equals(ID_TEMPLATE_PI)) {
-                                        String templatePagoIN = template;
-                                        LOG.info("Template de inscripción: " + templatePagoIN);
-                                        emailController.sendEmail(templatePagoIN, correos, adjuntos, model);
+                                    if (idTemplate.equals(ID_TEMPLATE_PI)) {
+                                        LOG.info("Template de inscripción: " + idTemplate);
+                                        emailController.sendMailJet(model,idTemplate,adjuntos,correos);
+                                        
                                     }
                                 }
                             }
                         } else if (afiliado.getEstatus() == 1) {
-                            for (String template : templates) {
-                                int separator = template.indexOf("-");
-                                String idTemplateStr = template.substring(0, separator);
-                                if (idTemplateStr.equals(ID_TEMPLATE_PM)) {
-                                    String templateBienvenidoPM = template;
-                                    LOG.info("Template pago mensualidad: " + templateBienvenidoPM);
-                                    emailController.sendEmail(templateBienvenidoPM, correos, adjuntos, model);
+                            for (Integer idTemplate : templates) {
+                                if (idTemplate.equals(ID_TEMPLATE_PM)) {
+                                    LOG.info("Template pago mensualidad: " + idTemplate);
+                                    emailController.sendMailJet(model,idTemplate,adjuntos,correos);
+                                    
                                 }
                             }
                         }
