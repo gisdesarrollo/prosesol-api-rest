@@ -138,28 +138,28 @@
 	<input type="hidden" name="isInscripcion" id="isInscripcion" th:value="*{isInscripcion}">
 	<div class="sctn-col l">
 		<label>Nombre del titular del servicio</label>
-		<label th:text="*{nombre} + ' '  + *{apellidoPaterno} + ' ' + *{apellidoMaterno}"></label>
+		<label class="style-text" th:text="*{nombre} + ' '  + *{apellidoPaterno} + ' ' + *{apellidoMaterno}"></label>
 	</div>
 	<div class="sctn-col">
 		<label>RFC</label>
-		<label th:text="*{rfc}"></label>
+		<label class="style-text" th:text="*{rfc}"></label>
 		<input type="hidden" id="rfc" name="rfc" th:value="*{rfc}"> 
 	</div>
 	<div class="sctn-col l">
-		<label th:if="*{saldoCorte} > 0">Monto a pagar</label>
-		<label th:if="*{saldoCorte} < 0">Saldo a favor</label>
-		<label th:if="*{saldoCorte} == 0">Saldo a favor</label>
-		<label th:text="*{saldoCorte}"></label>
+		<label  th:if="*{saldoCorte} > 0">Monto a pagar</label>
+		<label  th:if="*{saldoCorte} < 0">Saldo a favor</label>
+		<label  th:if="*{saldoCorte} == 0">Saldo a favor</label>
+		<label class="style-text" th:text="*{saldoCorte}"></label>
 		<input type="hidden" id="saldoCorte" th:value="*{saldoCorte}">
 	</div>
 	<div class="sctn-col l">
 		<label >Costo de su servicio</label>
-		<label th:text="*{servicio.costoTitular}"></label>
+		<label class="style-text" th:text="*{servicio.costoTitular}"></label>
 		<input type="hidden" id="costoServicio" th:value="*{servicio.costoTitular}">
 	</div>
 	<div class="sctn-col">
 		<label>Fecha de corte de servicio</label>
-		<label th:text="*{fechaCorte}"></label>
+		<label class="style-text bold" th:text="${fechaCorte}" ></label>
 	</div>
 	<div class="form-container">
 		<div class="field-container">
@@ -209,7 +209,7 @@
 		</div>
 		<div class="field-container">
 			<label for="montoPagar">¿Monto a Pagar?</label>
-			<input id="montoPagar" name="montoPagar" type="text" pattern="[0-9]*"
+			<input id="montoPagar" name="montoPagar" th:value="*{saldoCorte}"  readonly type="text" pattern="[0-9]*"
 				   inputmode="numeric" class=".montoPagar">
 			<span id="valida_monto" style="color:red;"></span>
 			<div id="validaMontoPagar" style="display: none; color: red;">Campo

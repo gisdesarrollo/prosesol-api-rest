@@ -26,6 +26,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -145,8 +146,8 @@ public class PagoController {
         Candidato candidato = candidatoService.findByRfc(rfc);
         Afiliado afiliado = afiliadoService.findByRfc(rfc);
         Cliente cliente = clienteService.getClienteByIdAfiliado(afiliado);
-
-
+        SimpleDateFormat formatFecha = new SimpleDateFormat("dd-MM-yyyy");
+        String fechaFormateada = null;
         if (rfc.length() < 13) {
 
             LOG.info("ERR: ", "El RFC no cumple con los campos necesarios");
@@ -170,6 +171,8 @@ public class PagoController {
                     return "redirect:/pagos/tarjeta/buscar";
                 } else {
                     model.addAttribute("afiliado", candidato);
+                     fechaFormateada = formatFecha.format(candidato.getFechaCorte());
+                    model.addAttribute("fechaCorte", fechaFormateada);
                 }
             } else {
                 LOG.info("ERR: ", "El afiliado no es titular del servicio");
@@ -197,7 +200,10 @@ public class PagoController {
                                 "se le puede hacer el cargo, póngase en contacto a contacto@prosesol.org para dudas o aclaraciones");
                         return "redirect:/pagos/tarjeta/buscar";
                     } else {
+                    	fechaFormateada = formatFecha.format(afiliado.getFechaCorte());
                         model.addAttribute("afiliado", afiliado);
+                    
+                        model.addAttribute("fechaCorte", fechaFormateada);
                     }
                 } else {
                     LOG.info("ERR: ", "El afiliado no es titular del servicio");

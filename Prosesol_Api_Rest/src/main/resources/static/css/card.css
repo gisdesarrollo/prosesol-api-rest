@@ -379,3 +379,11 @@ input {
     -webkit-transform: rotateY(180deg);
     transform: rotateY(180deg);
 }
+
+.style-text{
+	font-family: Arial, Helvetica, sans-serif;
+}
+
+.bold{
+	font-weight: bold;
+}
